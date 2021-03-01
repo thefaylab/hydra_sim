@@ -3,28 +3,31 @@ title: "Hyrda Methology"
 output: github_document
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
+#Where to start?
+MSCAA so we can start with that as template
 
-## GitHub Documents
+Also compare with Vanessa’s multiple species state space model: 
+https://github.com/vtrijoulet/Multisp_model_JAE
+https://github.com/vtrijoulet/MS_SSM
 
-This is an R Markdown format used for publishing markdown documents to GitHub. When you click the **Knit** button all R code chunks are run and a markdown file (.md) suitable for publishing to GitHub is generated.
 
-## Including Code
+## Introduction
 
-You can include R code in the document as follows:
+Hyrda is a multiple species fisheries model used to evaluated stock status given species interactions on Georges Bank. The model specifications are documented here.
 
-```{r cars}
-summary(cars)
-```
+## Methodology
 
-## Including Plots
+### Data requirements
 
-You can also embed plots, for example:
+### Model description
 
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
+### Multispecies formulations
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+### Parameter estimatation
+
+You can include equations in the document as follows:
+$ E = mc^2$
+
+### likelihood
+
+### Simulations
