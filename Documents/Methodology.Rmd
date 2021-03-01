@@ -27,7 +27,8 @@ Parameterizations for growth, recruitment, and fishery size selection were based
 ### Parameter estimatation
 
 You can include equations in the document as follows:
-$ E = mc^2$
+$ E = mc^2$ 
+https://rmd4sci.njtierney.com/math (how to for rmarkdown equations)
 
 ### likelihood
 
