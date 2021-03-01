@@ -3,21 +3,22 @@ title: "Hyrda Methology"
 output: github_document
 ---
 
-#Where to start?
-MSCAA so we can start with that as template
+# Drafting notes
+Using organization of MS_SCAA methodology as a template
 
 Also compare with Vanessa’s multiple species state space model: 
-https://github.com/vtrijoulet/Multisp_model_JAE
-https://github.com/vtrijoulet/MS_SSM
-
+https://github.com/vtrijoulet/Multisp_model_JAE (link to paper)
+https://github.com/vtrijoulet/MS_SSM (link to up to date model)
 
 ## Introduction
 
 Hyrda is a multiple species fisheries model used to evaluated stock status given species interactions on Georges Bank. The model specifications are documented here.
 
 ## Methodology
+The operating model (Hydra; Supplementary data) is implemented in ADMB (Fournier et al., 2012) and simulates 10 species with length-structured population dynamics and predation (structured as in Hall et al., 2006; Rochet et al., 2011). The 10 species included in the model are key commercial species in the Georges Bank fish community, historically a heavily exploited ecosystem (Fogarty and Murawski, 1998). They can be organized into functional groups in many ways (see, e.g. Gaichas et al., 2012), but here we categorize by a combination of taxonomy and foraging mode to include two piscivorous Elasmobranchs (spiny dogfish and winter skate), two pelagic Planktivores (Atlantic herring and Atlantic mackerel), three demersal Piscivores (Atlantic cod, silver hake, and monkfish), and three demersal invertebrate feeders or Benthivores (haddock, yellowtail flounder, winter flounder). Scientific names and a summary of aggregate group membership are listed in Table 1.  
 
 ### Data requirements
+Parameterizations for growth, recruitment, and fishery size selection were based on Georges Bank survey and fishery data to the extent possible, although fishery size selectivity, species catchability, and fishing effort should be considered illustrative for the analysis rather than representative of actual fishing fleets operating at present. Similarly, simulated population levels and yields for the included species should be considered illustrative rather than representative of current status and dynamics because the simulation model has not been formally fit to biomass or catch data from this system. More details on model equations and parameterization are included in Supplementary data, Tables S1–S4, and key functions are illustrated for each species and fishing fleet in Supplementary data, Figures S1–S4.
 
 ### Model description
 
