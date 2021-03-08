@@ -1,108 +1,121 @@
----
-title: "Hyrda Methology"
-output: github_document
----
+Hyrda Methology
+================
 
 # Drafting notes
-Using organization of MS_SCAA methodology as a template
 
-Also compare with Vanessa’s multiple species state space model: 
-https://github.com/vtrijoulet/Multisp_model_JAE (link to paper)
-https://github.com/vtrijoulet/MS_SSM (link to up to date model)
+Using organization of MS\_SCAA methodology as a template
+
+Also compare with Vanessa’s multiple species state space model:
+<https://github.com/vtrijoulet/Multisp_model_JAE> (link to paper)
+<https://github.com/vtrijoulet/MS_SSM> (link to up to date model)
 
 <!-- ## Introduction -->
 
 <!-- Hyrda is a multiple species fisheries model used to evaluated stock status given species interactions on Georges Bank. The model specifications are documented here. -->
 
 <!-- ## Methodology -->
+
 <!-- The operating model (Hydra; Supplementary data) is implemented in ADMB (Fournier et al., 2012) and simulates 10 species with length-structured population dynamics and predation (structured as in Hall et al., 2006; Rochet et al., 2011). The 10 species included in the model are key commercial species in the Georges Bank fish community, historically a heavily exploited ecosystem (Fogarty and Murawski, 1998). They can be organized into functional groups in many ways (see, e.g. Gaichas et al., 2012), but here we categorize by a combination of taxonomy and foraging mode to include two piscivorous Elasmobranchs (spiny dogfish and winter skate), two pelagic Planktivores (Atlantic herring and Atlantic mackerel), three demersal Piscivores (Atlantic cod, silver hake, and monkfish), and three demersal invertebrate feeders or Benthivores (haddock, yellowtail flounder, winter flounder). Scientific names and a summary of aggregate group membership are listed in Table 1.   -->
 
 <!-- ### Data requirements -->
+
 <!-- Parameterizations for growth, recruitment, and fishery size selection were based on Georges Bank survey and fishery data to the extent possible, although fishery size selectivity, species catchability, and fishing effort should be considered illustrative for the analysis rather than representative of actual fishing fleets operating at present. Similarly, simulated population levels and yields for the included species should be considered illustrative rather than representative of current status and dynamics because the simulation model has not been formally fit to biomass or catch data from this system. More details on model equations and parameterization are included in Supplementary data, Tables S1–S4, and key functions are illustrated for each species and fishing fleet in Supplementary data, Figures S1–S4. -->
 
 ### Model description
 
-
 #### Population dynamics
 
-For an individual species $i$, the number of individuals $N$ in size class $j$ at time $t+1$ represent the survivors from that cohort from the previous time step ($t$) that have not grown into a larger size class, plus the number of individuals growing into size class $j$ from smaller size classes during the time interval. We only consider transitions among immediately adjacent size classes. For size classes larger than the recruit (smallest) size class, the model for each species $i$ can be written:
+For an individual species \(i\), the number of individuals \(N\) in size
+class \(j\) at time \(t+1\) represent the survivors from that cohort
+from the previous time step (\(t\)) that have not grown into a larger
+size class, plus the number of individuals growing into size class \(j\)
+from smaller size classes during the time interval. We only consider
+transitions among immediately adjacent size classes. For size classes
+larger than the recruit (smallest) size class, the model for each
+species \(i\) can be written:
 
-$$ N_{i,j,t+1} = \sum_{j'}{\phi_{i,j' \to j,t}S_{i,j',t}N_{i,j',t}} $$
+\[ N_{i,j,t+1} = \sum_{j'}{\phi_{i,j' \to j,t}S_{i,j',t}N_{i,j',t}} \]
 
-The proportion surviving from size class $j-1$ to size class $j$ for a species at time $t$ is denoted $S_{j',t}$,.  $\phi_{j’ \to j}$ is the probability of moving from size class $j-1$ to size class $j$.
+The proportion surviving from size class \(j-1\) to size class \(j\) for
+a species at time \(t\) is denoted \(S_{j',t}\),. \(\phi_{j’ \to j}\) is
+the probability of moving from size class \(j-1\) to size class \(j\).
 
-
-[Lots more here but GF wanted to make progress on the objective function, see Gaichas et al. 2017 supplementary for rest of Hydra specs]
-<!-- ##### Growth and Time-in-Stage -->
+\[Lots more here but GF wanted to make progress on the objective
+function, see Gaichas et al. 2017 supplementary for rest of Hydra
+specs\] <!-- ##### Growth and Time-in-Stage -->
 
 <!-- The values for $\phi_{j’ \to j,t}$, the time required for an individual to grow between length bins are determined from the growth function. Growth can be assumed to follow a von Bertalanffy (see Hall et al., 2006) or power function, either of which can be applied to any species. As in (Hall et al., 2006), the model timestep is set up to equal the amount of time it takes for the fastest growing species/length bin combination to grow into the next length bin.  -->
 
 <!-- One of the simplest possible models for indeterminate growth with environmental effects is: -->
 
-<!--  	    (2), -->
+<!--        (2), -->
+
 <!-- where li,a,t is the length of species i, age a and time t; ψi and κi are growth model parameters, δp is the effect of the pth covariate on growth, and Xp,t is the pth covariate at time t.  Because the effect of the covariates may be nonlinear, we can allow polynomial expressions for covariate terms (e.g. in cases where there is an optimum temperature for growth of species i, the covariate terms may involve quadratic or higher-order terms for temperature on growth.  While we show the full potential model here, no covariates on growth were included for the simulations presented in the paper.  -->
 
 <!-- The time required to grow through a specified length interval is: -->
 
 <!--      (3), -->
+
 <!-- and the expression for the probability of moving through the length interval is then: -->
 
 <!--      (4). -->
+
 <!-- Von Bertalanffy growth is modeled identically as in Hall et al., (2006): -->
 
 <!--      (5), -->
+
 <!-- with the time required to grow through a specified length interval: -->
 
 <!--      (6), -->
+
 <!-- and an identical expression for the probability of moving through the length interval as in Equation 4 above.  -->
 
 <!-- Environmental covariates modifying von Bertalanffy growth can be included in the model as follows (although we note again that no growth covariates are used in the present analysis): -->
 
 <!--      (7). -->
 
-
 ### Objective Function
 
 The model can be fitted to multiple data streams
 
-#### Catch 
+#### Catch
 
 Expected catch is summed over time steps to the fishing/calendar year y.
 
-$$ \hat{C}_{y,i,q} = \sum_{t \in y} \sum_{j} \frac{s_{i,j,q}F_{i,j,q,t}}{M1_{i,j,t}+M2_{i,j,t}+s_{i,j,q}F_{i,j,q,t}} \left[ 1 - e^{-(M1_{i,j,t}+M2_{i,j,t}+s_{i,j,q}F_{i,j,q,t})} \right] N_{i,j,t} W_{i,j,t}$$
+\[ \hat{C}_{y,i,q} = \sum_{t \in y} \sum_{j} \frac{s_{i,j,q}F_{i,j,q,t}}{M1_{i,j,t}+M2_{i,j,t}+s_{i,j,q}F_{i,j,q,t}} \left[ 1 - e^{-(M1_{i,j,t}+M2_{i,j,t}+s_{i,j,q}F_{i,j,q,t})} \right] N_{i,j,t} W_{i,j,t}\]
 
-$$ ln(C_{y,i,q}) \sim \mathcal{N}(ln(\hat{C}_{y,i,q}), \sigma^{2}_{q,i,y}) $$
-
+\[ ln(C_{y,i,q}) \sim \mathcal{N}(ln(\hat{C}_{y,i,q}), \sigma^{2}_{q,i,y}) \]
 
 #### Catch length composition
 
-$$ \hat{p}_{q,i,y,j} = p^{*}_{q,i,y,j} / \sum_{j'}{p^{*}_{q,i,y,j'}} $$
+\[ \hat{p}_{q,i,y,j} = p^{*}_{q,i,y,j} / \sum_{j'}{p^{*}_{q,i,y,j'}} \]
 
-$$ p^{*}_{q,i,y,j} = \sum_{t \in y} \frac{s_{i,j,q}F_{i,j,q,t}}{M1_{i,j,t}+M2_{i,j,t}+s_{i,j,q}F_{i,j,q,t}} \left[ 1 - e^{-(M1_{i,j,t}+M2_{i,j,t}+s_{i,j,q}F_{i,j,q,t})} \right] N_{i,j,t}$$
+\[ p^{*}_{q,i,y,j} = \sum_{t \in y} \frac{s_{i,j,q}F_{i,j,q,t}}{M1_{i,j,t}+M2_{i,j,t}+s_{i,j,q}F_{i,j,q,t}} \left[ 1 - e^{-(M1_{i,j,t}+M2_{i,j,t}+s_{i,j,q}F_{i,j,q,t})} \right] N_{i,j,t}\]
 
-Proportions at length (in numbers) in catch for each gear type - either multinomial, dirichlet, etc.
+Proportions at length (in numbers) in catch for each gear type - either
+multinomial, dirichlet, etc.
 
 #### Survey abundance indices
 
-The predicted values for survey abundance rely on the timing of the survey within a year, catchability of the species in the survey, and the (length-based) survey selectivity. Survey $g$ predicted values (in weight) are:
+The predicted values for survey abundance rely on the timing of the
+survey within a year, catchability of the species in the survey, and the
+(length-based) survey selectivity. Survey \(g\) predicted values (in
+weight) are:
 
-$$ \hat{I}_{g,i,t} = q_{i,g,t} \sum{j}{s_{i,j,g}N_{i,j,t}l_{j}W_{i,j,t}} $$
+\[ \hat{I}_{g,i,t} = q_{i,g,t} \sum{j}{s_{i,j,g}N_{i,j,t}l_{j}W_{i,j,t}} \]
 
-The observed annual index values for each species are assumed to be lognormally distributed around the predicted values:
+The observed annual index values for each species are assumed to be
+lognormally distributed around the predicted values:
 
-$$ ln(I_{g,i,t}) \sim \mathcal{N}(ln(\hat{I}_{g,i,t}), \sigma^{2}_{g,i,t}) $$
-
+\[ ln(I_{g,i,t}) \sim \mathcal{N}(ln(\hat{I}_{g,i,t}), \sigma^{2}_{g,i,t}) \]
 
 #### Survey length composition
 
-$$ \hat{p}_{g,i,t,j} = p^{*}_{g,i,t,j} / \sum_{j'}{p^{*}_{g,i,t,j'}} $$
+\[ \hat{p}_{g,i,t,j} = p^{*}_{g,i,t,j} / \sum_{j'}{p^{*}_{g,i,t,j'}} \]
 
-$$ p^{*}_{g,i,t,j} = s_{i,j,g, t} N_{i,j,t} $$
+\[ p^{*}_{g,i,t,j} = s_{i,j,g, t} N_{i,j,t} \]
 
-Proportions at length (in numbers) in the survey - either multinomial, dirichlet, etc.
+Proportions at length (in numbers) in the survey - either multinomial,
+dirichlet, etc.
 
-
-
-
-
-<!-- ### Simulations -->
+### Simulations
