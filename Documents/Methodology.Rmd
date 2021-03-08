@@ -1,6 +1,6 @@
 ---
 title: "Hyrda Methology"
-output: github_document
+output: pdf_document
 ---
 
 # Drafting notes
@@ -81,6 +81,7 @@ $$ \hat{p}_{q,i,y,j} = p^{*}_{q,i,y,j} / \sum_{j'}{p^{*}_{q,i,y,j'}} $$
 $$ p^{*}_{q,i,y,j} = \sum_{t \in y} \frac{s_{i,j,q}F_{i,j,q,t}}{M1_{i,j,t}+M2_{i,j,t}+s_{i,j,q}F_{i,j,q,t}} \left[ 1 - e^{-(M1_{i,j,t}+M2_{i,j,t}+s_{i,j,q}F_{i,j,q,t})} \right] N_{i,j,t}$$
 
 Proportions at length (in numbers) in catch for each gear type - either multinomial, dirichlet, etc.
+Additional input sample size if multinomial, estimated param if Dirichlet
 
 #### Survey abundance indices
 
@@ -100,9 +101,32 @@ $$ \hat{p}_{g,i,t,j} = p^{*}_{g,i,t,j} / \sum_{j'}{p^{*}_{g,i,t,j'}} $$
 $$ p^{*}_{g,i,t,j} = s_{i,j,g, t} N_{i,j,t} $$
 
 Proportions at length (in numbers) in the survey - either multinomial, dirichlet, etc.
+Additional input sample size if multinomial, estimated param if Dirichlet
+
+#### Prey proportions in survey diet
+
+proportions by weight in stomach of predator $i$ of size $j$ of prey $m$:
+
+$$ \hat{\phi}_{g,t,i,j,m} = \phi^{*}_{g,t,i,j,m} / \left( \phi^{*}_{g,t,i,j,other} + \sum_{m}{\phi^{*}_{g,t,i,j,m}} \right) $$
+
+$$ \phi^{*}_{g,t,i,j,m} = \sum_{n}{\rho_{i,j,m,n} N_{m,n,t} W_{m,n,t}} $$
+
+Proportions by prey species (in weight) in the survey are modeled as dirichlet (could also be multinomial or delta-dirichlet, or....)
+
+$$ \mathrm{stom}_{g,t,i,j,1:n} \sim \mathrm{Dirichlet} \left( \hat{\phi}_{g,t,i,j,1:n}, \kappa_{i,j} \right) $$
+
+where $\kappa_{i,j}$ is a parameter for each predator size class. (or input effective sample size if multinomial)
 
 
 
+### Penalties
 
+#### Recruitment deviations
+
+Penalty to the objective funciton is added for the annual deviations from the stock-recruitment relationship for each species, which are assumed to be log-normal around the expected recruitment (equation 8):
+
+$$ \Lambda_{i,t} \sim \mathcal{N}\left(0, \tau^{2}_{\Lambda_{i}}\right) $$
+
+where $\tau^{2}_{\Lambda_{i}}$ is the variance of the recruitment deviations for species $i$.
 
 <!-- ### Simulations -->
