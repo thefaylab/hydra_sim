@@ -1,5 +1,5 @@
 ---
-title: "Hyrda Methology"
+title: "Hydra Methology"
 output: pdf_document
 ---
 
@@ -60,6 +60,22 @@ The proportion surviving from size class $j-1$ to size class $j$ for a species a
 
 <!--      (7). -->
 
+#### Predation mortality
+<!--
+*copied from [Sarah's presentation](https://noaa-edab.github.io/presentations/20201008_FIT_MSmods_Gaichas.html), ([source file](https://github.com/NOAA-EDAB/presentations/blob/master/Workshops/FIT_MultispeciesMods_2020-10-08/20201008_FIT_MSmods_Gaichas.Rmd)) need to ensure I used consistent notation*
+-->
+*Same MSVPA predation equation as MSCAA (but length based), same dependencies and caveats*
+
+- Suitability, $\rho$, of prey species $m$ size $n$ for a given predator species $i$ size $j$ a function of size preference and vulnerability  {0,1}. 
+- Food intake $I$ for each predator-at-size is temperature dependent consumption rate times mean stomach content weight. 
+
+$$M2_{m,n,t} = \sum_i \sum_j I_{i,j,t} N_{i,j,t} \frac{\rho_{i,j,m,n}}{\sum_a \sum_b \rho_{i,j,a,b} W_{a,b} N_{a,b} + \Omega}$$
+
+We specify 'preferred' predator-prey weight ratio (log scale) $\Psi_j$ and variance in predator size preference $\sigma_j$ to compare with the actual predator-prey weight ratio $(w_n / w_j)$ to get the size preference $\vartheta$. 
+
+$$\vartheta_{n,j} = \frac{1}{(w_n / w_j)\sigma_j \sqrt{2\pi}} e^{-\frac{[log_e(w_n / w_j) - \Psi_j]}{2\sigma_j^2}}$$
+
+Food intake is $$I_{i,j,t} = 24 [\delta_j e^{\omega_i T}]\bar{C}_{i,j,k,t}$$
 
 ### Objective Function
 
