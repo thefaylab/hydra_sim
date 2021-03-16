@@ -60,22 +60,79 @@ The proportion surviving from size class $j-1$ to size class $j$ for a species a
 
 <!--      (7). -->
 
-#### Predation mortality
+##### Recruitment
+
+<!-- Three spawner-recruit functional forms are currently implemented along with a model-free average recruitment with deviations option.  In the current model configuration, recruits are individuals entering size class 1 during the each year’s first model timestep. The Deriso-Schnute spawner recruit model (Quinn and Deriso, 1999) is also included as an option for recruitment, but has not yet been parameterized and so is not included in detail here. A fifth function for egg production-based recruitment is similarly implemented in the model code but has not been successfully parameterized, so is also omitted from this description. -->
+
+###### Average recruitment with annual deviations
+
+In the most basic formulation, no spawner-recruit model is specified, but annual log deviations $\Lambda_{i,t}$ from mean log recruitment $\bar{R}_i$ determine annual recruitment levels:
+$$N_{i,1,t}=e^{\bar{R}_i+\Lambda_{i,t}}$$
+<!-- SKG: if we only intend to fit average recruitment with deviations, we could leave the parametric recruitment functions out here and supply only dummy variables for those to the model in the dat/pin file-->
+
+<!-- ###### Maturity and Spawning Stock Biomass (SSB) based recruitment -->
+
+<!-- Evidence for density-dependent maturation has emerged for a number of groundfish species in this region.  There may also be other environmental effects on maturation. We will accommodate this possibility in the expression for the proportion of mature individuals at size: -->
+
+<!--      (9), -->
+<!-- where pi,j,t is the proportion mature for species i, length j, and time t;  ν, and ωi are maturity model parameters; ςm is a coefficient for the mth covariate, Vm,; and l is the midpoint of the jth length interval. Similarly to growth, we do not include environmental covariates on maturation in the simulations presented here. -->
+
+<!-- Spawning stock biomass (SSB) in this model includes both male and female fish, and is therefore the proportion mature times numbers times weight, pi,j,k,t Ni,j,k,t Wi,j,k, with W representing the mean weight at length j for species i. -->
+
+<!--      (10), -->
+<!-- Standard Ricker and Beverton-Holt recruitment functional forms are included. In addition, a three parameter gamma function employs a generalized Ricker model that can accommodate environmental or ecological terms: -->
+
+
+<!-- where  Ni,1,t is the number of recruits of species i, size class 1, and time t; αi,k is density-independent recruitment parameter for species i; SSBi,t-r is spawning stock biomass of species i and time t-r; r is the time delay between spawning and recruitment; γi is a shape parameter, βi is a stock-dependent coefficient, ζp is the effect of the pth covariate on recruitment of species i, and Xp is the pth covariate at time t-q (where q≤r).  The covariates can include physical terms (e.g. temperature) and/or ecological terms (e.g. predator abundance, competitor abundance etc.); however we note that environmental covariates on recruitment are not used in these simulations.  -->
+
+##### Mortality
+
+The survival rate is:
+$$S_{i,j,t}=e^{-(M1_{i,j}+M2_{i,j,t}+s_{i,j,q}F_{i,j,q,t})}$$
+
+The rate of natural mortality is partitioned into two components: sources of natural mortality due to all unmodeled factors ($M1$) and predation mortality from species included in the model ($M2$). 
+
+The predation process is decomposed into size selectivity and species vulnerability in each area. The $\rho$, of prey species $m$ size $n$ for a given predator species $i$ size $j$ is:
+$$\rho_{i,j,m,n} = \vartheta_{n,j}\lambda_{m,i}$$
+
+where $\vartheta_{n,j}$ is the preference for a prey item of size $n$ by predator size $j$, and $\lambda_{m,i}$ is the vulnerability of prey species $m$ to predator species $i$. The parameter $\lambda$ is set to either 0 or 1 depending on whether predator $i$ is known to prey on species $m$.
+
+The size preference function is: 
+$$\vartheta_{n,j} = \frac{1}{(w_n / w_j)\sigma_j \sqrt{2\pi}} e^{-\frac{[log_e(w_n / w_j) - \Psi_j]}{2\sigma_j^2}}$$
+
+where $w_n$ is the weight at the midpoint of the length bin for a prey of size $n$, $w_j$ is the weight at the midpoint of the length bin for a predator of size $j$, $\Psi_j$ is the 'preferred' predator/prey weight ratio on a logarithmic scale, and $\sigma_j^2$ is the variance in predator size preference.  
+
+To estimate the daily food intake $I$ for each predator, we use:
+<!-- SKG: could not find the original Russian alphabet characters used in the pub, delta and omega are used in growth equations, need to fix this. --> 
+
+$$I_{i,j,t} = 24 [\delta_i e^{\omega_i T}]\bar{C}_{i,j,k,t}$$
+
+where the term in brackets gives the temperature ($T$)-dependent hourly consumption rate with parameters $\delta_i$ and $\omega_i$ and $\bar{C}_{i,j,k,t}$ is the mean stomach content weight (g) over a diel cycle.
+
+The predation mortality rate on a particular prey species depends on the total consumption by predators, the suitability of that prey to each predator, and the total suitable prey biomass available to each of its predators. If the predation functional feeding response is assumed to be a Holling Type II, the $M2$ component on prey species $m$ size $n$ is then (Hall et al., 2006; Magnússon, 1995):
 <!--
 *copied from [Sarah's presentation](https://noaa-edab.github.io/presentations/20201008_FIT_MSmods_Gaichas.html), ([source file](https://github.com/NOAA-EDAB/presentations/blob/master/Workshops/FIT_MultispeciesMods_2020-10-08/20201008_FIT_MSmods_Gaichas.Rmd)) need to ensure I used consistent notation*
--->
-*Same MSVPA predation equation as MSCAA (but length based), same dependencies and caveats*
-
-- Suitability, $\rho$, of prey species $m$ size $n$ for a given predator species $i$ size $j$ a function of size preference and vulnerability  {0,1}. 
-- Food intake $I$ for each predator-at-size is temperature dependent consumption rate times mean stomach content weight. 
+--> 
 
 $$M2_{m,n,t} = \sum_i \sum_j I_{i,j,t} N_{i,j,t} \frac{\rho_{i,j,m,n}}{\sum_a \sum_b \rho_{i,j,a,b} W_{a,b} N_{a,b} + \Omega}$$
 
-We specify 'preferred' predator-prey weight ratio (log scale) $\Psi_j$ and variance in predator size preference $\sigma_j$ to compare with the actual predator-prey weight ratio $(w_n / w_j)$ to get the size preference $\vartheta$. 
+where $a$ and $b$ represent all prey species and sizes for predator $i$, $W$ is the mean weight of prey $a$ in size class $b$, $\Omega$ is ‘other’ food not explicitly included in the model, and all other terms are as above.
 
-$$\vartheta_{n,j} = \frac{1}{(w_n / w_j)\sigma_j \sqrt{2\pi}} e^{-\frac{[log_e(w_n / w_j) - \Psi_j]}{2\sigma_j^2}}$$
+<!-- SKG: Selectivity function may need rethinking --> 
 
-Food intake is $$I_{i,j,t} = 24 [\delta_j e^{\omega_i T}]\bar{C}_{i,j,k,t}$$
+Fishing mortality is also size-specific.  The selectivity for a specified gear type $q$ is given by:
+$$s_{i,j,q}=[1+e^{-(c_{i,q}+d_{i,q}l)}]^{-1}$$ 
+
+where $c_{i,j,q}$  and  $d_{i,j,q}$  are model parameters and $l$ is the midpoint of the $j$th length interval.
+
+<!-- SKG: Fishing may need rethinking, in particular fleet definitions --> 
+
+Fishing mortality $F$ is currently defined as fishing effort multiplied by catchability for each fleet, summed across the three fleets.
+
+The yield from species $i$ at time $t$ is then:
+$$Y_{i,t} = \sum_j \sum_q \frac{s_{i,j,q}F_{i,j,q,t}}{M1_{i,j}+M2_{i,j,t}+s_{i,j,q}F_{i,j,q,t}} [1-e^{-(M1_{i,j}+M2_{i,j,t}+s_{i,j,q}F_{i,j,q,t})}] N_{i,j,t}W_{i,j}$$
+
+where $W_{i,j,k}$  is the mean weight of an individual of species $i$ and length $j$. 
 
 ### Objective Function
 
