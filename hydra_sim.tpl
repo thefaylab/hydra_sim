@@ -167,6 +167,7 @@ DATA_SECTION
   init_int Nsizebins											//number of size bins
   init_int Nareas												//number of areas
   init_int Nfleets												//number of fleets
+  init_int Nsurveys                       //number of surveys (e.g. NEFSC spring, NEFSC fall, NEAMAP, etc)  
 //  init_int Nages												//number of age classes
   int Totsizebins
   !!  Totsizebins = Nspecies*Nsizebins;
@@ -239,10 +240,13 @@ DATA_SECTION
   //init_3darray growth_cov(1,Nareas,1,Ngrowth_cov,1,Nyrs)   	//time series of growth covariates, area specific
 
 //read in survey and catch observations from .dat file
-  init_3darray obs_survey_biomass(1,Nareas,1,Nspecies,1,Nyrs)  	//spring or fall? units needed
+// SKG: for now, sub in Nsurveys for the unused Nareas dimension for input survey indices and comps
+  //init_3darray obs_survey_biomass(1,Nareas,1,Nspecies,1,Nyrs)  	//spring or fall? units needed
+  init_3darray obs_survey_biomass(1,Nsurveys,1,Nspecies,1,Nyrs)  	//input spring, fall separately, in tons
   init_3darray obs_catch_biomass(1,Nareas,1,Nspecies,1,Nyrs)  	//total catch in tons
   init_3darray obs_effort(1,Nareas,1,Nfleets,1,Nyrs)  	//standardized effort units needed
   //init_4darray for survey size comp by area, species, year?
+  //init_4darray obs_survey_size(1,Nsurveys,1,Nspecies,1,Nyrs,1,Nsizebins)  //numbers, uncomment when in dat file
   //init_5darray for catch at size by area, species, fleet, year?
 
 //read in mean stomach content weight time series from .dat file for intake calculation
