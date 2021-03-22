@@ -190,13 +190,11 @@ $$ \mathrm{stom}_{g,t,i,j,1:n} \sim \mathrm{Dirichlet} \left( \hat{\phi}_{g,t,i,
 
 where $\kappa_{i,j}$ is a parameter for each predator size class. (or input effective sample size if multinomial)
 
-
-
 ### Penalties
 
 #### Recruitment deviations
 
-Penalty to the objective funciton is added for the annual deviations from the stock-recruitment relationship for each species, which are assumed to be log-normal around the expected recruitment (equation 8):
+Penalty to the objective function is added for the annual deviations from the stock-recruitment relationship for each species, which are assumed to be log-normal around the expected recruitment (equation 8):
 
 $$ \Lambda_{i,t} \sim \mathcal{N}\left(0, \tau^{2}_{\Lambda_{i}}\right) $$
 
