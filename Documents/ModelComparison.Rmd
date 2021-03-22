@@ -1,0 +1,237 @@
+---
+title: "Comparing Hydra and MS_SCAA Methology"
+output: pdf_document
+---
+
+# Drafting notes
+This document compares the methodology of two Georges Bank multiple species fish population models. Hydra, a length based multiple species predator-prey population model, and MS_SCAA, an age based multiple species predator-prey population model.
+
+# Introduction
+## Why develop multiple species fisheries models of Georges Bank
+Move towards EBFM
+Capture additional dynamics
+See previous papers
+
+## Status of Current knowledge
+Two multiple species fisheries model have been developed to evaluate stock status given species interactions on Georges Bank. Hydra, which models species interactions as length based dynamics, and a multiple species statistical catch at age model (MS_SCAA), which models species interactions as age based dynamics.
+Development on the two models to date
+Hydra was developed as a simulation model, and we extend its capabilities to include estimation. MS_SCAA was developed as a 3 species model, that has been extended to a 9 species model. *Additional model status background*
+
+## What we add to current knowledge
+Having two models allows...
+comparison 
+strengths and weaknesses
+increased confidence due to greater understanding of the impacts of structural uncertainty
+combined insights
+increased confidence in model predictions
+better understanding of the relative role of epistemic vs aleatory uncertainty and structural vs parametric uncertainty
+
+## Study Objectives
+1. Evaluate these models ability to reproduce simulated population dynamics
+2. Compare the performance of the two models ability to reproduce simulated population dynamics
+3. Assess the dynamics of Georges Bank populations based on the conclusions of objectives 1 and 2.
+
+# Methodlogy
+
+## MS_SCAA
+See Curti et al and supplement
+
+## Hyrda
+See Gaichas et al, Methodology.pdf, and supplement
+
+## Comparison
+The text below focuses only on the differences between the two models.
+
+### Data requirements
+
+MS_SCAA: Six input data series are required for each species: total commercial catch in weight, aggregate survey index in number-per-tow, age proportions for both commercial catches and survey indices, average individual weight-at-age, and for the multispecies runs, age-specific predator diet.
+Hydra:
+
+### Model description
+MS_SCAA: Age-based
+Hydra: Length-based
+
+#### Population dynamics
+MS_SCAA:
+Hydra:
+
+
+
+For an individual species $i$, the number of individuals $N$ in size class $j$ at time $t+1$ represent the survivors from that cohort from the previous time step ($t$) that have not grown into a larger size class, plus the number of individuals growing into size class $j$ from smaller size classes during the time interval. We only consider transitions among immediately adjacent size classes. For size classes larger than the recruit (smallest) size class, the model for each species $i$ can be written:
+
+$$ N_{i,j,t+1} = \sum_{j'}{\phi_{i,j' \to j,t}S_{i,j',t}N_{i,j',t}} $$
+
+The proportion surviving from size class $j-1$ to size class $j$ for a species at time $t$ is denoted $S_{j',t}$,.  $\phi_{j’ \to j}$ is the probability of moving from size class $j-1$ to size class $j$.
+
+
+[Lots more here but GF wanted to make progress on the objective function, see Gaichas et al. 2017 supplementary for rest of Hydra specs]
+<!-- ##### Growth and Time-in-Stage -->
+
+<!-- The values for $\phi_{j’ \to j,t}$, the time required for an individual to grow between length bins are determined from the growth function. Growth can be assumed to follow a von Bertalanffy (see Hall et al., 2006) or power function, either of which can be applied to any species. As in (Hall et al., 2006), the model timestep is set up to equal the amount of time it takes for the fastest growing species/length bin combination to grow into the next length bin.  -->
+
+<!-- One of the simplest possible models for indeterminate growth with environmental effects is: -->
+
+<!--  	    (2), -->
+<!-- where li,a,t is the length of species i, age a and time t; ψi and κi are growth model parameters, δp is the effect of the pth covariate on growth, and Xp,t is the pth covariate at time t.  Because the effect of the covariates may be nonlinear, we can allow polynomial expressions for covariate terms (e.g. in cases where there is an optimum temperature for growth of species i, the covariate terms may involve quadratic or higher-order terms for temperature on growth.  While we show the full potential model here, no covariates on growth were included for the simulations presented in the paper.  -->
+
+<!-- The time required to grow through a specified length interval is: -->
+
+<!--      (3), -->
+<!-- and the expression for the probability of moving through the length interval is then: -->
+
+<!--      (4). -->
+<!-- Von Bertalanffy growth is modeled identically as in Hall et al., (2006): -->
+
+<!--      (5), -->
+<!-- with the time required to grow through a specified length interval: -->
+
+<!--      (6), -->
+<!-- and an identical expression for the probability of moving through the length interval as in Equation 4 above.  -->
+
+<!-- Environmental covariates modifying von Bertalanffy growth can be included in the model as follows (although we note again that no growth covariates are used in the present analysis): -->
+
+<!--      (7). -->
+
+##### Recruitment
+
+<!-- Three spawner-recruit functional forms are currently implemented along with a model-free average recruitment with deviations option.  In the current model configuration, recruits are individuals entering size class 1 during the each year’s first model timestep. The Deriso-Schnute spawner recruit model (Quinn and Deriso, 1999) is also included as an option for recruitment, but has not yet been parameterized and so is not included in detail here. A fifth function for egg production-based recruitment is similarly implemented in the model code but has not been successfully parameterized, so is also omitted from this description. -->
+
+###### Average recruitment with annual deviations
+
+In the most basic formulation, no spawner-recruit model is specified, but annual log deviations $\Lambda_{i,t}$ from mean log recruitment $\bar{R}_i$ determine annual recruitment levels:
+$$N_{i,1,t}=e^{\bar{R}_i+\Lambda_{i,t}}$$
+<!-- SKG: if we only intend to fit average recruitment with deviations, we could leave the parametric recruitment functions out here and supply only dummy variables for those to the model in the dat/pin file-->
+
+<!-- ###### Maturity and Spawning Stock Biomass (SSB) based recruitment -->
+
+<!-- Evidence for density-dependent maturation has emerged for a number of groundfish species in this region.  There may also be other environmental effects on maturation. We will accommodate this possibility in the expression for the proportion of mature individuals at size: -->
+
+<!--      (9), -->
+<!-- where pi,j,t is the proportion mature for species i, length j, and time t;  ν, and ωi are maturity model parameters; ςm is a coefficient for the mth covariate, Vm,; and l is the midpoint of the jth length interval. Similarly to growth, we do not include environmental covariates on maturation in the simulations presented here. -->
+
+<!-- Spawning stock biomass (SSB) in this model includes both male and female fish, and is therefore the proportion mature times numbers times weight, pi,j,k,t Ni,j,k,t Wi,j,k, with W representing the mean weight at length j for species i. -->
+
+<!--      (10), -->
+<!-- Standard Ricker and Beverton-Holt recruitment functional forms are included. In addition, a three parameter gamma function employs a generalized Ricker model that can accommodate environmental or ecological terms: -->
+
+
+<!-- where  Ni,1,t is the number of recruits of species i, size class 1, and time t; αi,k is density-independent recruitment parameter for species i; SSBi,t-r is spawning stock biomass of species i and time t-r; r is the time delay between spawning and recruitment; γi is a shape parameter, βi is a stock-dependent coefficient, ζp is the effect of the pth covariate on recruitment of species i, and Xp is the pth covariate at time t-q (where q≤r).  The covariates can include physical terms (e.g. temperature) and/or ecological terms (e.g. predator abundance, competitor abundance etc.); however we note that environmental covariates on recruitment are not used in these simulations.  -->
+
+##### Mortality
+
+The survival rate is:
+$$S_{i,j,t}=e^{-(M1_{i,j}+M2_{i,j,t}+s_{i,j,q}F_{i,j,q,t})}$$
+
+The rate of natural mortality is partitioned into two components: sources of natural mortality due to all unmodeled factors ($M1$) and predation mortality from species included in the model ($M2$). 
+
+The predation process is decomposed into size selectivity and species vulnerability in each area. The $\rho$, of prey species $m$ size $n$ for a given predator species $i$ size $j$ is:
+$$\rho_{i,j,m,n} = \vartheta_{n,j}\lambda_{m,i}$$
+
+where $\vartheta_{n,j}$ is the preference for a prey item of size $n$ by predator size $j$, and $\lambda_{m,i}$ is the vulnerability of prey species $m$ to predator species $i$. The parameter $\lambda$ is set to either 0 or 1 depending on whether predator $i$ is known to prey on species $m$.
+
+The size preference function is: 
+$$\vartheta_{n,j} = \frac{1}{(w_n / w_j)\sigma_j \sqrt{2\pi}} e^{-\frac{[log_e(w_n / w_j) - \Psi_j]}{2\sigma_j^2}}$$
+
+where $w_n$ is the weight at the midpoint of the length bin for a prey of size $n$, $w_j$ is the weight at the midpoint of the length bin for a predator of size $j$, $\Psi_j$ is the 'preferred' predator/prey weight ratio on a logarithmic scale, and $\sigma_j^2$ is the variance in predator size preference.  
+
+To estimate the daily food intake $I$ for each predator, we use:
+<!-- SKG: could not find the original Russian alphabet characters used in the pub, delta and omega are used in growth equations, need to fix this. --> 
+
+$$I_{i,j,t} = 24 [\delta_i e^{\omega_i T}]\bar{C}_{i,j,k,t}$$
+
+where the term in brackets gives the temperature ($T$)-dependent hourly consumption rate with parameters $\delta_i$ and $\omega_i$ and $\bar{C}_{i,j,k,t}$ is the mean stomach content weight (g) over a diel cycle.
+
+The predation mortality rate on a particular prey species depends on the total consumption by predators, the suitability of that prey to each predator, and the total suitable prey biomass available to each of its predators. If the predation functional feeding response is assumed to be a Holling Type II, the $M2$ component on prey species $m$ size $n$ is then (Hall et al., 2006; Magnússon, 1995):
+<!--
+*copied from [Sarah's presentation](https://noaa-edab.github.io/presentations/20201008_FIT_MSmods_Gaichas.html), ([source file](https://github.com/NOAA-EDAB/presentations/blob/master/Workshops/FIT_MultispeciesMods_2020-10-08/20201008_FIT_MSmods_Gaichas.Rmd)) need to ensure I used consistent notation*
+--> 
+
+$$M2_{m,n,t} = \sum_i \sum_j I_{i,j,t} N_{i,j,t} \frac{\rho_{i,j,m,n}}{\sum_a \sum_b \rho_{i,j,a,b} W_{a,b} N_{a,b} + \Omega}$$
+
+where $a$ and $b$ represent all prey species and sizes for predator $i$, $W$ is the mean weight of prey $a$ in size class $b$, $\Omega$ is ‘other’ food not explicitly included in the model, and all other terms are as above.
+
+<!-- SKG: Selectivity function may need rethinking --> 
+
+Fishing mortality is also size-specific.  The selectivity for a specified gear type $q$ is given by:
+$$s_{i,j,q}=[1+e^{-(c_{i,q}+d_{i,q}l)}]^{-1}$$ 
+
+where $c_{i,j,q}$  and  $d_{i,j,q}$  are model parameters and $l$ is the midpoint of the $j$th length interval.
+
+<!-- SKG: Fishing may need rethinking, in particular fleet definitions --> 
+
+Fishing mortality $F$ is currently defined as fishing effort multiplied by catchability for each fleet, summed across the three fleets.
+
+The yield from species $i$ at time $t$ is then:
+$$Y_{i,t} = \sum_j \sum_q \frac{s_{i,j,q}F_{i,j,q,t}}{M1_{i,j}+M2_{i,j,t}+s_{i,j,q}F_{i,j,q,t}} [1-e^{-(M1_{i,j}+M2_{i,j,t}+s_{i,j,q}F_{i,j,q,t})}] N_{i,j,t}W_{i,j}$$
+
+where $W_{i,j,k}$  is the mean weight of an individual of species $i$ and length $j$. 
+
+### Objective Function
+
+The model can be fitted to multiple data streams
+
+#### Catch 
+
+Expected catch is summed over time steps to the fishing/calendar year y.
+
+$$ \hat{C}_{y,i,q} = \sum_{t \in y} \sum_{j} \frac{s_{i,j,q}F_{i,j,q,t}}{M1_{i,j,t}+M2_{i,j,t}+s_{i,j,q}F_{i,j,q,t}} \left[ 1 - e^{-(M1_{i,j,t}+M2_{i,j,t}+s_{i,j,q}F_{i,j,q,t})} \right] N_{i,j,t} W_{i,j,t}$$
+
+$$ ln(C_{y,i,q}) \sim \mathcal{N}(ln(\hat{C}_{y,i,q}), \sigma^{2}_{q,i,y}) $$
+
+
+#### Catch length composition
+
+$$ \hat{p}_{q,i,y,j} = p^{*}_{q,i,y,j} / \sum_{j'}{p^{*}_{q,i,y,j'}} $$
+
+$$ p^{*}_{q,i,y,j} = \sum_{t \in y} \frac{s_{i,j,q}F_{i,j,q,t}}{M1_{i,j,t}+M2_{i,j,t}+s_{i,j,q}F_{i,j,q,t}} \left[ 1 - e^{-(M1_{i,j,t}+M2_{i,j,t}+s_{i,j,q}F_{i,j,q,t})} \right] N_{i,j,t}$$
+
+Proportions at length (in numbers) in catch for each gear type - either multinomial, dirichlet, etc.
+Additional input sample size if multinomial, estimated param if Dirichlet
+
+#### Survey abundance indices
+
+The predicted values for survey abundance rely on the timing of the survey within a year, catchability of the species in the survey, and the (length-based) survey selectivity. Survey $g$ predicted values (in weight) are:
+
+$$ \hat{I}_{g,i,t} = q_{i,g,t} \sum{j}{s_{i,j,g}N_{i,j,t}l_{j}W_{i,j,t}} $$
+
+The observed annual index values for each species are assumed to be lognormally distributed around the predicted values:
+
+$$ ln(I_{g,i,t}) \sim \mathcal{N}(ln(\hat{I}_{g,i,t}), \sigma^{2}_{g,i,t}) $$
+
+
+#### Survey length composition
+
+$$ \hat{p}_{g,i,t,j} = p^{*}_{g,i,t,j} / \sum_{j'}{p^{*}_{g,i,t,j'}} $$
+
+$$ p^{*}_{g,i,t,j} = s_{i,j,g, t} N_{i,j,t} $$
+
+Proportions at length (in numbers) in the survey - either multinomial, dirichlet, etc.
+Additional input sample size if multinomial, estimated param if Dirichlet
+
+#### Prey proportions in survey diet
+
+proportions by weight in stomach of predator $i$ of size $j$ of prey $m$:
+
+$$ \hat{\phi}_{g,t,i,j,m} = \phi^{*}_{g,t,i,j,m} / \left( \phi^{*}_{g,t,i,j,other} + \sum_{m}{\phi^{*}_{g,t,i,j,m}} \right) $$
+
+$$ \phi^{*}_{g,t,i,j,m} = \sum_{n}{\rho_{i,j,m,n} N_{m,n,t} W_{m,n,t}} $$
+
+Proportions by prey species (in weight) in the survey are modeled as dirichlet (could also be multinomial or delta-dirichlet, or....)
+
+$$ \mathrm{stom}_{g,t,i,j,1:n} \sim \mathrm{Dirichlet} \left( \hat{\phi}_{g,t,i,j,1:n}, \kappa_{i,j} \right) $$
+
+where $\kappa_{i,j}$ is a parameter for each predator size class. (or input effective sample size if multinomial)
+
+
+
+### Penalties
+
+#### Recruitment deviations
+
+Penalty to the objective function is added for the annual deviations from the stock-recruitment relationship for each species, which are assumed to be log-normal around the expected recruitment (equation 8):
+
+$$ \Lambda_{i,t} \sim \mathcal{N}\left(0, \tau^{2}_{\Lambda_{i}}\right) $$
+
+where $\tau^{2}_{\Lambda_{i}}$ is the variance of the recruitment deviations for species $i$.
+
+<!-- ### Simulations -->
