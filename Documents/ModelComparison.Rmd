@@ -8,23 +8,24 @@ This document compares the methodology of two Georges Bank multiple species fish
 
 # Introduction
 ## Why develop multiple species fisheries models of Georges Bank
-Move towards EBFM
-Capture additional dynamics
-See previous papers
+* Movement toward EBFM on Georges Bank  
+  + The New England Fisheries Management Council, which manages fishing on Georges Bank off the New England coast of USA, is exploring Ecosystem-Based Fishery Management (EBFM), an approach that involves accounting for the species and fisheries in a specific area as a whole, recognizing the energetic limits of the system and taking into account the trophic relationships among species. This could lead to new policies or initiatives that impact multiple fishery management plans or a new fishery ecosystem plan. 
+* Capture additional dynamics
+* See previous papers
 
 ## Status of Current knowledge
-Two multiple species fisheries model have been developed to evaluate stock status given species interactions on Georges Bank. Hydra, which models species interactions as length based dynamics, and a multiple species statistical catch at age model (MS_SCAA), which models species interactions as age based dynamics.
-Development on the two models to date
-Hydra was developed as a simulation model, and we extend its capabilities to include estimation. MS_SCAA was developed as a 3 species model, that has been extended to a 9 species model. *Additional model status background*
+* Two multiple species fisheries model have been developed to evaluate stock status given species interactions on Georges Bank. Hydra, which models species interactions as length based dynamics, and a multiple species statistical catch at age model (MS_SCAA), which models species interactions as age based dynamics.
+* Development on the two models to date
+* Hydra was developed as a simulation model, and we extend its capabilities to include estimation. MS_SCAA was developed as a 3 species model, that has been extended to a 9 species model. *Additional model status background*
 
 ## What we add to current knowledge
 Having two models allows...
-comparison 
-strengths and weaknesses
-increased confidence due to greater understanding of the impacts of structural uncertainty
-combined insights
-increased confidence in model predictions
-better understanding of the relative role of epistemic vs aleatory uncertainty and structural vs parametric uncertainty
+* comparison 
+* strengths and weaknesses
+* increased confidence due to greater understanding of the impacts of structural uncertainty
+* combined insights
+* increased confidence in model predictions
+* better understanding of the relative role of epistemic vs aleatory uncertainty and structural vs parametric uncertainty
 
 ## Study Objectives
 1. Evaluate these models ability to reproduce simulated population dynamics
@@ -34,26 +35,26 @@ better understanding of the relative role of epistemic vs aleatory uncertainty a
 # Methodlogy
 
 ## MS_SCAA
-See Curti et al and supplement
+* See Curti et al and supplement
 
 ## Hyrda
-See Gaichas et al, Methodology.pdf, and supplement
+* See Gaichas et al, Methodology.pdf, and supplement
 
 ## Comparison
 The text below focuses only on the differences between the two models.
 
 ### Data requirements
 
-MS_SCAA: Six input data series are required for each species: total commercial catch in weight, aggregate survey index in number-per-tow, age proportions for both commercial catches and survey indices, average individual weight-at-age, and for the multispecies runs, age-specific predator diet.
-Hydra:
+* MS_SCAA: Six input data series are required for each species: total commercial catch in weight, aggregate survey index in number-per-tow, age proportions for both commercial catches and survey indices, average individual weight-at-age, and for the multispecies runs, age-specific predator diet.
+* Hydra:
 
 ### Model description
-MS_SCAA: Age-based
-Hydra: Length-based
+* MS_SCAA: Age-based
+* Hydra: Length-based
 
 #### Population dynamics
-MS_SCAA:
-Hydra:
+* MS_SCAA:
+* Hydra:
 
 
 
