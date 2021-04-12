@@ -43,14 +43,17 @@ Having two models allows...
 ## Comparison
 The text below focuses only on the differences between the two models.
 
+
+### Model description
+* MS_SCAA: Age-based, nine species (spiny dogfish, winter skate, goosefish, Atlantic cod, Atlantic mackerel, pollock, white hake, silver hake, Atlantic herring)
+* Hydra: Length-based, ten species (spiny dogfish, winter skate, Atlantic herring, Atlantic cod, haddock, yellowtail flounder, winter flounder, Atlantic mackerel, silver hake, goosefish) 
+
+Difference MS_SCAA: pollock, white hake  Hydra: haddock, yellowtail flounder, winter flounder
+
 ### Data requirements
 
 * MS_SCAA: Six input data series are required for each species: total commercial catch in weight, aggregate survey index in number-per-tow, age proportions for both commercial catches and survey indices, average individual weight-at-age, and for the multispecies runs, age-specific predator diet.
 * Hydra:
-
-### Model description
-* MS_SCAA: Age-based
-* Hydra: Length-based
 
 #### Population dynamics
 * MS_SCAA:
