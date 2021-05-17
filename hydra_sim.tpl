@@ -242,8 +242,15 @@ DATA_SECTION
 //read in survey and catch observations from .dat file
 // SKG: for now, sub in Nsurveys for the unused Nareas dimension for input survey indices and comps
   //init_3darray obs_survey_biomass(1,Nareas,1,Nspecies,1,Nyrs)  	//spring or fall? units needed
-  init_3darray obs_survey_biomass(1,Nsurveys,1,Nspecies,1,Nyrs)  	//input spring, fall separately, in tons
-  init_3darray obs_catch_biomass(1,Nareas,1,Nspecies,1,Nyrs)  	//total catch in tons
+  //init_3darray obs_survey_biomass(1,Nsurveys,1,Nspecies,1,Nyrs)  	//input spring, fall separately, in tons
+  init_int Nsurvey_obs  //number of survey observations
+  init_matrix obs_survey_biomass(1,Nsurvey_obs,1,5)  	//GF May 2021 revised structure
+
+  // GF May 2021 - alternate data structure
+  init_int Ncatch_obs  //number of catch observations
+  init_matrix obs_catch_biomass(1,Ncatch_obs,1,6)  	//total catch in tons
+  //init_3darray obs_catch_biomass(1,Nareas,1,Nspecies,1,Nyrs)  	//total catch in tons
+
   init_3darray obs_effort(1,Nareas,1,Nfleets,1,Nyrs)  	//standardized effort units needed
   //init_4darray for survey size comp by area, species, year?
   //init_4darray obs_survey_size(1,Nsurveys,1,Nspecies,1,Nyrs,1,Nsizebins)  //numbers, uncomment when in dat file
@@ -841,6 +848,15 @@ PARAMETER_SECTION
   matrix totbio_fit(1,Nareas,1,Nspecies)    //fit to total survey biomass by area and species
   matrix biocomp_fit(1,Nareas,1,Nspecies)   //fit to survey catch at length composition
   //matrix agelencomp_fit(1,Nareas,1,Nspecies) //fit to age at length composition, where available
+
+
+  //GF objective function piece placeholders - check consistency with those above and remove redundancies
+  // catch observations
+  vector pred_catch_biomass(1,Ncatch_obs);
+  vector resid_catch(1,Ncatch_obs);
+  vector nll_catch(1,Ncatch_obs);
+
+
 
 // calc_health_indices variables AndyBeet
   matrix index_Simpsons_N(1,Nareas,1,Nyrs); // simpsons_N. index values
@@ -2649,6 +2665,123 @@ FUNCTION write_outDiagnostics
 //----------------------------------------------------------------------------------------
 FUNCTION evaluate_the_objective_function
 //----------------------------------------------------------------------------------------
+
+//Original placeholder by S. Gaichas, updated by J. Boucher
+
+// revised G. Fay April 2021
+// make use of new data structures
+
+//   resid_catch.initialize();
+//     resid_bio.initialize();
+//     totcatch_fit.initialize();
+//     totbio_fit.initialize();
+//     catchcomp_fit.initialize();
+//     objfun_areaspp.initialize();
+
+////read in survey and catch observations from .dat file
+//// SKG: for now, sub in Nsurveys for the unused Nareas dimension for input survey indices and comps
+//  //init_3darray obs_survey_biomass(1,Nareas,1,Nspecies,1,Nyrs)  	//spring or fall? units needed
+//  init_3darray obs_survey_index(1,Nsurveys,1,Nspecies,1,Nyrs)  	//input spring, fall separately, in tons
+//  init_3darray obs_catch_biomass(1,Nareas,1,Nspecies,1,Nyrs)  	//total catch in tons
+//  init_3darray obs_effort(1,Nareas,1,Nfleets,1,Nyrs)  	//standardized effort units needed
+//  //init_4darray for survey size comp by area, species, year?
+//  //init_4darray obs_survey_size(1,Nsurveys,1,Nspecies,1,Nyrs,1,Nsizebins)  //numbers, uncomment when in dat file
+//  //init_5darray for catch at size by area, species, fleet, year?
+
+
+eps = 1.e-07;
+//Commercial Catch
+    // Ncatch_obs
+    for (int i=1;i<=Ncatch_obs;i++) {
+      int fleet = obs_catch_biomass(i,1);
+      int area = obs_catch_biomass(i,2);
+      int year = obs_catch_biomass(i,3);
+      int spp = obs_catch_biomass(i,4);
+      dvariable value = obs_catch_biomass(i,5);
+      dvariable cv = obs_catch_biomass(i,6);
+      // if (fleet==0) // add case when catch is aggregated over fleets (fleet = 0 in data file)
+      pred_catch_biomass(i) = fleet_catch_biomass(area,spp,fleet,year); //predicted value for this data point
+      resid_catch(i) = log(value/(pred_catch_biomass(i)+eps));
+      nll_catch(i) = dlnorm(value, pred_catch_biomass(i), cv, TRUE);
+    }
+   
+// Commercial catch at length 
+   //Ncatch_size_obs
+  for (int i=1;i<=Ncatch_size_obs;i++) {
+  
+      fleet = obs_catch_size(i,1);
+      area = obs_catch_size(i,2);
+      year = obs_catch_size(i,3);
+      spp = obs_catch_size(i,4);
+      type = obs_catch_size(i,5);  //not yet used
+     effN = obs_catch_size(i,6);
+     dvar_vector Lobs(1,Nlen) = 0.;
+     for (ilen=1;ilen<=Nlen;len++) Lobs(ilen) = obs_catch_size(i,6+ilen);
+
+     dvar_vector Lpred(1,Nlen);
+     Lpred.initialize();
+     for (int ilen=1;ilen<=Nlen;len++)
+      Lpred(ilen) = Cfl_tot(area,spp,fleet,year,ilen); // predicted catch at length for this observation
+     Lpred = Lpred/sum(Lpred);
+     
+     for (ilen=1;ilen<=Nlen;len++) {
+      if (Lobs(ilen)) > 0)
+       {
+        // create table for data base of sizes
+        // jth row of this table
+        nll_catch_size(j) = effN*value(ilen)*log(Lpred(ilen)/Lobs(ilen));
+       } 
+     }
+  }
+ 
+
+//Survey Indices of abundance
+    // Nsurvey_obs
+    for (int i=1;i<=Nsurvey_obs;i++) {
+      survey = obs_survey_index(i,1);
+      year = obs_survey_index(i,2);
+      spp = obs_survey_index(i,3);
+      value = obs_survey_index(i,4);
+      cv = obs_survey_index(i,5);
+      est_survey_index(i) = //predicted value for this data point
+      resid_survey(i) = log(value/(est_survey_index(i)+eps));
+      nll_survey(i) = dlnorm(value, est_survey_index(i), cv, TRUE);
+    }
+   
+
+//Survey Catch-at-length
+   //Nsurvey_size_obs
+  for (int i=1;i<=Nsurvey_size_obs;i++) {
+      survey = obs_survey_size(i,1);
+      year = obs_survey_size(i,2);
+      spp = obs_survey_size(i,3);
+      type = obs_survey_size(i,4);  //not yet used
+     effN = obs_survey_size(i,5);
+     dvar_vector Lobs(1,Nlen) = 0.;
+     for (ilen=1;ilen<=Nlen;len++) Lobs(ilen) = obs_survey_size(i,5+ilen);
+
+     dvar_vector Lpred(Nlen) = 0.;
+     for (ilen=1;ilen<=Nlen;len++)
+      Lpred(ilen) = // predicted survey at length for this observation
+     Lpred = Lpred/sum(Lpred);
+     
+     for (ilen=1;ilen<=Nlen;len++) {
+      if (Lobs(ilen)) > 0)
+       {
+        // create table for data base of sizes
+        // jth row of this table
+        nll_survey_size(j) = effN*value(ilen)*log(Lpred(ilen)/Lobs(ilen));
+       } 
+     }
+}
+
+
+// Survey Prey proportions 
+
+// GF needs to add.
+
+
+
 
   //est and observed survey biomass and fishery catch are 3darrays(area,spp,yr)
   //fit matrices are area by spp
