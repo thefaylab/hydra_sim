@@ -917,6 +917,9 @@ PARAMETER_SECTION
   vector pred_dietprop(1,Nsize_obs);
   vector nll_dietprop(1,Nsize_obs);
 
+  !! Nsize_obs = Nspecies*Nareas*Nyrs;
+  vector recdev(1,Nsize_obs);
+  vector nll_recruit(1,Nsize_obs);
 
 
 // calc_health_indices variables AndyBeet
@@ -2903,12 +2906,28 @@ FUNCTION evaluate_the_objective_function
    }
 
 
+// Recruitment penalty
+
+   j = 0;
+   for (int area=1;area <=Nareas;area++) {
+    for (int spp=1;spp <=Nspecies;spp++) {
+    for (int year=1;year <=Nyrs;year++) {
+      j +=1;
+      recdev(j) = recruitment_devs(area,spp,year);
+    }}}
+      //dvariable sigma_use = recsigma(area,spp);
+      nll_recruit = dnorm(-0.5-recdev,1.0);
+
+
+
+// Calc objective function
+
    objfun += sum(nll_survey);
    objfun += sum(nll_survey_size);
    objfun += sum(nll_catch);
    objfun += sum(nll_catch_size);
    objfun += sum(nll_dietprop);
-   //obj_fun += sum(nll_recruit);  //need to code up the rec dev contribution to the nll
+   objfun += sum(nll_recruit);  //need to code up the rec dev contribution to the nll
 
 
 
