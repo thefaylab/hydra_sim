@@ -58,7 +58,11 @@ The text below focuses only on the differences between the two models.
 ### Data requirements
 
 * MS_SCAA: Six input data series are required for each species: total commercial catch in weight, aggregate survey index in number-per-tow, age proportions for both commercial catches and survey indices, average individual weight-at-age, and for the multispecies runs, age-specific predator diet.
-* Hydra:
+
+Data needed: number of species interactions, number of length categories, total ecosystem biomass, maximum age of each species, 
+
+* Hydra: Size bins (number and width [in cm]), Number of fleets, Number of surveys, length to weight conversion parameters, survey biomass, catch biomass, effort, stomach content weight by species and size bin, temperature,  
+
 
 #### Population dynamics
 * MS_SCAA:
