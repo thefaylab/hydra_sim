@@ -246,31 +246,10 @@ DATA_SECTION
 // SKG: for now, sub in Nsurveys for the unused Nareas dimension for input survey indices and comps
   //init_3darray obs_survey_biomass(1,Nareas,1,Nspecies,1,Nyrs)  	//spring or fall? units needed
 
+  // data file
+  !!init_adstring datfilename;
 
-  //init_3darray obs_survey_biomass(1,Nsurveys,1,Nspecies,1,Nyrs)  	//input spring, fall separately, in tons
-  //init_int Nsurvey_obs  //number of survey observations
-  init_int Nsurvey_obs;
-  init_matrix obs_survey_biomass(1,Nsurvey_obs,1,5)  	//GF May 2021 revised structure
 
-  //read in survey size comp data
-  init_int Nsurvey_size_obs;
-  !! int ncol = Nsizebins+5;
-  init_matrix obs_survey_size(1,Nsurvey_size_obs,1,ncol)   //legnth comps for surveys
-
-  // GF May 2021 - alternate data structure
-  init_int Ncatch_obs  //number of catch observations
-  init_matrix obs_catch_biomass(1,Ncatch_obs,1,6)  	//total catch in tons
-  //init_3darray obs_catch_biomass(1,Nareas,1,Nspecies,1,Nyrs)  	//total catch in tons
-  init_int Ncatch_size_obs
-  !! ncol = Nsizebins+6;
-  init_matrix obs_catch_size(1,Ncatch_size_obs,1,ncol)
-
-  //read in diet proportion data
-  init_int Ndietprop_obs;
-  !! ncol = Nspecies+6;
-  init_matrix obs_dietprop(1,Ndietprop_obs,1,ncol)   //diet proportions by weight
-
-  //!! cout << obs_dietprop << endl;
 
   init_3darray obs_effort(1,Nareas,1,Nfleets,1,Nyrs)  	//standardized effort units needed
   //init_4darray for survey size comp by area, species, year?
@@ -281,6 +260,7 @@ DATA_SECTION
   init_4darray mean_stomwt(1,Nareas,1,Nspecies,1,Nyrs,1,Nsizebins)
 
   //want variance for this in this for fitting?
+
 
 //read in temperature time series from .dat file for intake calculation
   init_matrix obs_temp(1,Nareas,1,Nyrs)       //want variance measure? data source?
@@ -619,6 +599,36 @@ DATA_SECTION
   // 0 0 0 0 0 0 0 0 0 0  
  //flag marking end of file for data input
   init_int eof;
+
+  //change to read in raw data
+  !!ad_comm::change_datafile_name(datfilename);
+
+
+  //init_3darray obs_survey_biomass(1,Nsurveys,1,Nspecies,1,Nyrs)   //input spring, fall separately, in tons
+  //init_int Nsurvey_obs  //number of survey observations
+  init_int Nsurvey_obs;
+  init_matrix obs_survey_biomass(1,Nsurvey_obs,1,5)   //GF May 2021 revised structure
+
+  //read in survey size comp data
+  init_int Nsurvey_size_obs;
+  !! int ncol = Nsizebins+5;
+  init_matrix obs_survey_size(1,Nsurvey_size_obs,1,ncol)   //legnth comps for surveys
+
+  // GF May 2021 - alternate data structure
+  init_int Ncatch_obs  //number of catch observations
+  init_matrix obs_catch_biomass(1,Ncatch_obs,1,6)   //total catch in tons
+  //init_3darray obs_catch_biomass(1,Nareas,1,Nspecies,1,Nyrs)    //total catch in tons
+  init_int Ncatch_size_obs
+  !! ncol = Nsizebins+6;
+  init_matrix obs_catch_size(1,Ncatch_size_obs,1,ncol)
+
+  //read in diet proportion data
+  init_int Ndietprop_obs;
+  !! ncol = Nspecies+6;
+  init_matrix obs_dietprop(1,Ndietprop_obs,1,ncol)   //diet proportions by weight
+  //!! cout << obs_dietprop << endl;
+
+
 
 //debugging section, check inputs and initial calculations
 	LOCAL_CALCS
@@ -2906,18 +2916,19 @@ FUNCTION evaluate_the_objective_function
    }
 
 
-// Recruitment penalty
+// Recruitment penalty  (NOT YET WORKING)
 
-   j = 0;
-   for (int area=1;area <=Nareas;area++) {
-    for (int spp=1;spp <=Nspecies;spp++) {
-    for (int year=1;year <=Nyrs;year++) {
-      j +=1;
-      recdev(j) = recruitment_devs(area,spp,year);
-    }}}
+///   j = 0;
+//   for (int area=1;area <=Nareas;area++) {
+//    for (int spp=1;spp <=Nspecies;spp++) {
+//    for (int year=1;year <=Nyrs;year++) {
+//      j +=1;
+//      recdev(j) = recruitment_devs(area,spp,year);
+//      nll_recruit(j) = dnorm(recdev(j),0,recsigma(area,spp))
+//    }}}
       //dvariable sigma_use = recsigma(area,spp);
-      nll_recruit = dnorm(-0.5-recdev,1.0);
-
+     // nll_recruit = dnorm(-0.5-recdev,1.0);
+//*/
 
 
 // Calc objective function
