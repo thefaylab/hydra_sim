@@ -236,7 +236,7 @@ DATA_SECTION
   init_matrix recruitment_cov(1,Nrecruitment_cov,1,Nyrs)		//time series of recruitment covariates
   init_matrix maturity_cov(1,Nmaturity_cov,1,Nyrs)				//time series of maturity covariates
   init_matrix growth_cov(1,Ngrowth_cov,1,Nyrs)
-
+  
    //time series of growth covariates
   //init_3darray recruitment_cov(1,Nareas,1,Nrecruitment_cov,1,Nyrs)  //time series of recruitment covariates, area specific
   //init_3darray maturity_cov(1,Nareas,1,Nmaturity_cov,1,Nyrs)  //time series of maturity covariates, area specific
@@ -247,9 +247,7 @@ DATA_SECTION
   //init_3darray obs_survey_biomass(1,Nareas,1,Nspecies,1,Nyrs)  	//spring or fall? units needed
 
   // data file
-  !!init_adstring datfilename;
-
-
+  init_adstring datfilename;
 
   init_3darray obs_effort(1,Nareas,1,Nfleets,1,Nyrs)  	//standardized effort units needed
   //init_4darray for survey size comp by area, species, year?
@@ -264,6 +262,7 @@ DATA_SECTION
 
 //read in temperature time series from .dat file for intake calculation
   init_matrix obs_temp(1,Nareas,1,Nyrs)       //want variance measure? data source?
+
 //read in estimation phases from .dat file
   init_int yr1Nphase            //year 1 N at size estimation phase
   init_int recphase				//recruitment parameter estimation phase
@@ -282,7 +281,6 @@ DATA_SECTION
 //to estimate any of them within the model, place in parameter section, initialize from .pin file
 //recruitment parameters from .dat file
   init_matrix recGamma_alpha(1,Nareas,1,Nspecies)			//eggprod gamma Ricker model alpha
-
   init_matrix recGamma_shape(1,Nareas,1,Nspecies)			//eggprod gamma Ricker model shape parameter
   init_matrix recGamma_beta(1,Nareas,1,Nspecies)			//eggprod gamma Ricker model beta
 
@@ -314,7 +312,7 @@ DATA_SECTION
   init_matrix recSegmented_shape(1,Nareas,1,Nspecies)			//SSB  Segmented regression model shape. use this for the breakpoint
   init_matrix recSegmented_beta(1,Nareas,1,Nspecies)			//SSB  Segmented regression model beta
   init_ivector rectype(1,Nspecies)  //switch for alternate recruitment functions
-
+  
   init_ivector stochrec(1,Nspecies)  //switch for stochastic recruitment
 
   matrix rec_alpha(1,Nareas,1,Nspecies)
@@ -399,7 +397,6 @@ DATA_SECTION
   init_matrix maturity_omega(1,Nareas,1,Nspecies)
   init_matrix maturity_covwt(1,Nspecies,1,Nmaturity_cov)
   matrix covariates_M(1,Nspecies,1,Nyrs) // intermediate calculation to obtain maturity covariates //AndyBeet
-
 //growth parameters from .dat file and calculate simple (no cov) prob of growing through length interval
   init_matrix growth_psi(1,Nareas,1,Nspecies)    //power function growth length=psi*age^kappa
   init_matrix growth_kappa(1,Nareas,1,Nspecies)  //power function growth length=psi*age^kappa
@@ -539,7 +536,6 @@ DATA_SECTION
   imatrix maxSpeciesThreshold(1,Nareas,1,Nspecies) // most severe exceedence for each species. currently a binary response
   init_ivector guildMembers(1,Nspecies) // assign each species to a guild. 1,2,3 etc.
   init_ivector fleetMembers(1,Nguilds) // assign each guild to a fleet (1,2,...,Nfleets). A fleet that predominantly catches the guild
-
   init_int AssessmentPeriod // time (yrs) when we assess guildlevel biomass levels
 
   matrix B0_guilds(1,Nareas,1,Nguilds) // equilibrium biomass for guild.
@@ -607,6 +603,7 @@ DATA_SECTION
   //init_3darray obs_survey_biomass(1,Nsurveys,1,Nspecies,1,Nyrs)   //input spring, fall separately, in tons
   //init_int Nsurvey_obs  //number of survey observations
   init_int Nsurvey_obs;
+  !!cout << Nsurvey_obs << endl;
   init_matrix obs_survey_biomass(1,Nsurvey_obs,1,5)   //GF May 2021 revised structure
 
   //read in survey size comp data
@@ -626,7 +623,7 @@ DATA_SECTION
   init_int Ndietprop_obs;
   !! ncol = Nspecies+6;
   init_matrix obs_dietprop(1,Ndietprop_obs,1,ncol)   //diet proportions by weight
-  //!! cout << obs_dietprop << endl;
+  !! cout << obs_dietprop << endl;
 
 
 
