@@ -19,7 +19,7 @@ This document compares the methodology of two Georges Bank multiple species fish
 * Hydra was developed as a simulation model, and we extend its capabilities to include estimation. MS_SCAA was developed as a 3 species model, that has been extended to a 9 species model. *Additional model status background*
 
 ## What we add to current knowledge
-Having two models allows...
+Having two models allows...  
 * comparison 
 * strengths and weaknesses
 * increased confidence due to greater understanding of the impacts of structural uncertainty
@@ -34,14 +34,10 @@ Having two models allows...
 
 # Methodology
 ## Study Area and Species
-Both models include 10 Georges Bank species: Atlantic herring (*Clupea harengus*), Atlantic cod (*Gadus morhua*), goosefish (*Lophius americanus*), haddock (*Melanogrammus aeglefinus*), spiny dogfish (*Squalus acanthias*), winter flounder (*Pseudopleuronectes americanus*), yellowtail flounder (*Limanda ferruginea*), Atlantic mackerel (*Scomber scombrus*), silver hake (*Merluccius bilinearis*), and winter skate (*Leucoraja ocellata*).
+The performance of each model will be assessed for 10 Georges Bank species: Atlantic herring (*Clupea harengus*), Atlantic cod (*Gadus morhua*), goosefish (*Lophius americanus*), haddock (*Melanogrammus aeglefinus*), spiny dogfish (*Squalus acanthias*), winter flounder (*Pseudopleuronectes americanus*), yellowtail flounder (*Limanda ferruginea*), Atlantic mackerel (*Scomber scombrus*), silver hake (*Merluccius bilinearis*), and winter skate (*Leucoraja ocellata*). 
+Later analyses will include analyses with all 10 species in both models but initial analyses will be conducted with the seven species common to both models: Atlantic herring, Atlantic cod, goosefish, spiny dogfish, Atlantic mackerel, silver hake, and winter skate. MS_SCAA was not originally formulated to include all 10 species, with it's original 9 species formulation  included pollock (*Pollachius pollachius*), and white hake (*Urophycis tenuis*) which will not be included in the 10 species version developed here. 
 
-* The spatial area of Georges Bank was defined as...
-
-The original list of species included in each model is:
-* MS_SCAA: Age-based, nine species (spiny dogfish, winter skate, goosefish, Atlantic cod, Atlantic mackerel, pollock, white hake, silver hake, Atlantic herring)
-* Hydra: Length-based, ten species (spiny dogfish, winter skate, Atlantic herring, Atlantic cod, haddock, yellowtail flounder, winter flounder, Atlantic mackerel, silver hake, goosefish) 
-The difference are that MS_SCAA included pollock, and white hake while Hydra included haddock, yellowtail flounder, and winter flounder.
+* The spatial area of the Georges Bank Ecological Production Unit (EPU) is defined as the area shown in (insert figure 1 from this link: https://noaa-edab.github.io/ms-keyrun/allocateLandingsEPU.html). To obtain data for this area available data was collected and partitioned to select only the portion of the data associated with the EPU using the protocol described here: https://noaa-edab.github.io/ms-keyrun/allocateLandingsEPU.html.
 
 ## MS_SCAA
 * See Curti et al and supplement
@@ -57,9 +53,32 @@ The text below focuses only on the differences between the two models.
 
 ### Data requirements
 
-* MS_SCAA: Six input data series are required for each species: total commercial catch in weight, aggregate survey index in number-per-tow, age proportions for both commercial catches and survey indices, average individual weight-at-age, and for the multispecies runs, age-specific predator diet.
+* MS_SCAA:
+Six input data series are required for each species: total commercial catch in weight, aggregate survey index in number-per-tow, age proportions for both commercial catches and survey indices, average individual weight-at-age, and for the multispecies runs, age-specific predator diet.
 
-Data needed: number of species interactions, number of length categories, total ecosystem biomass, maximum age of each species, 
+Ecosystem data
+- total ecosystem biomass
+- maximum age of species
+- age of recruitment
+-- age of full recruitment into fishery
+-- age of partial recruitment into fishery
+-- age of recruitment into survey
+Species interaction data
+- number of interactions and predatory prey direction
+- food habits?
+Catch data
+- commercial catch (biomass)
+- commercial catch-at-age (#)
+- survey catch (#)
+- survey catch-at-age (#)
+Species data
+- weight at age
+- natural mortality rate
+- consumption:biomass ratios
+- stomach content
+-- consumed species (proportion of stomach weight)
+
+Model decisions: number of length categories
 
 * Hydra: Size bins (number and width [in cm]), Number of fleets, Number of surveys, length to weight conversion parameters, survey biomass, catch biomass, effort, stomach content weight by species and size bin, temperature,  
 
