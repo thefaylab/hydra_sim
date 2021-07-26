@@ -3,6 +3,12 @@ title: "Comparing Hydra and MS_SCAA Methology"
 output: pdf_document
 ---
 
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(kableExtra) #make html tables
+```
 # Drafting notes
 This document compares the methodology of two Georges Bank multiple species fish population models. Hydra, a length-based multiple species predator-prey population model, and MS_SCAA, an age-based multiple species predator-prey population model.
 
@@ -52,31 +58,17 @@ The text below focuses only on the differences between the two models.
 
 
 ### Data requirements
+MS_SCAA requires four types of data inputs to run: ecosystem data, species data, species interaction data, and catch data (Table 1). The ecosystem data needed is the total biomass of the ecosystem. For each species in the model, the MS-SCAA model requires data on the species' maximum age, weight at age, natural mortality rate, ratio of consumption to biomass, and age of recruitment with data on age of full and partial recruitment into the fishery and age of recruitment into the survey. Species interaction data is also required and includes the number of predator prey interactions that occur, the predator-prey direction for each of these interactions, and stomach content data for the predator species with the proportion of the stomach weight accounted for by each consumed species. The other required data type is catch data, including the biomass of commercial catch, number caught-at-age for the commercial catch, and number caught and caught-at-age for the survey.
 
-* MS_SCAA:
-Six input data series are required for each species: total commercial catch in weight, aggregate survey index in number-per-tow, age proportions for both commercial catches and survey indices, average individual weight-at-age, and for the multispecies runs, age-specific predator diet.
-
-Ecosystem data
-- total ecosystem biomass
-- maximum age of species
-- age of recruitment
--- age of full recruitment into fishery
--- age of partial recruitment into fishery
--- age of recruitment into survey
-Species interaction data
-- number of interactions and predatory prey direction
-- food habits?
-Catch data
-- commercial catch (biomass)
-- commercial catch-at-age (#)
-- survey catch (#)
-- survey catch-at-age (#)
-Species data
-- weight at age
-- natural mortality rate
-- consumption:biomass ratios
-- stomach content
--- consumed species (proportion of stomach weight)
+```{r data requirements, echo=FALSE}
+DataRequirements<-data.frame(DataTypes=c(rep("ecosystem data",1),rep("species data",8),rep("species interaction data",4),rep("catch data",4)),
+Descriptions=c("total ecosystem biomass","maximum age","weight at age","natural mortality","consumption:biomass ratios","age of recruitment","age of full recruitment into fishery","age of partial recruitment into fishery","age of recruitment into survey rate","number of interactions", "predator-prey direction","predator species stomach content","consumed species (proportion of stomach weight)","commercial catch (biomass)","commercial catch-at-age (count)","survey catch (count)","survey catch-at-age (count)")) %>%
+  kable(caption = "Table 1: Data Requirements",booktabs = T, escape = F) %>%
+  add_indent(c(7:9,11,13),level_of_indent = 1,all_cols = T) %>% 
+  collapse_rows(columns = 1, latex_hline = "major", valign = "middle") %>%
+  kable_styling(latex_options = c("scale_down","hold_position"))
+DataRequirements
+```
 
 Model decisions: number of length categories
 
