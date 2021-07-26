@@ -236,7 +236,7 @@ DATA_SECTION
   init_matrix recruitment_cov(1,Nrecruitment_cov,1,Nyrs)		//time series of recruitment covariates
   init_matrix maturity_cov(1,Nmaturity_cov,1,Nyrs)				//time series of maturity covariates
   init_matrix growth_cov(1,Ngrowth_cov,1,Nyrs)
-
+  
    //time series of growth covariates
   //init_3darray recruitment_cov(1,Nareas,1,Nrecruitment_cov,1,Nyrs)  //time series of recruitment covariates, area specific
   //init_3darray maturity_cov(1,Nareas,1,Nmaturity_cov,1,Nyrs)  //time series of maturity covariates, area specific
@@ -246,31 +246,8 @@ DATA_SECTION
 // SKG: for now, sub in Nsurveys for the unused Nareas dimension for input survey indices and comps
   //init_3darray obs_survey_biomass(1,Nareas,1,Nspecies,1,Nyrs)  	//spring or fall? units needed
 
-
-  //init_3darray obs_survey_biomass(1,Nsurveys,1,Nspecies,1,Nyrs)  	//input spring, fall separately, in tons
-  //init_int Nsurvey_obs  //number of survey observations
-  init_int Nsurvey_obs;
-  init_matrix obs_survey_biomass(1,Nsurvey_obs,1,5)  	//GF May 2021 revised structure
-
-  //read in survey size comp data
-  init_int Nsurvey_size_obs;
-  !! int ncol = Nsizebins+5;
-  init_matrix obs_survey_size(1,Nsurvey_size_obs,1,ncol)   //legnth comps for surveys
-
-  // GF May 2021 - alternate data structure
-  init_int Ncatch_obs  //number of catch observations
-  init_matrix obs_catch_biomass(1,Ncatch_obs,1,6)  	//total catch in tons
-  //init_3darray obs_catch_biomass(1,Nareas,1,Nspecies,1,Nyrs)  	//total catch in tons
-  init_int Ncatch_size_obs
-  !! ncol = Nsizebins+6;
-  init_matrix obs_catch_size(1,Ncatch_size_obs,1,ncol)
-
-  //read in diet proportion data
-  init_int Ndietprop_obs;
-  !! ncol = Nspecies+6;
-  init_matrix obs_dietprop(1,Ndietprop_obs,1,ncol)   //diet proportions by weight
-
-  //!! cout << obs_dietprop << endl;
+  // data file
+  init_adstring datfilename;
 
   init_3darray obs_effort(1,Nareas,1,Nfleets,1,Nyrs)  	//standardized effort units needed
   //init_4darray for survey size comp by area, species, year?
@@ -282,8 +259,10 @@ DATA_SECTION
 
   //want variance for this in this for fitting?
 
+
 //read in temperature time series from .dat file for intake calculation
   init_matrix obs_temp(1,Nareas,1,Nyrs)       //want variance measure? data source?
+
 //read in estimation phases from .dat file
   init_int yr1Nphase            //year 1 N at size estimation phase
   init_int recphase				//recruitment parameter estimation phase
@@ -302,7 +281,6 @@ DATA_SECTION
 //to estimate any of them within the model, place in parameter section, initialize from .pin file
 //recruitment parameters from .dat file
   init_matrix recGamma_alpha(1,Nareas,1,Nspecies)			//eggprod gamma Ricker model alpha
-
   init_matrix recGamma_shape(1,Nareas,1,Nspecies)			//eggprod gamma Ricker model shape parameter
   init_matrix recGamma_beta(1,Nareas,1,Nspecies)			//eggprod gamma Ricker model beta
 
@@ -334,7 +312,7 @@ DATA_SECTION
   init_matrix recSegmented_shape(1,Nareas,1,Nspecies)			//SSB  Segmented regression model shape. use this for the breakpoint
   init_matrix recSegmented_beta(1,Nareas,1,Nspecies)			//SSB  Segmented regression model beta
   init_ivector rectype(1,Nspecies)  //switch for alternate recruitment functions
-
+  
   init_ivector stochrec(1,Nspecies)  //switch for stochastic recruitment
 
   matrix rec_alpha(1,Nareas,1,Nspecies)
@@ -419,7 +397,6 @@ DATA_SECTION
   init_matrix maturity_omega(1,Nareas,1,Nspecies)
   init_matrix maturity_covwt(1,Nspecies,1,Nmaturity_cov)
   matrix covariates_M(1,Nspecies,1,Nyrs) // intermediate calculation to obtain maturity covariates //AndyBeet
-
 //growth parameters from .dat file and calculate simple (no cov) prob of growing through length interval
   init_matrix growth_psi(1,Nareas,1,Nspecies)    //power function growth length=psi*age^kappa
   init_matrix growth_kappa(1,Nareas,1,Nspecies)  //power function growth length=psi*age^kappa
@@ -559,7 +536,6 @@ DATA_SECTION
   imatrix maxSpeciesThreshold(1,Nareas,1,Nspecies) // most severe exceedence for each species. currently a binary response
   init_ivector guildMembers(1,Nspecies) // assign each species to a guild. 1,2,3 etc.
   init_ivector fleetMembers(1,Nguilds) // assign each guild to a fleet (1,2,...,Nfleets). A fleet that predominantly catches the guild
-
   init_int AssessmentPeriod // time (yrs) when we assess guildlevel biomass levels
 
   matrix B0_guilds(1,Nareas,1,Nguilds) // equilibrium biomass for guild.
@@ -619,6 +595,37 @@ DATA_SECTION
   // 0 0 0 0 0 0 0 0 0 0  
  //flag marking end of file for data input
   init_int eof;
+
+  //change to read in raw data
+  !!ad_comm::change_datafile_name(datfilename);
+
+
+  //init_3darray obs_survey_biomass(1,Nsurveys,1,Nspecies,1,Nyrs)   //input spring, fall separately, in tons
+  //init_int Nsurvey_obs  //number of survey observations
+  init_int Nsurvey_obs;
+  !!cout << Nsurvey_obs << endl;
+  init_matrix obs_survey_biomass(1,Nsurvey_obs,1,5)   //GF May 2021 revised structure
+
+  //read in survey size comp data
+  init_int Nsurvey_size_obs;
+  !! int ncol = Nsizebins+5;
+  init_matrix obs_survey_size(1,Nsurvey_size_obs,1,ncol)   //legnth comps for surveys
+
+  // GF May 2021 - alternate data structure
+  init_int Ncatch_obs  //number of catch observations
+  init_matrix obs_catch_biomass(1,Ncatch_obs,1,6)   //total catch in tons
+  //init_3darray obs_catch_biomass(1,Nareas,1,Nspecies,1,Nyrs)    //total catch in tons
+  init_int Ncatch_size_obs
+  !! ncol = Nsizebins+6;
+  init_matrix obs_catch_size(1,Ncatch_size_obs,1,ncol)
+
+  //read in diet proportion data
+  init_int Ndietprop_obs;
+  !! ncol = Nspecies+6;
+  init_matrix obs_dietprop(1,Ndietprop_obs,1,ncol)   //diet proportions by weight
+  !! cout << obs_dietprop << endl;
+
+
 
 //debugging section, check inputs and initial calculations
 	LOCAL_CALCS
@@ -2906,18 +2913,19 @@ FUNCTION evaluate_the_objective_function
    }
 
 
-// Recruitment penalty
+// Recruitment penalty  (NOT YET WORKING)
 
-   j = 0;
-   for (int area=1;area <=Nareas;area++) {
-    for (int spp=1;spp <=Nspecies;spp++) {
-    for (int year=1;year <=Nyrs;year++) {
-      j +=1;
-      recdev(j) = recruitment_devs(area,spp,year);
-    }}}
+///   j = 0;
+//   for (int area=1;area <=Nareas;area++) {
+//    for (int spp=1;spp <=Nspecies;spp++) {
+//    for (int year=1;year <=Nyrs;year++) {
+//      j +=1;
+//      recdev(j) = recruitment_devs(area,spp,year);
+//      nll_recruit(j) = dnorm(recdev(j),0,recsigma(area,spp))
+//    }}}
       //dvariable sigma_use = recsigma(area,spp);
-      nll_recruit = dnorm(-0.5-recdev,1.0);
-
+     // nll_recruit = dnorm(-0.5-recdev,1.0);
+//*/
 
 
 // Calc objective function
