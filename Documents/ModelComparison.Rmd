@@ -70,6 +70,8 @@ Descriptions=c("total ecosystem biomass","maximum age","weight at age","natural 
 DataRequirements
 ```
 
+#### User Decisions
+
 Model decisions: number of length categories
 
 * Hydra: Size bins (number and width [in cm]), Number of fleets, Number of surveys, length to weight conversion parameters, survey biomass, catch biomass, effort, stomach content weight by species and size bin, temperature,  
