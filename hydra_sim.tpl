@@ -196,6 +196,9 @@ DATA_SECTION
 
   init_number wtconv     //multiply by weight in grams to desired units for biomass, catch
 
+ // time series data file
+  init_adstring datfilename;
+
 //read in length bin sizes, weight at length parameters from .dat file
   init_matrix binwidth(1,Nspecies,1,Nsizebins) 					//length bin width in cm
   //init_3darray binwidth(1,Nareas,1,Nspecies,1,Nsizebins) 		//length bin width in cm, area specific
@@ -245,9 +248,6 @@ DATA_SECTION
 //read in survey and catch observations from .dat file
 // SKG: for now, sub in Nsurveys for the unused Nareas dimension for input survey indices and comps
   //init_3darray obs_survey_biomass(1,Nareas,1,Nspecies,1,Nyrs)  	//spring or fall? units needed
-
-  // data file
-  init_adstring datfilename;
 
   init_3darray obs_effort(1,Nareas,1,Nfleets,1,Nyrs)  	//standardized effort units needed
   //init_4darray for survey size comp by area, species, year?
@@ -404,7 +404,6 @@ DATA_SECTION
   init_matrix vonB_Linf(1,Nareas,1,Nspecies)    //alternate parameterization, vonB growth
   init_matrix vonB_k(1,Nareas,1,Nspecies)       //alternate parameterization, vonB growth
   init_ivector growthtype(1,Nspecies)                          //switch for alternate growth types
-
 
   init_number phimax
   4darray growthprob_phi(1,Nareas,1,Nspecies,1,Nyrs,1,Nsizebins)
