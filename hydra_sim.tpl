@@ -2771,14 +2771,18 @@ FUNCTION evaluate_the_objective_function
 
 
   dvariable eps = 1.e-07;
+
+  cout << "starting commercial catch nll" << endl;
+
 //Commercial Catch
     // Ncatch_obs
     for (int i=1;i<=Ncatch_obs;i++) {
+      cout << "cat obs " << i << endl;
       int fleet = obs_catch_biomass(i,1);
       int area = obs_catch_biomass(i,2);
       int year = obs_catch_biomass(i,3);
       int spp = obs_catch_biomass(i,4);
-      dvariable value = obs_catch_biomass(i,5);
+      dvariable value = obs_catch_biomass(i,5)+eps;
       dvariable cv = obs_catch_biomass(i,6);
       // if (fleet==0) // add case when catch is aggregated over fleets (fleet = 0 in data file)
       pred_catch_biomass(i) = fleet_catch_biomass(area,spp,fleet,year); //predicted value for this data point
@@ -2786,6 +2790,8 @@ FUNCTION evaluate_the_objective_function
       nll_catch(i) = dlnorm(value, log(pred_catch_biomass(i)), cv);
     }
    
+  cout << "done commercial catch nll" << endl;
+
 // Commercial catch at length 
    //Ncatch_size_obs
   int j=0;
@@ -2832,7 +2838,7 @@ FUNCTION evaluate_the_objective_function
       nll_survey(i) = dlnorm(value, log(pred_survey_index(i)), cv);
     }
    
-
+  cout << 'done survey abundance nll' << endl;
   
   
 // predicted values for survey size comps
