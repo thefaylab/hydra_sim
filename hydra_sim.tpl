@@ -622,7 +622,7 @@ DATA_SECTION
   init_int Ndietprop_obs;
   !! ncol = Nspecies+6;
   init_matrix obs_dietprop(1,Ndietprop_obs,1,ncol)   //diet proportions by weight
-  !! cout << obs_dietprop << endl;
+  //!! cout << obs_dietprop << endl;
 
 
 
@@ -828,8 +828,11 @@ PARAMETER_SECTION
   !! }
 
 
-  //Survey qs (add selectivities)
-  init_matrix survey_q(1,Nareas,1,Nspecies,sqphase)
+  //Survey qs 
+  init_matrix survey_q(1,Nsurveys,1,Nspecies,sqphase)
+
+  //Survey selectivity (will want to be derived based on estimated parameters)
+  3darray survey_sel(1,Nsurveys,1,Nspecies,1,Nsizebins)
 
   //survey obs error
   init_matrix surv_sigma(1,Nareas,1,Nspecies,ssig_phase)
@@ -994,6 +997,11 @@ PRELIMINARY_CALCS_SECTION
   recruitment_shape = rec_shape;
   recruitment_beta = rec_beta;
 
+  for (int i=1;i<=Nsurveys;i++)
+   for (int j=1;j<=Nsizebins;j++)
+  // need to add survey selectivity at length, but for now set at 1 for all.
+      survey_sel(i,j) = 1.;
+
 //=======================================================================================
 PROCEDURE_SECTION
 //=======================================================================================
@@ -1053,6 +1061,8 @@ PROCEDURE_SECTION
 	 }
 
   if (debug == 4) {cout<<"completed timestep loop"<<endl;}
+
+  calculate_predicted_values(); {cout<<"completed predicted values for surveys"<<endl;}
 
   evaluate_the_objective_function(); if (debug == 4) {cout<<"completed Log Likelihood"<<endl;}
 
@@ -1476,6 +1486,7 @@ FUNCTION calc_available_N
             }
          }
   }
+
   //adjust Narea based on proportion of population in management area
   for (area=1; area<=Nareas; area++){
      for(spp=1; spp<=Nspecies; spp++){
@@ -1816,6 +1827,7 @@ FUNCTION calc_movement
    // ******************************************************************************
    // weight/length is not linear. The following line  will underestimate B
       B(area,spp,t) = wtconv*elem_prod(Narea(area,spp,t),binavgwt(spp));  //do after movement
+
       for (int isize=1;isize<=Nsizebins;isize++) {
           // add up B over t for each year keeping size class structure. used in indices
           B_tot(area,spp,yrct,isize) += B(area,spp,t,isize);
@@ -2743,6 +2755,31 @@ FUNCTION write_outDiagnostics
       outDiagnostics<<"manually exiting at end of procedure section....\n"<<endl;
 
 
+
+//----------------------------------------------------------------------------------------
+FUNCTION calculate_predicted_values
+//----------------------------------------------------------------------------------------
+
+// This function calculates the predicted values for the survey indices for use in the objective function
+// Function by G. Fay, December 2021
+// some argument for putting this in the objective function calcs, but seems less busy to do here
+
+    // assume survey covers all areas, and uses average biomass for year, rathter than timing-specific suruvey
+    pred_survey_index.initialize();
+
+    for (int i=1;i<=Nsurvey_obs;i++) {
+      int survey = obs_survey_biomass(i,1);
+      int year = obs_survey_biomass(i,2);
+      int spp = obs_survey_biomass(i,3);
+      for (area=1; area<=Nareas; area++){
+        for (int ilen=1;ilen<=Nsizebins;ilen++) {
+            //cout << B_tot(area,spp,year,ilen) << " " << survey_sel(survey,spp,ilen) << " " << survey_q(survey,spp) << " " << Nstepsyr << endl; 
+            pred_survey_index(i) +=  B_tot(area,spp,year,ilen)*survey_sel(survey,spp,ilen)*survey_q(survey,spp)/Nstepsyr; 
+        }
+      }
+    }
+
+
 //----------------------------------------------------------------------------------------
 FUNCTION evaluate_the_objective_function
 //----------------------------------------------------------------------------------------
@@ -2777,7 +2814,7 @@ FUNCTION evaluate_the_objective_function
 //Commercial Catch
     // Ncatch_obs
     for (int i=1;i<=Ncatch_obs;i++) {
-      cout << "cat obs " << i << endl;
+      //cout << "cat obs " << i << endl;
       int fleet = obs_catch_biomass(i,1);
       int area = obs_catch_biomass(i,2);
       int year = obs_catch_biomass(i,3);
@@ -2791,6 +2828,8 @@ FUNCTION evaluate_the_objective_function
     }
    
   cout << "done commercial catch nll" << endl;
+
+  cout << "starting commercial catch at length nll" << endl;
 
 // Commercial catch at length 
    //Ncatch_size_obs
@@ -2824,34 +2863,26 @@ FUNCTION evaluate_the_objective_function
      }
   }
  
+  cout << "done commercial catch at length nll" << endl;
 
 //Survey Indices of abundance
     // Nsurvey_obs
     for (int i=1;i<=Nsurvey_obs;i++) {
+      //cout << i << endl;
+      //if (i==881) cout << obs_survey_biomass(881) << endl;
       int survey = obs_survey_biomass(i,1);
       int year = obs_survey_biomass(i,2);
       int spp = obs_survey_biomass(i,3);
-      dvariable value = obs_survey_biomass(i,4);
+      dvariable value = obs_survey_biomass(i,4)+eps;
       dvariable cv = obs_survey_biomass(i,5);
-      pred_survey_index(i) = est_survey_biomass(survey,spp,year); //survey is area here! need to change survey definitions
+      //predicted value now calculated in function 'calculate_predicted_values()'
+      //pred_survey_index(i) = est_survey_biomass(survey,spp,year); //survey is area here! need to change survey definitions
       resid_survey(i) = log(value/(pred_survey_index(i)+eps));
       nll_survey(i) = dlnorm(value, log(pred_survey_index(i)), cv);
     }
    
-  cout << 'done survey abundance nll' << endl;
+  cout << "done survey abundance nll" << endl;
   
-  
-// predicted values for survey size comps
-// might want to shift this somewhere else
-// will also need to change this to accommodate multiple surveys etc.    
-//  for (year=1;year<=Nyrs;year++) {
-//    for (spp=1;spp<=Nspecies;spp++) {
-//     for (area=1;area<=Nareas;area++) {
-//         est_survey_size(area,yrct,spp) = survey_q(area,spp)*N_tot(area,spp,yrct)/Nstepsyr;
-//     } 
-//    }
-//  }
-
 
  //Survey Catch-at-length
     //Nsurvey_size_obs
@@ -2868,11 +2899,10 @@ FUNCTION evaluate_the_objective_function
 
       dvar_vector Lpred(1,Nsizebins);
       Lpred.initialize();
-//      for (int ilen=1;ilen<=Nsizebins;ilen++)
-//       Lpred(ilen) = survey_q(area,spp)*N_tot(area,spp,yrct,ilen)/Nstepsyr; //est_survey_size(survey, year, spp, ilen);// predicted survey at length for this observation
-      Lpred = eps + survey_q(survey,spp)*N_tot(survey,spp,year)/Nstepsyr; //est_survey_size(survey, year, spp, ilen);// predicted survey at length for this observation
+      for (int area=1;area<=Nareas;area++)
+       Lpred += N_tot(area,spp,year);
+      Lpred = eps + survey_q(survey,spp)*elem_prod(survey_sel(survey,spp),Lpred)/Nstepsyr; //est_survey_size(survey, year, spp, ilen);// predicted survey at length for this observation
       Lpred = Lpred/sum(Lpred);
-     
       for (int ilen=1;ilen<=Nsizebins;ilen++) {
        if (Lobs(ilen) > 0)
         {
@@ -2885,7 +2915,7 @@ FUNCTION evaluate_the_objective_function
       }
    }
 
-
+  cout << "done survey size comp nll" << endl;
 
 // Survey Prey proportions 
    j=0;
@@ -2902,7 +2932,8 @@ FUNCTION evaluate_the_objective_function
       dvar_vector Ppred(1,Nprey);
       Ppred.initialize();
       for (int ilen=1;ilen<=Nprey;ilen++)
-       Ppred(ilen) = eps + biomass_prey_avail_no_size(survey,spp,year,size,ilen);
+       for (int area=1;area<=Nareas;area++)
+        Ppred(ilen) += eps + biomass_prey_avail_no_size(area,spp,year,size,ilen);
       Ppred = Ppred/sum(Ppred);
      
       for (int ilen=1;ilen<=Nprey;ilen++) {
@@ -2916,6 +2947,8 @@ FUNCTION evaluate_the_objective_function
         } 
       }
    }
+
+  cout << "done survey prey proportions nll" << endl;
 
 
 // Recruitment penalty  (NOT YET WORKING)
