@@ -2953,16 +2953,20 @@ FUNCTION evaluate_the_objective_function
 
 // Recruitment penalty  (NOT YET WORKING)
 
-///   j = 0;
-//   for (int area=1;area <=Nareas;area++) {
-//    for (int spp=1;spp <=Nspecies;spp++) {
-//    for (int year=1;year <=Nyrs;year++) {
-//      j +=1;
-//      recdev(j) = recruitment_devs(area,spp,year);
-//      nll_recruit(j) = dnorm(recdev(j),0,recsigma(area,spp))
-//    }}}
+   j = 0;
+   dvar_vector resid(1,Nareas*Nspecies*Nyrs);
+   dvar_vector sdrec(1,Nareas*Nspecies*Nyrs);
+   for (int area=1;area <=Nareas;area++) {
+    for (int spp=1;spp <=Nspecies;spp++) {
+    for (int year=1;year <=Nyrs;year++) {
+      j +=1;
+      recdev(j) = recruitment_devs(area,spp,year);
+      resid(j) = recdev(j)+0.5*square(recsigma(area,spp));
+      sdrec(j) = recsigma(area,spp);
+//      nll_recruit(j) = dnorm(recdev(j)+0.5*square(recsigma(area,spp)),recsigma(area,spp),true);
+    }}}
       //dvariable sigma_use = recsigma(area,spp);
-     // nll_recruit = dnorm(-0.5-recdev,1.0);
+   nll_recruit = dnorm(resid,sdrec);
 //*/
 
 
