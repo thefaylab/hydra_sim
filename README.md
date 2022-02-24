@@ -10,22 +10,15 @@ For more information please visit the [wiki](https://github.com/NOAA-EDAB/hydra_
 
 ## Usage
 
+This fork of the repository is focused on developing estimation capability. 
+If you are wanting to use the OM simulation mode then it is advised to use the version of the repository [here](https://github.com/NOAA-EDAB/hydra_sim)
+
 * Clone the repo as an R project
-* Move the *.tpl file to its own folder and compile it
-* Source the `run_model.r` file
-* Run the `run_model.r` file
+* Compile the *.tpl file
+* For testing purposes (to just run through the PROCEDURE_SECTION once and produce the output files), Gavin runs the model with something like:
+`./hydra_sim -ind hydra_sim_NOBA.dat -ainp hydra_sim_NOBA.pin -nohess -maxfn 1`
+* The NOBA files contain Hydra data computed from the output of the NOBA Atlantis model using [atlantisom](https://github.com/r4atlantis/atlantisom).
 
-```r
-run_model(pathToTPL = "full path to where you compiled the model",rootFolder="name of folder to store model output")
-```
-
-A sample set of parameter files `hydra_sim.dat` and `hydra_sim.pin` are included and should remain in the projects root after cloning. They will be copies to the `rootFolder`.
-The parameterizarion reflects what is termed a "historic" run where (somewhat) realistic fishing effort is used to drive the model.
-
-
-## Results
-
-The model runs 100 times. The output files (*.out and *.txt) are temporarily stored in the projects root folder. Once all runs have completed they will be moved to the `rootFolder` that you specified in the `run_model`call. These files will then be processed and a suite of plots will be made. They will be saved in the "diagnostics" folder  
 
 
 
