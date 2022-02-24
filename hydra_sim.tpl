@@ -267,6 +267,7 @@ DATA_SECTION
   init_int yr1Nphase            //year 1 N at size estimation phase
   init_int recphase				//recruitment parameter estimation phase
   init_int avg_rec_phase		//average recruitment estimation phase (could make species specific, currently global)
+  init_int recsigmaphase   // std dev of recruit resids phase (could make species specific, currently global)
   init_int avg_F_phase			//average fishing mort estimation phase (could make species specific, currently global)
   init_int dev_rec_phase		//recruitment deviation estimation phase (could make species specific, currently global)
   init_int dev_F_phase			//fishing mort deviation estimation phase (could make species specific, currently global)
@@ -408,6 +409,8 @@ DATA_SECTION
   init_number phimax
   4darray growthprob_phi(1,Nareas,1,Nspecies,1,Nyrs,1,Nsizebins)
   vector delta_t(1,Nsizebins)
+  vector lmax_test(1,2);
+  number lmax_use
   !!  for (area=1; area<=Nareas; area++){
   !!	for(spp=1; spp<=Nspecies; spp++){
   !!     for(yr=1; yr<=Nyrs; yr++){
@@ -431,10 +434,20 @@ DATA_SECTION
   !!                growthprob_phi(area, spp, yr, isize) = 1/(delta_t(isize) - delta_t(isize-1));
   !!              }
   !!        break;
-  !!        case 3:       //VonB no covariates
-  !!          growthprob_phi(area, spp, yr) = vonB_k(area, spp)/log(
-  !!                                          elem_div((vonB_Linf(area, spp)-lbinmin(spp)),
-  !!                                                   (vonB_Linf(area, spp)-lbinmax(spp))));
+  !!        case 3:       //VonB no covariates          
+  !!          lmax_test(1) = 1e-09; 
+  !!          for (size=1;size<=Nsizebins;size++) {
+  !!          lmax_test(2) = vonB_Linf(area, spp)-lbinmax(spp,size);
+  !!          lmax_use = max(lmax_test);
+  !!          cout << spp << " " << yr << " " << size << " " << lmax_use << endl;
+  !!          growthprob_phi(area, spp, yr, size) = vonB_k(area, spp)/log(
+  !!                                          ((vonB_Linf(area, spp)-lbinmin(spp,size))/
+  !!                                                   (lmax_use)));
+  !!          }
+//  !!          growthprob_phi(area, spp, yr) = vonB_k(area, spp)/log(
+//  !!                                          elem_div((vonB_Linf(area, spp)-lbinmin(spp)),
+//  !!                                                   (vonB_Linf(area, spp)-lbinmax(spp))));
+  !! cout << "Growthprob " << spp << " " << growthprob_phi(area,spp,yr) << endl;
   !!        break;
   !!        case 4:       //VonB with covariates
   !!          growthprob_phi(area, spp, yr) = vonB_k(area, spp)/log(
@@ -722,7 +735,9 @@ PARAMETER_SECTION
   3darray obs_effortAssess(1,Nareas,1,Nfleets,1,Nyrs)  	//standardized effort units needed
   !!obs_effortAssess = obs_effort;
   //Initial N year 1
-  init_3darray yr1N(1,Nareas,1,Nspecies,1,Nsizebins,yr1Nphase)       //initial year N at size, millions
+  init_3darray ln_yr1N(1,Nareas,1,Nspecies,1,Nsizebins,yr1Nphase)       //initial year N at size, millions
+  3darray yr1N(1,Nareas,1,Nspecies,1,Nsizebins);       //initial year N at size, millions
+
 
  // recruitment parameters all read in from Dat file. These are redundant. Andy Beet
  //recruitment parameters (alts in .dat file read in with switch for rec form by spp)
@@ -737,13 +752,15 @@ PARAMETER_SECTION
   3darray eggprod(1,Nareas,1,Nspecies,1,Nyrs) //from fecundity, propmature, sexratio, N, in millions
 
   //recruitment: average annual, annual devs, actual (avg+dev)
-  init_matrix avg_recruitment(1,Nareas,1,Nspecies,avg_rec_phase)  //average annual recruitment by area, species
+  init_matrix ln_avg_recruitment(1,Nareas,1,Nspecies,avg_rec_phase)  //average annual recruitment by area, species
+  matrix avg_recruitment(1,Nareas,1,Nspecies)  //average annual recruitment by area, species
   init_3darray recruitment_devs(1,Nareas,1,Nspecies,1,Nyrs,dev_rec_phase)  //recruitment deviations by area, species
 
   3darray recruitment(1,Nareas,1,Nspecies,1,Nyrs)  //by definition into first size bin for each species, millions
 
   //recruitment simulation
-  init_matrix recsigma(1,Nareas,1,Nspecies)    //sigma for stochastic recruitment from SR curve
+  init_matrix ln_recsigma(1,Nareas,1,Nspecies,recsigmaphase)    //sigma for stochastic recruitment from SR curve
+  matrix recsigma(1,Nareas,1,Nspecies)    //sigma for stochastic recruitment from SR curve
 
   3darray rec_procError(1,Nareas,1,Nspecies,1,Nyrs)   //to generate deviations from SR curve
 
@@ -784,7 +801,8 @@ PARAMETER_SECTION
   5darray Ffl(1,Nareas,1,Nspecies,1,Nfleets,1,Tottimesteps,1,Nsizebins) //fleet specific  Fs
   5darray Dfl(1,Nareas,1,Nspecies,1,Nfleets,1,Tottimesteps,1,Nsizebins) //fleet specific Discard mortaliy s
   5darray Cfl(1,Nareas,1,Nspecies,1,Nfleets,1,Tottimesteps,1,Nsizebins) //fleet specific Catch in numbers
-  init_3darray fishery_q(1,Nareas,1,Nspecies,1,Nfleets,fqphase)
+  init_3darray ln_fishery_q(1,Nareas,1,Nspecies,1,Nfleets,fqphase)
+  3darray fishery_q(1,Nareas,1,Nspecies,1,Nfleets)
   3darray  mean_guild_fishery_q(1,Nareas,1,Nguilds,1,Nfleets) // mean q for guild and fleet// andybeet
   matrix  mean_fishery_q(1,Nareas,1,Nfleets) // mean q for fleet. ignore values of zero //andybeet
   // calculates the mean fishery_q for each guild (over fleets)
@@ -829,17 +847,20 @@ PARAMETER_SECTION
 
 
   //Survey qs 
-  init_matrix survey_q(1,Nsurveys,1,Nspecies,sqphase)
+  init_matrix ln_survey_q(1,Nsurveys,1,Nspecies,sqphase)
+  matrix survey_q(1,Nsurveys,1,Nspecies)
 
   //Survey selectivity (will want to be derived based on estimated parameters)
   3darray survey_sel(1,Nsurveys,1,Nspecies,1,Nsizebins)
 
   //survey obs error
-  init_matrix surv_sigma(1,Nareas,1,Nspecies,ssig_phase)
+  init_matrix ln_surv_sigma(1,Nareas,1,Nspecies,ssig_phase)
+  matrix surv_sigma(1,Nareas,1,Nspecies)
   3darray surv_obsError(1,Nareas,1,Nspecies,1,Nyrs)
 
   //catch obs error
-  init_3darray catch_sigma(1,Nareas,1,Nspecies,1,Nfleets,csig_phase)
+  init_3darray ln_catch_sigma(1,Nareas,1,Nspecies,1,Nfleets,csig_phase)
+  3darray catch_sigma(1,Nareas,1,Nspecies,1,Nfleets)
   4darray catch_obsError(1,Nareas,1,Nspecies,1,Nfleets,1,Nyrs)
 
   //annual total B and SSB
@@ -1006,6 +1027,8 @@ PRELIMINARY_CALCS_SECTION
 PROCEDURE_SECTION
 //=======================================================================================
 
+  transform_parameters();
+
   calc_initial_states();  if (debug == 4) {cout<<"completed Initial States"<<endl;}
 
   yrct=1;
@@ -1029,11 +1052,13 @@ PROCEDURE_SECTION
                 calc_fishing_mortality(); if (debug == 4) {cout<<"completed Fishing Mortality"<<endl;}
 
                 calc_total_mortality(); // We calculate Z(t) = M1 + M2 + F
+    cout << t << " " << Z(1,1,t) << endl;
 
 		calc_catch_etc(); if (debug == 4) {cout<<"completed Catch"<<endl;} // split F among fleets
 
+    cout << t << " " << N(1,1,t) << endl;
 		calc_pop_dynamics(); if (debug == 4) {cout<<"completed Pop Dynamics"<<endl;} // update N - death + growth
-
+    cout << t << " " << N(1,1,t) << endl;
                 calc_SSB();
 
 		calc_movement(); if (debug == 4) {cout<<"completed Movement"<<endl;}
@@ -1088,6 +1113,18 @@ PROCEDURE_SECTION
       exit(0);
     }
 //////////////////////////////////////////////////////////////////////////////
+
+//----------------------------------------------------------------------------------------
+FUNCTION transform_parameters
+//----------------------------------------------------------------------------------------
+
+  yr1N = mfexp(ln_yr1N);
+  avg_recruitment = mfexp(ln_avg_recruitment);
+  recsigma = mfexp(ln_recsigma);
+  fishery_q = mfexp(ln_fishery_q);
+  survey_q = mfexp(ln_survey_q);
+  surv_sigma = mfexp(ln_surv_sigma);
+  catch_sigma = mfexp(ln_catch_sigma);
 
 //----------------------------------------------------------------------------------------
 FUNCTION calc_initial_states
@@ -1519,6 +1556,7 @@ FUNCTION calc_pred_mortality
 		  suittemp.rowshift(1); //needed to match up array bounds
                   // vector * matrix = vector. result = [ sum(v*mat[,1]),sum(v*mat[,2]),sum(v*mat[,3]),sum(v*mat[,4]),sum(v*mat[,5])]
                   // standard  matrix  multiplication
+                  //cout << pred << " " << prey << " " << suittemp << endl;
 	      suitpreybio(area,pred,t) += wtconv*(elem_prod(binavgwt(prey),Narea(area,prey,t)) *  suittemp);
         
         for (int ipredsize=1;ipredsize<=Nsizebins;ipredsize++)     
@@ -1536,6 +1574,12 @@ FUNCTION calc_pred_mortality
   //M2(area, prey, preysize,t) = sumover_preds_predsizes(intake*N(area,pred,predsize,t)*suitability(area,predpreysize)/
   //								sumover_preds_predsizes(totalconsumedbypred))
 
+  //cout << "PM1 " << suitability(1,1) << endl;
+  //cout  << "PM2 " << intake(1,1,yrct) << endl;
+  //cout  << "PM3 " << suitpreybio(1,1,t) << endl;
+  //cout  << "PM4 " << otherFood << endl;
+  //cout  << "PM5 " << M2(1,1,t) << endl;
+
    for (area=1; area<=Nareas; area++){
   	for(prey=1; prey<=Nspecies; prey++){
                for(pred=1; pred<=Nspecies; pred++){
@@ -1543,9 +1587,10 @@ FUNCTION calc_pred_mortality
                   // see above description of why row shif is needed
 		  suittemp2.rowshift(1); //needed to match up array bounds
                   for (int ipreysize =1; ipreysize<=Nsizebins; ipreysize++) {
-                   for (int ipredsize =1; ipredsize<=Nsizebins; ipredsize++) {
+                   for (int ipredsize =1; ipredsize<=Nsizebins; ipredsize++) {                     
                      M2(area,prey,t,ipreysize) += (intake(area,pred,yrct,ipredsize)*Narea(area,pred,t,ipredsize) * suittemp2(ipreysize,ipredsize)) /
                            (suitpreybio(area,pred,t,ipredsize) + otherFood);    //Hall et al 2006 other prey too high
+                     //if (prey ==1) cout << "M2 " << pred << " " << ipreysize << " " << ipredsize << " " << M2(area,prey,t,ipreysize) << " " << intake(1,pred,yrct,ipredsize) << " " << suittemp2(ipreysize,ipredsize) << " " << suitpreybio(1,pred,t,ipredsize) << endl;
                     }
                   }
 
@@ -1554,7 +1599,7 @@ FUNCTION calc_pred_mortality
     } //prey
   } // ok
 
-
+  //cout  << "PM6 " << M2(1,1,t) << endl;
   // Beet big dumb loop was written to explore issues with original M2. See 1_1_2 for details
 
 
@@ -1747,6 +1792,7 @@ FUNCTION calc_pop_dynamics
            }
        }
   }
+  cout << "A "<< t << " " << Nnotarea(1,1,t) << endl;
 
   // POP DYNAMICS for Area of interest
   //for all older than recruits,
@@ -1761,6 +1807,9 @@ FUNCTION calc_pop_dynamics
   //N(area, spp,t,bin) +=
   //                       N(area, spp,t,bin-1)*S(area,spp,t,bin-1)*growthprob_phi(area,spp,bin-1) +
   //                       N(area, spp,t,bin)*S(area,spp,t,bin)*(1-growthprob_phi(area,spp,bin)))
+
+  //cout << "C "<< t << " " << Z(1,1,t) << endl;
+  cout << "D "<< t << " " << growthprob_phi(1,1,yrct) << endl;
 
   for (area=1; area<=Nareas; area++){
   	for(spp=1; spp<=Nspecies; spp++){
@@ -1785,6 +1834,7 @@ FUNCTION calc_pop_dynamics
       }//end species loop
 
   }//end area loop
+
 
   // Add two populations (in management area, outside management area)
    for(area = 1; area <=Nareas; area++) {
