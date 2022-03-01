@@ -435,15 +435,25 @@ DATA_SECTION
   !!              }
   !!        break;
   !!        case 3:       //VonB no covariates          
-  !!          lmax_test(1) = 1e-09; 
-  !!          for (size=1;size<=Nsizebins;size++) {
-  !!          lmax_test(2) = vonB_Linf(area, spp)-lbinmax(spp,size);
-  !!          lmax_use = max(lmax_test);
-  !!          cout << spp << " " << yr << " " << size << " " << lmax_use << endl;
-  !!          growthprob_phi(area, spp, yr, size) = vonB_k(area, spp)/log(
-  !!                                          ((vonB_Linf(area, spp)-lbinmin(spp,size))/
-  !!                                                   (lmax_use)));
-  !!          }
+//  !!          lmax_test(1) = 1e-09; 
+//  !!          for (size=1;size<=Nsizebins;size++) {
+//  !!          lmax_test(2) = vonB_Linf(area, spp)-lbinmax(spp,size);
+//  !!          lmax_use = max(lmax_test);
+//  !!          cout << spp << " " << yr << " " << size << " " << lmax_use << endl;
+//  !!          growthprob_phi(area, spp, yr, size) = vonB_k(area, spp)/log(
+//  !!                                          ((vonB_Linf(area, spp)-lbinmin(spp,size))/
+//  !!                                                   (lmax_use)));
+//  !!          }
+    !!          for (size=1;size<=Nsizebins;size++) {
+    !!            if (lbinmin(spp,size)>=vonB_Linf(area, spp) || lbinmax(spp,size)>=vonB_Linf(area, spp)) {
+    !!             growthprob_phi(area, spp, yr, size) = 0.0;
+    !!            }
+    !!            if (lbinmax(spp,size)<vonB_Linf(area, spp)) {
+    !!               growthprob_phi(area, spp, yr, size) = vonB_k(area, spp)/log(
+    !!                                                   (vonB_Linf(area, spp)-lbinmin(spp,size))/
+    !!                                                   (vonB_Linf(area, spp)-lbinmax(spp,size)));
+    !!            }
+    !!          }
 //  !!          growthprob_phi(area, spp, yr) = vonB_k(area, spp)/log(
 //  !!                                          elem_div((vonB_Linf(area, spp)-lbinmin(spp)),
 //  !!                                                   (vonB_Linf(area, spp)-lbinmax(spp))));
