@@ -457,7 +457,7 @@ DATA_SECTION
 //  !!          growthprob_phi(area, spp, yr) = vonB_k(area, spp)/log(
 //  !!                                          elem_div((vonB_Linf(area, spp)-lbinmin(spp)),
 //  !!                                                   (vonB_Linf(area, spp)-lbinmax(spp))));
-  !! cout << "Growthprob " << spp << " " << growthprob_phi(area,spp,yr) << endl;
+//  !! cout << "Growthprob " << spp << " " << growthprob_phi(area,spp,yr) << endl;
   !!        break;
   !!        case 4:       //VonB with covariates
   !!          growthprob_phi(area, spp, yr) = vonB_k(area, spp)/log(
@@ -1062,7 +1062,9 @@ PROCEDURE_SECTION
                 calc_fishing_mortality(); if (debug == 4) {cout<<"completed Fishing Mortality"<<endl;}
 
                 calc_total_mortality(); // We calculate Z(t) = M1 + M2 + F
+  
     cout << t << " " << Z(1,1,t) << endl;
+    cout << t << " " << Z(1,1,t) << " " << M1(1,1) << " " << M2(1,1,t) << " " << F(1,1,t) << " " << D(1,1,t) << endl;
 
 		calc_catch_etc(); if (debug == 4) {cout<<"completed Catch"<<endl;} // split F among fleets
 
@@ -1409,6 +1411,11 @@ FUNCTION calc_recruitment
 			recruitment(area,spp)(yrct) = recruitment_alpha(area,spp) * pow(eggprod(area,spp)(yrct-1), recruitment_shape(area,spp)) *
                                           mfexp(-recruitment_beta(area,spp) * eggprod(area,spp)(yrct-1) +
                                                recruitment_covwt(spp) * trans(recruitment_cov)(yrct-1));
+      //cout << spp << " " << yrct << " " << recruitment(area,spp)(yrct) << " " <<
+      //recruitment_alpha(area,spp) << " " << eggprod(area,spp)(yrct-1) << " " << recruitment_shape(area,spp) << " " <<
+      //                                    recruitment_beta(area,spp) << " " << 
+      //                                         recruitment_covwt(spp) << " " << recruitment_cov(yrct-1) << endl;
+      //exit(-1);
 		  break;
 	  case 2:                   //SSB based recruitment, 3 par Deriso-Schnute; see Quinn & Deriso 1999 p 95
 		    //SSB(area,spp)(yrct) /= Nstepsyr; //use? average spawning stock bio for a single "spawning" timestep, now SSB is at time t
@@ -1482,7 +1489,12 @@ FUNCTION calc_recruitment
 
 
            case 9:                   //Average recruitment plus devs--giving up on functional form
-                       recruitment(area,spp)(yrct) = mfexp(avg_recruitment(area,spp)+recruitment_devs(area,spp,yrct));
+                       //recruitment(area,spp)(yrct) = mfexp(avg_recruitment(area,spp)+recruitment_devs(area,spp,yrct));
+                       recruitment(area,spp)(yrct) = avg_recruitment(area,spp)*mfexp(recruitment_devs(area,spp,yrct));  //GF 2022/03/04, avg_recruitment is already in real space. This equation does not include lognormal bias correction (yet)
+      //cout << spp << " " << yrct << " " << recruitment(area,spp)(yrct) << " " <<
+      //avg_recruitment(area,spp) << " " << recruitment_devs(area,spp,yrct) << endl;
+      //exit(-1);
+
 		  break;
 
            default:
