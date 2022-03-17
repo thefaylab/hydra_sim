@@ -783,7 +783,9 @@ PARAMETER_SECTION
   //**needs to be done by fleet, currently assuming each fleet has the same avg_F, F_devs and Ftot**
   //**then they sum to give F by species**
   //init_3darray avg_F(1,Nareas,1,Nspecies,1,Nfleets,avg_F_phase)  //logspace average annual fishing mort by area, species
+  init_matrix avg_F(1,Nareas,1,Nfleets,avg_F_phase)  //logspace average annual fishing mort by area, species
   //init_3darray F_devs(1,Nspecies,1,Nfleets,1,Nyrs,dev_F_phase)  //logspace F deviations by area, species--NEEDS TO BE 4D, CANT DO?, FIX
+  init_3darray F_devs(1,Nareas,1,Nfleets,1,Nyrs,dev_F_phase)  //logspace F deviations by area, species--NEEDS TO BE 4D, CANT DO?, FIX
   //
   //***********June 2014 replace with F = q*E formulation*****************************
   4darray Fyr(1,Nareas,1,Nspecies,1,Nfleets,1,Nyrs)  //array to get annual Fs by fleet from either avg/devs or q*effort, logspace

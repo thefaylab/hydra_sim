@@ -56,17 +56,28 @@
 # Fishery qs
 #  init_3darray fishery_q(1,Nareas,1,Nspecies,1,Nfleets,fqphase)
 # area1.btrawl ptrawl longline)
-  0 0 0 0 0 1 0 0 0 0 0  # Blue_whiting
-  0 0 0 0 0 0 0 0 0 0 1  # Capelin
-  1 0 0 0 0 0 0 0 0 0 0  # Green_halibut
-  0 0 1 0 0 0 0 0 0 0 0  # Haddock
-  0 0 0 0 0 0 0 0 0 0 0  # Long_rough_dab
-  0 1 0 0 0 0 0 0 0 0 0  # Mackerel
-  0 0 0 0 1 0 0 1 1 1 0  # North_atl_cod
-  0 0 0 0 0 0 1 0 0 0 0  # Norwegian_ssh
-  0 0 0 0 0 0 0 0 0 0 0  # Polar_cod
-  0 0 0 0 1 0 0 0 0 0 0  # Redfish
-  0 0 0 1 0 0 0 0 0 0 0  # Saithe
+#  0 0 0 0 0 1 0 0 0 0 0  # Blue_whiting
+#  0 0 0 0 0 0 0 0 0 0 1  # Capelin
+#  1 0 0 0 0 0 0 0 0 0 0  # Green_halibut
+#  0 0 1 0 0 0 0 0 0 0 0  # Haddock
+#  0 0 0 0 0 0 0 0 0 0 0  # Long_rough_dab
+#  0 1 0 0 0 0 0 0 0 0 0  # Mackerel
+#  0 0 0 0 1 0 0 1 1 1 0  # North_atl_cod
+#  0 0 0 0 0 0 1 0 0 0 0  # Norwegian_ssh
+#  0 0 0 0 0 0 0 0 0 0 0  # Polar_cod
+#  0 0 0 0 1 0 0 0 0 0 0  # Redfish
+#  0 0 0 1 0 0 0 0 0 0 0  # Saithe
+-10 -10 -10 -10 -10 0 -10 -10 -10 -10 -10 # Blue_whiting
+-10 -10 -10 -10 -10 -10 -10 -10 -10 -10 0 # Capelin
+0 -10 -10 -10 -10 -10 -10 -10 -10 -10 -10 # Green_halibut
+-10 -10 0 -10 -10 -10 -10 -10 -10 -10 -10 # Haddock
+-10 -10 -10 -10 -10 -10 -10 -10 -10 -10 -10 # Long_rough_dab
+-10 0 -10 -10 -10 -10 -10 -10 -10 -10 -10 # Mackerel
+-10 -10 -10 -10 0 -10 -10 0 0 0 -10 # North_atl_cod
+-10 -10 -10 -10 -10 -10 0 -10 -10 -10 -10 # Norwegian_ssh
+-10 -10 -10 -10 -10 -10 -10 -10 -10 -10 -10 # Polar_cod
+-10 -10 -10 -10 0 -10 -10 -10 -10 -10 -10 # Redfish
+-10 -10 -10 0 -10 -10 -10 -10 -10 -10 -10 # Saithe  
 #  init_matrix survey_q(1,Nareas,1,Nspecies,sqphase)
   1 1 1 1 1 1 1 1 1 1 1
 #  init_matrix surv_sigma(1,Nareas,1,Nspecies,ssig_phase)
