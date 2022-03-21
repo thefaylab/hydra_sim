@@ -12,7 +12,7 @@
 # init_int Nareas
   1
 # init_int Nfleets
-  11
+  1
 # init_int Nsurveys (e.g. NEFSC spring, NEFSC fall, NEAMAP, etc)
   2
 # init_number wtconv
@@ -64,16 +64,6 @@
 #  init_3darray obs_effort(1,Nareas,1,Nfleets,1,Nyrs)  
 # fleet types dtrawlGRH pseineMAC dtrawlHAD dtrawlSAI dtrawlNCO pseineBWH pseineSSH dlineNCO dseineNCO netNCO pseineCAP
 #  Observed effort. No assessment
-  1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
-  1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
-  1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
-  1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
-  1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
-  1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
-  1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
-  1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
-  1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
-  1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
   1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
 #  init_4darray area1_stomwt(1,Nareas,1,Nspecies,1,Nyrs,Nsizebins)   
 #  read in mean stomach content weight time series from .dat file for intake calculation   
@@ -1157,28 +1147,8 @@
 #  init_matrix fishsel_c(1,Nspecies,1,Nfleets)  //fishery selectivity c par
   #benthic trawl and pelagic trawl and longline
   1 1 1 1 1 1 1 1 1 1 1
-  1 1 1 1 1 1 1 1 1 1 1
-  1 1 1 1 1 1 1 1 1 1 1
-  1 1 1 1 1 1 1 1 1 1 1
-  1 1 1 1 1 1 1 1 1 1 1
-  1 1 1 1 1 1 1 1 1 1 1
-  1 1 1 1 1 1 1 1 1 1 1
-  1 1 1 1 1 1 1 1 1 1 1
-  1 1 1 1 1 1 1 1 1 1 1
-  1 1 1 1 1 1 1 1 1 1 1
-  1 1 1 1 1 1 1 1 1 1 1
 #  init_matrix fishsel_d(1,Nspecies,1,Nfleets)  //fishery selectivity d par
   #benthic trawl and pelagic trawl and longline
-  1 1 1 1 1 1 1 1 1 1 1
-  1 1 1 1 1 1 1 1 1 1 1
-  1 1 1 1 1 1 1 1 1 1 1
-  1 1 1 1 1 1 1 1 1 1 1
-  1 1 1 1 1 1 1 1 1 1 1
-  1 1 1 1 1 1 1 1 1 1 1
-  1 1 1 1 1 1 1 1 1 1 1
-  1 1 1 1 1 1 1 1 1 1 1
-  1 1 1 1 1 1 1 1 1 1 1
-  1 1 1 1 1 1 1 1 1 1 1
   1 1 1 1 1 1 1 1 1 1 1
 # Following content added after ICES publication by Gaichas et al. 2014
 # Made by Andy Beet from Dec 2016 onward
@@ -1195,9 +1165,9 @@
 # init_int flagLinearRamp. // 0 = step function, 1 = linear function
   1
 #init_vector minExploitation(1,Nfleets) minimum Exploitation rates imposed by each fleet
-  1e-05 1e-05 1e-05 1e-05 1e-05 1e-05 1e-05 1e-05 1e-05 1e-05 1e-05
+  1e-05 
 #init_vector maxExploitation(1,Nfleets) maximum Exploitation rates imposed by each fleet
-  1e-05 1e-05 1e-05 1e-05 1e-05 1e-05 1e-05 1e-05 1e-05 1e-05 1e-05
+  1e-05 
 # init_vector minMaxExploitation(1,2) - [MinExploitation, MaxExploitation
   0.05 0.05
 # init_vector minMaxThreshold(1,2) - [MinThreshold, MaxThreshold
@@ -1227,269 +1197,49 @@
 # proportion of each species that is discarded for each fleet(Bottom, Pelagic, Fixed)
 # Blue_whiting fleet x sizeclass
   0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
 # Capelin fleet x sizeclass
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
   0 0 0 0 0
 # Green_halibut fleet x sizeclass
   0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
 # Haddock fleet x sizeclass
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
   0 0 0 0 0
 # Long_rough_dab fleet x sizeclass
   0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
 # Mackerel fleet x sizeclass
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
   0 0 0 0 0
 # North_atl_cod fleet x sizeclass
   0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
 # Norwegian_ssh fleet x sizeclass
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
   0 0 0 0 0
 # Polar_cod fleet x sizeclass
   0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
 # Redfish fleet x sizeclass
   0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
 # Saithe fleet x sizeclass
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
   0 0 0 0 0
 # init_4darray discardSurvival_Coef(1,Nareas,1,1,Nspecies,1,Nfleets,1,Nsizebins)
 # proportion of discards that survive being thrown back
 # Blue_whiting fleet x sizeclass
   0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
 # Capelin fleet x sizeclass
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
   0 0 0 0 0
 # Green_halibut fleet x sizeclass
   0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
 # Haddock fleet x sizeclass
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
   0 0 0 0 0
 # Long_rough_dab fleet x sizeclass
   0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
 # Mackerel fleet x sizeclass
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
   0 0 0 0 0
 # North_atl_cod fleet x sizeclass
   0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
 # Norwegian_ssh fleet x sizeclass
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
   0 0 0 0 0
 # Polar_cod fleet x sizeclass
   0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
 # Redfish fleet x sizeclass
   0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
 # Saithe fleet x sizeclass
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
-  0 0 0 0 0
   0 0 0 0 0
 # predOrPrey(1,Nspecies). binary vector indicating predators. inverse = prey
   1 0 1 1 1 0 1 1 0 1 1
@@ -1497,19 +1247,9 @@
   5
 # init_number baseline_threshold // value of threshold that we stop landing catch. Typically 0.2
   0.2
-# init_3darray indicator_fishery_q(1,Nareas,1,Nspecies,1,Nfleets)
+# init_3darray indicator_fishery_q(1,Nareas,1,Nfleets,1,Nspecies)
 # which species represent targeted catch. These are used to estmate exploitation rate in assessment
-  1 1 1 1 1 1 1 1 1 1 1
-  1 1 1 1 1 1 1 1 1 1 1
-  1 1 1 1 1 1 1 1 1 1 1
-  1 1 1 1 1 1 1 1 1 1 1
-  1 1 1 1 1 1 1 1 1 1 1
-  1 1 1 1 1 1 1 1 1 1 1
-  1 1 1 1 1 1 1 1 1 1 1
-  1 1 1 1 1 1 1 1 1 1 1
-  1 1 1 1 1 1 1 1 1 1 1
-  1 1 1 1 1 1 1 1 1 1 1
-  1 1 1 1 1 1 1 1 1 1 1
+  1 1 1 1 0 1 1 1 0 1 1
 # AR_parameters(1,3) Survey, recruitment, Catch 
   0 0 0
 # init_int flagMSE determins level of output (0 or 1)

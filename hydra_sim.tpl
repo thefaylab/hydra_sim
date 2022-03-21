@@ -597,7 +597,36 @@ DATA_SECTION
   init_int bandwidth_metric // moving window for catch variance
   init_number baseline_threshold // value of threshold that we stop landing catch. Typically 0.2
  //  !!  baseline_threshold = 0.2;
-  init_3darray indicator_fishery_q(1,Nareas,1,Nspecies,1,Nfleets) // used to determin which species used to calculate updated effort under assessment
+  // GF March 2022 - modifying fishing for estimation
+  init_3darray indicator_fishery_q(1,Nareas,1,Nfleets,1,Nspecies) // used to determin which species used to calculate updated effort under assessment
+  int Nqpars
+  !! Nqpars = sum(indicator_fishery_q)-(Nfleets*Nareas);
+  imatrix f_map(1,Nareas,1,Nfleets)  //primary species for each fleet (i.e. which species the F refers to)
+  imatrix q_map(1,Nqpars,1,3)  //object that maps the catchability parameters to area, species, and fleet
+  int dum
+  !! f_map = 0;
+  !! q_map = 0;
+  !! dum = 0;
+  !! for(int area=1;area<=Nareas;area++) {
+  !!   for (int ifleet=1;ifleet<=Nfleets;ifleet++) {
+  !!     for (int species=1;species<=Nspecies;species++) {
+  !!       if (f_map(area,ifleet)!=0 && indicator_fishery_q(area,ifleet,species) == 1) {
+  !!        dum += 1;
+  !!        q_map(dum,1) = area;
+  !!        q_map(dum,2) = species;
+  !!        q_map(dum,3) = ifleet;
+  !!       }
+  !!       if (f_map(area,ifleet)==0 && indicator_fishery_q(area,ifleet,species) == 1) f_map(area,ifleet) = species;
+  !!     }
+  !! 
+  !!   } 
+  !! }
+  !! cout << "q par map" << endl;
+  !! cout << Nqpars << endl;
+  !! cout << f_map << endl;
+  !! cout << q_map << endl;
+  //!! exit(-1);
+
   init_vector AR_parameters(1,3) // rho (autoregressive parameters) for survey, recruitment, catch
   number rho_AR_Survey
   !! rho_AR_Survey =  AR_parameters(1);
@@ -813,49 +842,51 @@ PARAMETER_SECTION
   5darray Ffl(1,Nareas,1,Nspecies,1,Nfleets,1,Tottimesteps,1,Nsizebins) //fleet specific  Fs
   5darray Dfl(1,Nareas,1,Nspecies,1,Nfleets,1,Tottimesteps,1,Nsizebins) //fleet specific Discard mortaliy s
   5darray Cfl(1,Nareas,1,Nspecies,1,Nfleets,1,Tottimesteps,1,Nsizebins) //fleet specific Catch in numbers
-  init_3darray ln_fishery_q(1,Nareas,1,Nspecies,1,Nfleets,fqphase)
+  init_vector ln_fishery_q(1,Nqpars,fqphase) //Nareas,1,Nspecies,1,Nfleets,fqphase)
   3darray fishery_q(1,Nareas,1,Nspecies,1,Nfleets)
   3darray  mean_guild_fishery_q(1,Nareas,1,Nguilds,1,Nfleets) // mean q for guild and fleet// andybeet
   matrix  mean_fishery_q(1,Nareas,1,Nfleets) // mean q for fleet. ignore values of zero //andybeet
-  // calculates the mean fishery_q for each guild (over fleets)
-  !! for (area=1; area<=Nareas; area++) {
-  !!     for (iguild=1; iguild<=Nguilds; iguild++ ) {
-  !!           for (int ifleet=1;ifleet<=Nfleets;ifleet++) {
-  !!             int icount = 0;
-  !!               for (spp=1; spp<=Nspecies; spp++) {
-  !!                 if (guildMembers(spp)== iguild) {
-  !!                    icount++;
-  !!                    // sum up q's
-  !!                    mean_guild_fishery_q(area,iguild,ifleet) += fishery_q(area,spp,ifleet);
-  !!                 }
-  !!              }
-  !!                    mean_guild_fishery_q(area,iguild,ifleet) =  mean_guild_fishery_q(area,iguild,ifleet)/icount;
-  !!          }
-  !!      }
-  !! }
 
-
-  // calculates the mean q for each fleet ignoring zero q's.
-  // this is used to update effort when an assessment dictates
-  !! for (area=1; area<=Nareas; area++) {
-  !!           for (int ifleet=1;ifleet<=Nfleets;ifleet++) {
-  !!             int icount = 0;
-  !!             mean_fishery_q(area,ifleet) = 0;
-  !!               for (spp=1; spp<=Nspecies; spp++) {
-  !!                    if (fishery_q(area,spp,ifleet) < 1e-29) {
-  !!                      //ignore
-  !!                    } else {
-  !!                       icount = icount + indicator_fishery_q(area,spp,ifleet);
-  !!                       mean_fishery_q(area,ifleet) += indicator_fishery_q(area,spp,ifleet)*fishery_q(area,spp,ifleet);
-  !!                    }
-  !!              }
-  !!              if (icount == 0) { // then all q's are < 1-e29. This occurs during testing a new fleet with no information
-  !!                 mean_fishery_q(area,ifleet) = 0;
-  !!              } else {
-  !!                 mean_fishery_q(area,ifleet) =  mean_fishery_q(area,ifleet)/icount;
-  !!              }
-  !!          }
-  !! }
+  // gavinfay March 2022 - moving this code to procedure section as function of estimated parameters
+//  // calculates the mean fishery_q for each guild (over fleets)
+//  !! for (area=1; area<=Nareas; area++) {
+//  !!     for (iguild=1; iguild<=Nguilds; iguild++ ) {
+//  !!           for (int ifleet=1;ifleet<=Nfleets;ifleet++) {
+//  !!             int icount = 0;
+//  !!               for (spp=1; spp<=Nspecies; spp++) {
+//  !!                 if (guildMembers(spp)== iguild) {
+//  !!                    icount++;
+//  !!                    // sum up q's
+//  !!                    mean_guild_fishery_q(area,iguild,ifleet) += fishery_q(area,spp,ifleet);
+//  !!                 }
+//  !!              }
+//  !!                    mean_guild_fishery_q(area,iguild,ifleet) =  mean_guild_fishery_q(area,iguild,ifleet)/icount;
+//  !!          }
+//  !!      }
+//  !! }
+//
+//
+//  // calculates the mean q for each fleet ignoring zero q's.
+//  // this is used to update effort when an assessment dictates
+//  !! for (area=1; area<=Nareas; area++) {
+//  !!           for (int ifleet=1;ifleet<=Nfleets;ifleet++) {
+//  !!             int icount = 0;
+//  !!             mean_fishery_q(area,ifleet) = 0;
+//  !!               for (spp=1; spp<=Nspecies; spp++) {
+//  !!                    if (fishery_q(area,spp,ifleet) < 1e-29) {
+//  !!                      //ignore
+//  !!                    } else {
+//  !!                       icount = icount + indicator_fishery_q(area,spp,ifleet);
+//  !!                       mean_fishery_q(area,ifleet) += indicator_fishery_q(area,spp,ifleet)*fishery_q(area,spp,ifleet);
+//  !!                    }
+//  !!              }
+//  !!              if (icount == 0) { // then all q's are < 1-e29. This occurs during testing a new fleet with no information
+//  !!                 mean_fishery_q(area,ifleet) = 0;
+//  !!              } else {
+//  !!                 mean_fishery_q(area,ifleet) =  mean_fishery_q(area,ifleet)/icount;
+//  !!              }
+//  !!          }
+//  !! }
 
 
   //Survey qs 
@@ -1041,6 +1072,8 @@ PROCEDURE_SECTION
 
   transform_parameters();
 
+  calc_fishery_qs();  //gavinfay March 2022 - moved from PARAMETER_SECTION
+
   calc_initial_states();  if (debug == 4) {cout<<"completed Initial States"<<endl;}
 
   yrct=1;
@@ -1129,13 +1162,72 @@ PROCEDURE_SECTION
 //////////////////////////////////////////////////////////////////////////////
 
 //----------------------------------------------------------------------------------------
+FUNCTION calc_fishery_qs
+//----------------------------------------------------------------------------------------
+
+  // calculates the mean fishery_q for each guild (over fleets)
+   for (area=1; area<=Nareas; area++) {
+     for (iguild=1; iguild<=Nguilds; iguild++ ) {
+           for (int ifleet=1;ifleet<=Nfleets;ifleet++) {
+             int icount = 0;
+               for (spp=1; spp<=Nspecies; spp++) {
+                 if (guildMembers(spp)== iguild) {
+                    icount++;
+                    // sum up q's
+                    mean_guild_fishery_q(area,iguild,ifleet) += fishery_q(area,spp,ifleet);
+                 }
+              }
+                    mean_guild_fishery_q(area,iguild,ifleet) =  mean_guild_fishery_q(area,iguild,ifleet)/icount;
+          }
+      }
+ }
+
+
+  // calculates the mean q for each fleet ignoring zero q's.
+  // this is used to update effort when an assessment dictates
+ for (area=1; area<=Nareas; area++) {
+           for (int ifleet=1;ifleet<=Nfleets;ifleet++) {
+             int icount = 0;
+             mean_fishery_q(area,ifleet) = 0;
+               for (spp=1; spp<=Nspecies; spp++) {
+                    if (fishery_q(area,spp,ifleet) < 1e-29) {
+                      //ignore
+                    } else {
+                       icount = icount + indicator_fishery_q(area,ifleet,spp);
+                       mean_fishery_q(area,ifleet) += indicator_fishery_q(area,ifleet,spp)*fishery_q(area,spp,ifleet);
+                    }
+              }
+              if (icount == 0) { // then all q's are < 1-e29. This occurs during testing a new fleet with no information
+                 mean_fishery_q(area,ifleet) = 0;
+              } else {
+                 mean_fishery_q(area,ifleet) =  mean_fishery_q(area,ifleet)/icount;
+              }
+          }
+ }
+
+
+//----------------------------------------------------------------------------------------
 FUNCTION transform_parameters
 //----------------------------------------------------------------------------------------
 
   yr1N = mfexp(ln_yr1N);
   avg_recruitment = mfexp(ln_avg_recruitment);
   recsigma = mfexp(ln_recsigma);
-  fishery_q = mfexp(ln_fishery_q);
+  //fishery_q = mfexp(ln_fishery_q);
+  // fishery catchabilities  //gavinfay March 2022
+  for (area=1;area<=Nareas;area++) {
+    for (int ifleet=1;ifleet<=Nfleets;ifleet++) {
+      for (int species=1;species<=Nspecies;species++) fishery_q(area,species,ifleet) = 0.;
+      fishery_q(area,f_map(area,ifleet),ifleet) = 1.;
+    }
+   }
+  for (int ipar=1;ipar<=Nqpars;ipar++) {
+    fishery_q(q_map(ipar,1),q_map(ipar,2),q_map(ipar,3)) = mfexp(ln_fishery_q(ipar));
+  }
+  cout << "fishery q" << endl;
+  cout << fishery_q << endl;
+  //exit(-1);
+
   survey_q = mfexp(ln_survey_q);
   surv_sigma = mfexp(ln_surv_sigma);
   catch_sigma = mfexp(ln_catch_sigma);
@@ -1246,6 +1338,7 @@ FUNCTION calc_initial_states
 
   //fill F arrays; either start with avg F and devs by fleet, or calculate from q and effort by fleet
   // effort is scaled by species depending on how S-R data was assembled. GB or region wide
+  for (int iyr =1; iyr<=Nyrs; iyr++) {
   for (area=1; area<=Nareas; area++){
   	for(spp=1; spp<=Nspecies; spp++){
 	  for(fleet=1; fleet<=Nfleets; fleet++){
@@ -1253,13 +1346,15 @@ FUNCTION calc_initial_states
           // Fyr(area,spp,fleet) = avg_F(area,spp,fleet) + F_devs(spp,fleet); //WARNING ONLY WORKS WITH 1 AREA:REDO
 //            Fyr(area,spp,fleet) = log(fishery_q(area,spp,fleet)*obs_effort(area,fleet)); //Andy Beet
 //            effordScaled redundant. we now use proportion of GB effort to shelf effort rather than assume constant scaling
-            Fyr(area,spp,fleet) = fishery_q(area,spp,fleet)*obs_effort(area,fleet)*effortScaled(area,spp); //Andy Beet
+//            Fyr(area,spp,fleet) = fishery_q(area,spp,fleet)*obs_effort(area,fleet)*effortScaled(area,spp); //Andy Beet
 //                  Fyr(area,spp,fleet) = fishery_q(area,spp,fleet)*obs_effort(area,fleet); //Andy Beet
-
+            Fyr(area,spp,fleet,iyr) = fishery_q(area,spp,fleet)*mfexp(avg_F(area,fleet)+F_devs(area,fleet,iyr));  //gavinfay March 2022 - modding for F
+            //cout << iyr << " " << area << " " << spp << " " << fleet << " " << Fyr(area,spp,fleet,iyr) << endl;
       }
     }
   }
-
+  }
+  //exit(-1);
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////   Random Number Generators ////////////////////////////////
