@@ -62,7 +62,7 @@
 #  init_matrix growth_cov(1,Ngrowth_cov,1,Nyrs)
   1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
 #  init_3darray obs_effort(1,Nareas,1,Nfleets,1,Nyrs)  
-# fleet types dtrawlGRH pseineMAC dtrawlHAD dtrawlSAI dtrawlNCO pseineBWH pseineSSH dlineNCO dseineNCO netNCO pseineCAP
+# fleet types allcombined
 #  Observed effort. No assessment
   1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
 #  init_4darray area1_stomwt(1,Nareas,1,Nspecies,1,Nyrs,Nsizebins)   
@@ -968,7 +968,7 @@
   -1
 #  init_int avg_rec_phase		//average recruitment estimation phase (could make species specific, currently global)
   1
-#  init_int recsigmaphase   //st dev of recruitment devs phase
+#  init_int recsigmaphase			//st dev of recruitment devs phase
   -1
 #  init_int avg_F_phase			//average fishing mort estimation phase (could make species specific, currently global)
   -1
@@ -1144,10 +1144,10 @@
 #  init_vector sd_sizepref(1,Nspecies)              //pred sizebins
   2 2 2 2 2 2 2 2 2 2 2
 #  //fishery selectivity pars from dat file, for now not area specific
-#  init_matrix fishsel_c(1,Nspecies,1,Nfleets)  //fishery selectivity c par
+#  init_matrix fishsel_c(1,Nfleets,1,Nspecies)  //fishery selectivity c par
   #benthic trawl and pelagic trawl and longline
   1 1 1 1 1 1 1 1 1 1 1
-#  init_matrix fishsel_d(1,Nspecies,1,Nfleets)  //fishery selectivity d par
+#  init_matrix fishsel_d(1,Nfleets,1,Nspecies)  //fishery selectivity c par
   #benthic trawl and pelagic trawl and longline
   1 1 1 1 1 1 1 1 1 1 1
 # Following content added after ICES publication by Gaichas et al. 2014
@@ -1159,15 +1159,15 @@
 #Guild Membership guildMembership. 
   1 2 3 4 5 6 7 8 9 10 11
 #Fleet Membership fleetMembers(1,Nfleets) 
-  1 2 3 4 5 6 7 8 9 10 11
+  1
 # AssessmentPeriod. Time period (yrs) to assess guild biomass level
   3
 # init_int flagLinearRamp. // 0 = step function, 1 = linear function
   1
 #init_vector minExploitation(1,Nfleets) minimum Exploitation rates imposed by each fleet
-  1e-05 
+  1e-05
 #init_vector maxExploitation(1,Nfleets) maximum Exploitation rates imposed by each fleet
-  1e-05 
+  1e-05
 # init_vector minMaxExploitation(1,2) - [MinExploitation, MaxExploitation
   0.05 0.05
 # init_vector minMaxThreshold(1,2) - [MinThreshold, MaxThreshold
