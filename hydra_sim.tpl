@@ -1062,15 +1062,19 @@ PRELIMINARY_CALCS_SECTION
   recruitment_beta = rec_beta;
 
   for (int i=1;i<=Nsurveys;i++)
+   for (int k=1;k<=Nspecies;k++)
    for (int j=1;j<=Nsizebins;j++)
   // need to add survey selectivity at length, but for now set at 1 for all.
-      survey_sel(i,j) = 1.;
+      survey_sel(i,k,j) = 1.;
 
 //=======================================================================================
 PROCEDURE_SECTION
 //=======================================================================================
 
   transform_parameters();
+
+  ofstream popout("popstructure.out");
+  ofstream recout("recstructure.out");
 
   calc_fishery_qs();  //gavinfay March 2022 - moved from PARAMETER_SECTION
 
@@ -1089,7 +1093,7 @@ PROCEDURE_SECTION
 
                   // add recruits at start of year.  update N to add recruits to bin 1
                 calc_recruitment(); if (debug == 4) {cout<<"completed Recruitment"<<endl;}
-
+                if (t % Nstepsyr == 1) recout << yrct << " " << recruitment(1,2,yrct) << endl;
                 calc_available_N();
 
                 calc_pred_mortality(); if (debug == 4) {cout<<"completed Predation Mortality"<<endl;}
@@ -1098,14 +1102,14 @@ PROCEDURE_SECTION
 
                 calc_total_mortality(); // We calculate Z(t) = M1 + M2 + F
   
-    cout << t << " " << Z(1,1,t) << endl;
-    cout << t << " " << Z(1,1,t) << " " << M1(1,1) << " " << M2(1,1,t) << " " << F(1,1,t) << " " << D(1,1,t) << endl;
+    //cout << t << " " << Z(1,1,t) << endl;
+    //cout << t << " " << Z(1,1,t) << " " << M1(1,1) << " " << M2(1,1,t) << " " << F(1,1,t) << " " << D(1,1,t) << endl;
 
 		calc_catch_etc(); if (debug == 4) {cout<<"completed Catch"<<endl;} // split F among fleets
-
-    cout << t << " " << N(1,1,t) << endl;
-		calc_pop_dynamics(); if (debug == 4) {cout<<"completed Pop Dynamics"<<endl;} // update N - death + growth
-    cout << t << " " << N(1,1,t) << endl;
+    for (int spp=1;spp<=Nspecies;spp++)
+		popout << t << " " << spp << " " << N(1,spp,t) << " " << Z(1,spp,t) << " " << M1(1,spp) << " " << M2(1,spp,t) << " " << F(1,spp,t) << " " << D(1,spp,t) << endl;
+    calc_pop_dynamics(); if (debug == 4) {cout<<"completed Pop Dynamics"<<endl;} // update N - death + growth
+    
                 calc_SSB();
 
 		calc_movement(); if (debug == 4) {cout<<"completed Movement"<<endl;}
@@ -1903,6 +1907,8 @@ FUNCTION calc_pop_dynamics
  // Assume contant total mortality rate for population not in management area.
  // Adjust that proportion of population
 
+  //ofstream popout("popstructure.out");
+
   for(area = 1; area <=Nareas; area++) {
        for (spp = 1; spp <=Nspecies; spp++) {
            for(int isize=1; isize <= Nsizebins; isize++){
@@ -1911,7 +1917,7 @@ FUNCTION calc_pop_dynamics
            }
        }
   }
-  cout << "A "<< t << " " << Nnotarea(1,1,t) << endl;
+  //cout << "A "<< t << " " << Nnotarea(1,1,t) << endl;
 
   // POP DYNAMICS for Area of interest
   //for all older than recruits,
@@ -1938,6 +1944,7 @@ FUNCTION calc_pop_dynamics
         for(int isize=Nsizebins; isize>=2; isize--){
        	 Narea(area,spp,t,isize) = Narea(area,spp,t,isize-1) * exp(-Z(area,spp,t,isize-1)) * growthprob_phi(area,spp,yrct,isize-1)
                             +  Narea(area,spp,t,isize)* exp(-Z(area,spp,t,isize))  * (1-growthprob_phi(area,spp,yrct,isize));
+         //popout << spp << " " << t << " " << isize << " " << Narea(area,spp,t,isize) << endl;
          N_tot(area,spp,yrct,isize) += Narea(area,spp,t,isize);// cumulate sum. averaged in indices
 
         }//end size loop
@@ -1947,6 +1954,8 @@ FUNCTION calc_pop_dynamics
         // we added recruits at start of year to current time. they were then fished in this time period
 //	N(area,spp,t,1) = N(area,spp,t-1,1)* exp(-Z(area,spp,t,1))*(1-growthprob_phi(area,spp,yrct,1));
 	Narea(area,spp,t,1) = Narea(area,spp,t,1)* exp(-Z(area,spp,t,1))*(1-growthprob_phi(area,spp,yrct,1));
+
+        //popout << spp << " " << t << " " << 1 << " " << Narea(area,spp,t,1) << endl;
 
         N_tot(area,spp,yrct,1) += Narea(area,spp,t,1); // running total for the year. Used for indices
 
@@ -2942,10 +2951,10 @@ FUNCTION calculate_predicted_values
       int spp = obs_survey_biomass(i,3);
       for (area=1; area<=Nareas; area++){
         for (int ilen=1;ilen<=Nsizebins;ilen++) {
-            //cout << B_tot(area,spp,year,ilen) << " " << survey_sel(survey,spp,ilen) << " " << survey_q(survey,spp) << " " << Nstepsyr << endl; 
-            pred_survey_index(i) +=  B_tot(area,spp,year,ilen)*survey_sel(survey,spp,ilen)*survey_q(survey,spp)/Nstepsyr; 
+                  if (year == 80 && spp == 10 && survey ==2) cout << ilen << " " <<B_tot(area,spp,year,ilen) << " " << survey_sel(survey,spp,ilen) << " " << survey_q(survey,spp) << endl; 
+            pred_survey_index(i) +=  B_tot(area,spp,year,ilen)*survey_sel(survey,spp,ilen)*survey_q(survey,spp); // /Nstepsyr; 
         }
-      }
+      }       
     }
 
 
@@ -3080,6 +3089,7 @@ FUNCTION evaluate_the_objective_function
          // jth row of this table
          pred_survey_size(j) = Lpred(ilen);  //change for better storage table
          nll_survey_size(j) = effN*Lobs(ilen)*log(Lpred(ilen)/Lobs(ilen));
+         //cout << j << " " << nll_survey_size(j) << endl;
         } 
       }
    }
