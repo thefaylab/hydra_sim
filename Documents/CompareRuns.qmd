@@ -1,0 +1,59 @@
+---
+title: "Hydra test comparisons"
+format: html
+editor: visual
+---
+
+## Sarah's first run
+
+Bring in code from [hydra_diag](https://github.com/thefaylab/hydra_diag):
+
+```{r hydradiag}
+
+# bring in reptoRlist
+source("https://raw.githubusercontent.com/thefaylab/hydra_diag/main/Diagnostics/read.report.R")
+
+# read the rep file
+test1 <- reptoRlist("hydra_sim.rep")
+
+names(test1)
+```
+
+Bring in inputs from the -ts.dat file:
+
+```{r readtsdat}
+
+library(tidyverse)
+
+#write a function that splits the dat file appropriately
+# e.g. read from Survey index to end survey index
+
+dattstoRlist <- function(fn, datn){
+  readLines(fn)  %>%          # Read file into a vector of strings
+  paste(collapse = "\n") %>%            # Stick them together with newlines
+  strsplit(paste0("# ", datn, ": +"))          # Split them into groups at the keyword
+
+}
+
+
+
+dat1 <- dattstoRlist("hydra_sim_NOBA-ts.dat")
+
+```
+
+## Try some plots
+
+When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
+
+```{r}
+1 + 1
+```
+
+You can add options to executable code like this
+
+```{r}
+#| echo: false
+2 * 2
+```
+
+The `echo: false` option disables the printing of code (only output is displayed).
