@@ -3195,7 +3195,7 @@ FUNCTION evaluate_the_objective_function
   cout << "done survey prey proportions nll" << endl;
 
 
-// Recruitment penalty  (NOT YET WORKING)
+// Recruitment penalty
 
    j = 0;
    dvar_vector resid(1,Nareas*Nspecies*Nyrs);
@@ -3216,6 +3216,8 @@ FUNCTION evaluate_the_objective_function
    nll_recruit = dnorm(resid,sdrec);
 //*/
 
+  cout << "done recruitment nll" << endl;
+
 
 // Calc objective function
    objfun = 0.;
@@ -3231,6 +3233,7 @@ FUNCTION evaluate_the_objective_function
    cout << "nll_catch: " << sum(nll_catch) << endl;
    cout << "nll_catch_size: " << sum(nll_catch_size) << endl;
    cout << "nll_dietprop: " << sum(nll_dietprop) << endl;
+   cout << "nll_recruit: " << sum(nll_recruit) << endl;
    cout << "nll_total: " << objfun << endl;
 
 
@@ -3311,14 +3314,17 @@ REPORT_SECTION
   // report << est_catch_biomass << endl;
   // report << "ObsCatchB Observed catch biomass of fish " << endl;
   // report << obs_catch_biomass << endl;
-   report << "predicted catch size comps" << endl;
+   report << "pred_catch_size" << endl;
    report << pred_catch_size << endl;
+   report << "nll_catch_size" << endl;
    report << nll_catch_size << endl;
-   report << "predicted survey size comps" << endl;
+   report << "pred_survey_size" << endl;
    report << pred_survey_size << endl;
+   report << "nll_survey_size" << endl;
    report << nll_survey_size << endl;
-   report << "predicted diet props" << endl;
+   report << "pred_dietprop" << endl;
    report << pred_dietprop << endl;
+   report << "nll_dietprop" << endl;
    report << nll_dietprop << endl;
   
 
