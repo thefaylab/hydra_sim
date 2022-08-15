@@ -19,27 +19,38 @@ test1 <- reptoRlist("hydra_sim.rep")
 names(test1)
 ```
 
-Bring in inputs from the -ts.dat file:
+Bring in inputs from the -ts.dat file (note that `hydradata` contains an R object with these inputs).
+
+**ENSURE THE VERSION OF HYDRADATA MATCHES THE INPUTS**
 
 ```{r readtsdat}
 
 library(tidyverse)
 
-datfile <- here::here("hydra_sim_NOBA-ts.dat")
+#datfile <- here::here("hydra_sim_NOBA-ts.dat")
 
 #write a function that splits the dat file appropriately
 # e.g. read from Survey index to end survey index
 
-dattstoRlist <- function(fn, datn){
-  readLines(fn)  %>%          # Read file into a vector of strings
-  paste(collapse = "\n") %>%            # Stick them together with newlines
-  strsplit(paste0("# ", datn, ": +"))          # Split them into groups at the keyword
+#actually don't, use the list that built the dat file instead
 
-}
+# dattstoRlist <- function(fn, datn){
+#   readLines(fn)  %>%          # Read file into a vector of strings
+#   paste(collapse = "\n") %>%            # Stick them together with newlines
+#   strsplit(paste0("# ", datn, ": +"))          # Split them into groups at the keyword
+# 
+# }
+# 
+# dat1 <- dattstoRlist(datfile)
+
+obs_survey <- hydradata::hydraDataList$observedBiomass
+
+obs_catch <- hydradata::hydraDataList$observedCatch
+
+obs_diet <- hydradata::hydraDataList$observedSurvDiet
 
 
 
-dat1 <- dattstoRlist(datfile)
 
 ```
 
@@ -47,7 +58,7 @@ meantime copy paste portions of existing [diagnostics.R](https://github.com/thef
 
 but my report file is not the same?
 
-```{r}
+```{r, eval=FALSE}
 output <- test1
 
 datfile <- here::here("hydra_sim_NOBA-ts.dat")
