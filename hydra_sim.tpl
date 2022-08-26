@@ -273,7 +273,9 @@ DATA_SECTION
   init_int dev_rec_phase		//recruitment deviation estimation phase (could make species specific, currently global)
   init_int dev_F_phase			//fishing mort deviation estimation phase (could make species specific, currently global)
   init_int fqphase              //fishery q estimation phase
+  init_int fsphase              //fishery selectivity estimation phase
   init_int sqphase              //survey q estimation phase
+  init_int ssphase              //survey selectivity estimation phase  
   init_int ssig_phase           //survey sigma (obs error) phase
   init_int csig_phase           //catch sigma (obs error) phase
 
@@ -544,10 +546,10 @@ DATA_SECTION
   !!	}
   !!  }
 
-
-  //fishery selectivity pars from dat file, for now not area specific
-  init_matrix fishsel_c(1,Nspecies,1,Nfleets)  //fishery selectivity c par
-  init_matrix fishsel_d(1,Nspecies,1,Nfleets)  //fishery selectivity d par
+// GF - moved to parameter section
+//  //fishery selectivity pars from dat file, for now not area specific
+//  init_matrix fishsel_c(1,Nspecies,1,Nfleets)  //fishery selectivity c par
+//  init_matrix fishsel_d(1,Nspecies,1,Nfleets)  //fishery selectivity d par
 
   // All inputs below have been added by andyBeet
   init_matrix B0(1,Nareas,1,Nspecies) // Equilibrium biomass. Obtained from a baseline run with zero fishing effort and no Errors added(recruitment, survey, catch)
@@ -850,6 +852,9 @@ PARAMETER_SECTION
   4darray D(1,Nareas,1,Nspecies,1,Tottimesteps,1,Nsizebins) //discard mortality by area, species, size,  timestep
 
   //Fishery selectivities, fleet F and catch, fishery q
+  init_matrix fishsel_pars(1,2,1,Nfleets,fsphase)
+  matrix fishsel_c(1,Nspecies,1,Nfleets)  //fishery selectivity c par
+  matrix fishsel_d(1,Nspecies,1,Nfleets)  //fishery selectivity d par
   4darray fishsel(1,Nareas,1,Nspecies,1,Nfleets,1,Nsizebins)  //fishery selectivity
   5darray Ffl(1,Nareas,1,Nspecies,1,Nfleets,1,Tottimesteps,1,Nsizebins) //fleet specific  Fs
   5darray Dfl(1,Nareas,1,Nspecies,1,Nfleets,1,Tottimesteps,1,Nsizebins) //fleet specific Discard mortaliy s
@@ -906,6 +911,7 @@ PARAMETER_SECTION
   matrix survey_q(1,Nsurveys,1,Nspecies)
 
   //Survey selectivity (will want to be derived based on estimated parameters)
+  init_matrix survey_selpars(1,2,1,Nsurveys,ssphase)
   3darray survey_sel(1,Nsurveys,1,Nspecies,1,Nsizebins)
 
   // //survey obs error
@@ -1262,11 +1268,25 @@ FUNCTION transform_parameters
   //cout << fishery_q << endl;
   //exit(-1);
 
+  //fishery selectivity
+  for (int species=1;species<=Nspecies;species++) {
+   for (int ifleet=1;ifleet<=Nfleets;ifleet++) {
+     fishsel_c(species,ifleet) = fishsel_pars(1,ifleet);
+     fishsel_d(species,ifleet) = fishsel_pars(2,ifleet);
+   }
+  }
+  //cout << "fishery selectivit pars" << endl;
+  //cout << fishsel_c << endl;
+  //cout << fishsel_d << endl;
+  //exit(-1);
+
   for (int i=1;i<=Nsurveys;i++)
    for (int k=1;k<=Nspecies;k++)
    for (int j=1;j<=Nsizebins;j++)
   // need to add survey selectivity at length, but for now set at 1 for all.
-      survey_sel(i,k,j) = 1.;
+  survey_sel(i,k,j) = 1/(1 + mfexp(-(survey_selpars(1,i) +
+                                     (survey_selpars(2,i)*lbinmidpt(k,j)))));
+      //survey_sel(i,k,j) = 1.;
 
    survey_q = mfexp(ln_survey_q);
   // surv_sigma = mfexp(ln_surv_sigma);
@@ -3195,7 +3215,7 @@ FUNCTION evaluate_the_objective_function
   cout << "done survey prey proportions nll" << endl;
 
 
-// Recruitment penalty  (NOT YET WORKING)
+// Recruitment penalty
 
    j = 0;
    dvar_vector resid(1,Nareas*Nspecies*Nyrs);
@@ -3216,6 +3236,8 @@ FUNCTION evaluate_the_objective_function
    nll_recruit = dnorm(resid,sdrec);
 //*/
 
+  cout << "done recruitment nll" << endl;
+
 
 // Calc objective function
    objfun = 0.;
@@ -3231,6 +3253,7 @@ FUNCTION evaluate_the_objective_function
    cout << "nll_catch: " << sum(nll_catch) << endl;
    cout << "nll_catch_size: " << sum(nll_catch_size) << endl;
    cout << "nll_dietprop: " << sum(nll_dietprop) << endl;
+   cout << "nll_recruit: " << sum(nll_recruit) << endl;
    cout << "nll_total: " << objfun << endl;
 
 
@@ -3311,14 +3334,28 @@ REPORT_SECTION
   // report << est_catch_biomass << endl;
   // report << "ObsCatchB Observed catch biomass of fish " << endl;
   // report << obs_catch_biomass << endl;
-   report << "predicted catch size comps" << endl;
+   report << "pred_catch_size" << endl;
    report << pred_catch_size << endl;
+   report << "nll_catch_size" << endl;
    report << nll_catch_size << endl;
-   report << "predicted survey size comps" << endl;
+   report << "pred_survey_size" << endl;
    report << pred_survey_size << endl;
+   report << "nll_survey_size" << endl;
    report << nll_survey_size << endl;
-   report << "predicted diet props" << endl;
+   report << "pred_dietprop" << endl;
    report << pred_dietprop << endl;
+   report << "nll_dietprop" << endl;
    report << nll_dietprop << endl;
-  
+   report << "fishsel" << endl;
+   for (int i=1;i<=Nspecies;i++) {
+    for (int j=1;j<=Nfleets;j++) {
+     report << i << " " << j << " " << fishsel(1,i,j) << endl;
+    }
+   }
+   report << "survey_sel" << endl;
+   for (int i=1;i<=Nspecies;i++) {
+    for (int j=1;j<=Nsurveys;j++) {
+     report << i << " " << j << " " << survey_sel(j,i) << endl;
+    }
+   }
 
