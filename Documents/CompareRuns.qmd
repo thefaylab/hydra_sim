@@ -4,6 +4,96 @@ format: html
 editor: visual
 ---
 
+## Build the data
+
+Use `hydradata` package to create the .dat and .pin files. We are working from the forked `hydradata` repository at https://github.com/thefaylab/hydradata for this project. All of the input .csv files originally created in [this script](https://github.com/ices-eg/wg_WGSAM/blob/master/SkillAssessment/SkillAssessProject.Rmd) have been copied to the `data-raw` folder on thefaylab/hydradata repo. Note that some are still in use for variables ww are not changing. 
+
+Now we are building inputs directly from the [`mskeyrun` data package](https://noaa-edab.github.io/ms-keyrun/) with a new function has been incorporated into the `hydradata` package [`hydradata::create_RData_mskeyrun(dattype = c("sim", "real"), nlenbin = 5)`](https://github.com/thefaylab/hydradata/blob/master/data-raw/create_RData_mskeyrun.R`).   
+
+The new function allows us to specify whether we are building with simulated or real data, and the number of length bins to use in the input files. Default is 5 length bins but we will change this to generate different .dat and .pin files. 
+
+The `create_RData_mskeyrun.R` file was sourced, and `create_RData_mskeyrun("sim", nlenbin = 5)` was run to make a new `hydraDataList_msk.rda` file in the package. Then the package is built locally, R is restarted, and the following code block is run to produce input files. 
+
+We probably want to streamline the building process and keep separate hydradatalist R objects that have the different bin definitions. 
+
+```{r, writedatfile5, eval=FALSE}
+
+library(here)
+library(hydradata)
+inputs <- setup_default_inputs()
+inputs$outDir <- here()
+
+inputs$outputFilename <- "hydra_sim_NOBA_5bin" 
+
+hydraDataList_5bin <- create_datpin_files(inputs,hydraDataList_msk)
+
+# this saves the specific hydralist object, so we could saveRDS it to a diagnostics folder?
+# advantage of rds format is we can assign it when reading it in to diagnostics scripts
+saveRDS(hydraDataList_5bin, file.path(here("inputRdatalists/hydraDataList_5bin.rds")))
+
+```
+
+Run `create_RData_mskeyrun("sim", nlenbin = 10)` in `hydradata`, rebuild package, restart R, then...
+
+```{r, writedatfile10, eval=FALSE}
+
+library(here)
+library(hydradata)
+inputs <- setup_default_inputs()
+inputs$outDir <- here()
+
+inputs$outputFilename <- "hydra_sim_NOBA_10bin" 
+
+hydraDataList_10bin <- create_datpin_files(inputs,hydraDataList_msk)
+
+# this saves the specific hydralist object, so we could saveRDS it to a diagnostics folder?
+# advantage of rds format is we can assign it when reading it in to diagnostics scripts
+saveRDS(hydraDataList_10bin, file.path(here("inputRdatalists/hydraDataList_10bin.rds")))
+
+```
+
+Run `create_RData_mskeyrun("sim", nlenbin = 15)` in `hydradata`, rebuild package, restart R, then...
+
+```{r, writedatfile15, eval=FALSE}
+
+library(here)
+library(hydradata)
+inputs <- setup_default_inputs()
+inputs$outDir <- here()
+
+inputs$outputFilename <- "hydra_sim_NOBA_15bin" 
+
+hydraDataList_15bin <- create_datpin_files(inputs,hydraDataList_msk)
+
+# this saves the specific hydralist object, so we could saveRDS it to a diagnostics folder?
+# advantage of rds format is we can assign it when reading it in to diagnostics scripts
+saveRDS(hydraDataList_15bin, file.path(here("inputRdatalists/hydraDataList_15bin.rds")))
+
+```
+
+Run `create_RData_mskeyrun("sim", nlenbin = 20)` in `hydradata`, rebuild package, restart R, then...
+
+```{r, writedatfile20, eval=FALSE}
+
+library(here)
+library(hydradata)
+inputs <- setup_default_inputs()
+inputs$outDir <- here()
+
+inputs$outputFilename <- "hydra_sim_NOBA_20bin" 
+
+hydraDataList_20bin <- create_datpin_files(inputs,hydraDataList_msk)
+
+# this saves the specific hydralist object, so we could saveRDS it to a diagnostics folder?
+# advantage of rds format is we can assign it when reading it in to diagnostics scripts
+saveRDS(hydraDataList_20bin, file.path(here("inputRdatalists/hydraDataList_20bin.rds")))
+
+```
+
+Yes, slightly tedious, but doable.
+
+Next up, real data. But first lets compare some simulated outputs changing the number of bins.
+
 ## Sarah's first run
 
 Bring in code from [hydra_diag](https://github.com/thefaylab/hydra_diag):
