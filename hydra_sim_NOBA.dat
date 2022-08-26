@@ -979,7 +979,11 @@
   2
 #  init_int fqphase              //fishery q estimation phase
   1
+#  init_int fsphase              //fishery selectivity estimation phase
+  2
 #  init_int sqphase              //survey q estimation phase 
+  1
+#  init_int ssphase              //survey selectivity estimation phase 
   1
 #   init_int ssig_phase           //survey sigma (obs error) phase
   -1
@@ -1144,15 +1148,6 @@
   0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5
 #  init_vector sd_sizepref(1,Nspecies)              //pred sizebins
   2 2 2 2 2 2 2 2 2 2 2
-#  //fishery selectivity pars from dat file, for now not area specific
-#  init_matrix fishsel_c(1,Nfleets,1,Nspecies)  //fishery selectivity c par
-  #benthic trawl and pelagic trawl and longline
-  1 1 1 1 1 1 1 1 1 1 1
-  1 1 1 1 1 1 1 1 1 1 1
-#  init_matrix fishsel_d(1,Nfleets,1,Nspecies)  //fishery selectivity c par
-  #benthic trawl and pelagic trawl and longline
-  1 1 1 1 1 1 1 1 1 1 1
-  1 1 1 1 1 1 1 1 1 1 1  
 # Following content added after ICES publication by Gaichas et al. 2014
 # Made by Andy Beet from Dec 2016 onward
 # Equilibrium Biomass. B0(1,Nspecies). Tthese values are obtained by running hydra_sim without any error and zero fishing effort
