@@ -101,17 +101,17 @@ Bring in code from [hydra_diag](https://github.com/thefaylab/hydra_diag):
 ```{r hydradiag}
 
 # bring in reptoRlist
-source("https://raw.githubusercontent.com/thefaylab/hydra_diag/main/Diagnostics/read.report.R")
+source("https://raw.githubusercontent.com/thefaylab/hydra_diag/main/R/read.report.R")
 
 # read the rep file
-test1 <- reptoRlist("hydra_sim.rep")
+test1 <- reptoRlist(here::here("hydra_sim.rep"))
 
 names(test1)
 ```
 
 Bring in inputs from the -ts.dat file (note that `hydradata` contains an R object with these inputs).
 
-**ENSURE THE VERSION OF HYDRADATA MATCHES THE INPUTS**
+**ENSURE THE VERSION OF HYDRADATA MATCHES THE INPUTS** I saved the Rlist with the same name as dat and pin files so we can automate this
 
 ```{r readtsdat}
 
@@ -133,11 +133,13 @@ library(tidyverse)
 # 
 # dat1 <- dattstoRlist(datfile)
 
-obs_survey <- hydradata::hydraDataList$observedBiomass
+datlist <- hydraDataList_5bin
 
-obs_catch <- hydradata::hydraDataList$observedCatch
+obs_survey <- datlist$observedBiomass
 
-obs_diet <- hydradata::hydraDataList$observedSurvDiet
+obs_catch <- datlist$observedCatch
+
+obs_diet <- datlist$observedSurvDiet
 
 
 
