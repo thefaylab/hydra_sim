@@ -2,7 +2,7 @@
       #and used all inputs from csv files found in folder:
       #hydradata/data-raw
 # init_int debug
-  4
+  0
 # init_int Nyrs
   81
 # init_int Nspecies
@@ -1052,7 +1052,7 @@
 # 3=SSB gamma, 4=SSB Ricker, 5=SSB Beverton Holt added April 2014,6=Shepherd (added Beet Mar 2017)
   9 9 9 9 9 9 9 9 9 9 9
 #   init_ivector stochrec(1,Nspecies)  //switch for stochastic recruitment. 1 = add error, 0= no error
-  1 1 1 1 1 1 1 1 1 1 1
+  0 0 0 0 0 0 0 0 0 0 0
 #  init_matrix sexratio(1,Nareas,1,Nspecies)  // this is proportion females
   0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5
  #  init_matrix recruitment_covwt(1,Nspecies,1,Nrecruitment_cov)	//recruitment covariate weighting factor
@@ -1162,7 +1162,7 @@
 # Following content added after ICES publication by Gaichas et al. 2014
 # Made by Andy Beet from Dec 2016 onward
 # Equilibrium Biomass. B0(1,Nspecies). Tthese values are obtained by running hydra_sim without any error and zero fishing effort
-  1171462.838603 5790813.871714 93325.362233 185780.314982 157845.829877 404985.28999 1022866.421489 503769.829682 227956.145169 323601.227218 354971.439355
+  6548275.38228385 1049867.74723836 419044.998499798 938292.061561652 1344637.45248329 6866971.82712644 5903465.62946161 1921273.2304157 338366.873055745 2168688.38395095 18377890.4695002
 #number of Guilds numGuilds.
   11
 #Guild Membership guildMembership. 
@@ -1176,7 +1176,7 @@
 #init_vector minExploitation(1,Nfleets) minimum Exploitation rates imposed by each fleet
   1e-05 1e-05
 #init_vector maxExploitation(1,Nfleets) maximum Exploitation rates imposed by each fleet
-  1e-05 1e-05
+  0.999 0.999
 # init_vector minMaxExploitation(1,2) - [MinExploitation, MaxExploitation
   0.05 0.05
 # init_vector minMaxThreshold(1,2) - [MinThreshold, MaxThreshold
@@ -1205,73 +1205,73 @@
 # init_4darray discard_Coef(1,Nareas,1,Nspecies,1,Nfleets,1,Nsizebins)
 # proportion of each species that is discarded for each fleet(Bottom, Pelagic, Fixed)
 # Blue_whiting fleet x sizeclass
-  0 0 0 0 0 0 0 0 0 0
-  0 0 0 0 0 0 0 0 0 0
+  0 0 0 0 0
+  0 0 0 0 0
 # Capelin fleet x sizeclass
-  0 0 0 0 0 0 0 0 0 0
-  0 0 0 0 0 0 0 0 0 0
+  0 0 0 0 0
+  0 0 0 0 0
 # Green_halibut fleet x sizeclass
-  0 0 0 0 0 0 0 0 0 0
-  0 0 0 0 0 0 0 0 0 0
+  0 0 0 0 0
+  0 0 0 0 0
 # Haddock fleet x sizeclass
-  0 0 0 0 0 0 0 0 0 0
-  0 0 0 0 0 0 0 0 0 0
+  0 0 0 0 0
+  0 0 0 0 0
 # Long_rough_dab fleet x sizeclass
-  0 0 0 0 0 0 0 0 0 0
-  0 0 0 0 0 0 0 0 0 0
+  0 0 0 0 0
+  0 0 0 0 0
 # Mackerel fleet x sizeclass
-  0 0 0 0 0 0 0 0 0 0
-  0 0 0 0 0 0 0 0 0 0
+  0 0 0 0 0
+  0 0 0 0 0
 # North_atl_cod fleet x sizeclass
-  0 0 0 0 0 0 0 0 0 0
-  0 0 0 0 0 0 0 0 0 0
+  0 0 0 0 0
+  0 0 0 0 0
 # Norwegian_ssh fleet x sizeclass
-  0 0 0 0 0 0 0 0 0 0
-  0 0 0 0 0 0 0 0 0 0
+  0 0 0 0 0
+  0 0 0 0 0
 # Polar_cod fleet x sizeclass
-  0 0 0 0 0 0 0 0 0 0
-  0 0 0 0 0 0 0 0 0 0
+  0 0 0 0 0
+  0 0 0 0 0
 # Redfish fleet x sizeclass
-  0 0 0 0 0 0 0 0 0 0
-  0 0 0 0 0 0 0 0 0 0
+  0 0 0 0 0
+  0 0 0 0 0
 # Saithe fleet x sizeclass
-  0 0 0 0 0 0 0 0 0 0
-  0 0 0 0 0 0 0 0 0 0
+  0 0 0 0 0
+  0 0 0 0 0
 # init_4darray discardSurvival_Coef(1,Nareas,1,1,Nspecies,1,Nfleets,1,Nsizebins)
 # proportion of discards that survive being thrown back
 # Blue_whiting fleet x sizeclass
-  0 0 0 0 0 0 0 0 0 0
-  0 0 0 0 0 0 0 0 0 0
+  1 1 1 1 1
+  1 1 1 1 1
 # Capelin fleet x sizeclass
-  0 0 0 0 0 0 0 0 0 0
-  0 0 0 0 0 0 0 0 0 0
+  1 1 1 1 1
+  1 1 1 1 1
 # Green_halibut fleet x sizeclass
-  0 0 0 0 0 0 0 0 0 0
-  0 0 0 0 0 0 0 0 0 0
+  1 1 1 1 1
+  1 1 1 1 1
 # Haddock fleet x sizeclass
-  0 0 0 0 0 0 0 0 0 0
-  0 0 0 0 0 0 0 0 0 0
+  1 1 1 1 1
+  1 1 1 1 1
 # Long_rough_dab fleet x sizeclass
-  0 0 0 0 0 0 0 0 0 0
-  0 0 0 0 0 0 0 0 0 0
+  1 1 1 1 1
+  1 1 1 1 1
 # Mackerel fleet x sizeclass
-  0 0 0 0 0 0 0 0 0 0
-  0 0 0 0 0 0 0 0 0 0
+  1 1 1 1 1
+  1 1 1 1 1
 # North_atl_cod fleet x sizeclass
-  0 0 0 0 0 0 0 0 0 0
-  0 0 0 0 0 0 0 0 0 0
+  1 1 1 1 1
+  1 1 1 1 1
 # Norwegian_ssh fleet x sizeclass
-  0 0 0 0 0 0 0 0 0 0
-  0 0 0 0 0 0 0 0 0 0
+  1 1 1 1 1
+  1 1 1 1 1
 # Polar_cod fleet x sizeclass
-  0 0 0 0 0 0 0 0 0 0
-  0 0 0 0 0 0 0 0 0 0
+  1 1 1 1 1
+  1 1 1 1 1
 # Redfish fleet x sizeclass
-  0 0 0 0 0 0 0 0 0 0
-  0 0 0 0 0 0 0 0 0 0
+  1 1 1 1 1
+  1 1 1 1 1
 # Saithe fleet x sizeclass
-  0 0 0 0 0 0 0 0 0 0
-  0 0 0 0 0 0 0 0 0 0
+  1 1 1 1 1
+  1 1 1 1 1
 # predOrPrey(1,Nspecies). binary vector indicating predators. inverse = prey
   1 0 1 1 1 0 1 1 0 1 1
 # bandwidth_metric. (in yrs) for variance estimate of catch - moving window
@@ -1280,7 +1280,8 @@
   0.2
 # init_3darray indicator_fishery_q(1,Nareas,1,Nfleets,1,Nspecies)
 # which species represent targeted catch. These are used to estmate exploitation rate in assessment
-  1 1 1 1 0 1 2 1 0 1 1
+  1 1 1 1 0 1 0 1 0 1 1
+  0 0 0 0 0 0 1 0 0 0 0
 # AR_parameters(1,3) Survey, recruitment, Catch 
   0 0 0
 # init_int flagMSE determins level of output (0 or 1)
