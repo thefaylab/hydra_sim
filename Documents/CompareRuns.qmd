@@ -235,7 +235,7 @@ indexfits <- gettables(repfile, biorows, catchrows)
 
 ```{r}
 #survey_obs <- hydraDataList$observedBiomass %>% 
-survey_obspred <- indexfits[1] %>%
+survey_obspred <- indexfits[1][[1]] %>%
   mutate(obs = biomass + 1e-07,
          pred = pred_bio + 1e-07,
          log_obs = log(obs),
