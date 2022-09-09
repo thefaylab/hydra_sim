@@ -177,6 +177,7 @@ Bring in inputs from the -ts.dat file (note that `hydradata` contains an R objec
 library(tidyverse)
 
 hydraDataList <- readRDS(here::here("inputRdatalists/hydraDataList_5bin.rds"))
+repfile <- here::here("results/05bin/hydra_sim.rep")
 
 obs_surveyB <- hydraDataList$observedBiomass
 
@@ -211,15 +212,61 @@ gettables <- function(repfile, biorows, catchrows){
 
   catchlist <- as.list(tablelist$`2`[1:catchrows])
   
+  ct <- lapply(catchlist[-c(1:2)], function(x) read.table(textConnection(x), header = FALSE))
+  catchdf <- do.call(rbind, ct)
+  names(catchdf) <- c("fishery", "area" ,   "year" ,   "species", "catch",  "cv",
+                     "pred_catch", "residual", "nll")
   
+  tablist <- list(survdf, catchdf)
+  
+  return(tablist)
 
 }
 
-repfile <- here::here("results/05bin/hydra_sim.rep")
+
 biorows <- dim(obs_surveyB)[1]
 catchrows <- dim(obs_catchB)[1]
 
+indexfits <- gettables(repfile, biorows, catchrows)
+
 ```
+
+## Plot indices
+
+```{r}
+#survey_obs <- hydraDataList$observedBiomass %>% 
+survey_obspred <- indexfits[1] %>%
+  mutate(obs = biomass + 1e-07,
+         pred = pred_bio + 1e-07,
+         log_obs = log(obs),
+         log_pred = log(pred),
+         log_lo = log_obs - 1.96*cv,
+         log_hi = log_obs + 1.96*cv,
+         obs_lo = exp(log_lo),
+         obs_hi = exp(log_hi),
+         species = hydraDataList$speciesList[species])
+```
+
+### survey indices of abundance {.tabset}
+```{r, results = 'asis'}
+for (surv in unique(survey_obspred$survey)) {
+  cat("#### Survey #", surv, " \n")
+  p1 <- survey_obspred %>% 
+  filter(survey == surv) %>% 
+  ggplot() +
+  aes(x= year, y = log_obs, group = species, col=factor(survey)) +
+  geom_errorbar(aes(ymin = log_lo, ymax = log_hi)) +
+  geom_point() +
+  geom_line(aes(x=year, y=log_pred), col = "blue") +
+  facet_wrap(~species, scales = "free_y") +
+  theme_bw() +
+  guides(species = "None")
+  print(p1)
+  cat(" \n\n")
+  }
+```
+```
+
 
 Above does indices, below does comps
 
