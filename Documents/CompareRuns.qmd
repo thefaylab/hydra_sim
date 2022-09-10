@@ -143,7 +143,7 @@ Nope, same error. We will now use only 5 and 10 bins.
 
 Some work and create output in the results directory, needs more tweaking for current shape of -ts.dat inputs.
 
-```{r}
+```{r, eval=FALSE}
 
 hydradata::create_documentation(outFile = "documentation-5bin.html", outDir = here::here("results/05bin"), data = readRDS(here::here("inputRdatalists/hydraDataList_5bin.rds")))
 
@@ -247,7 +247,7 @@ survey_obspred <- indexfits[1][[1]] %>%
          species = hydraDataList$speciesList[species])
 ```
 
-### survey indices of abundance {.tabset}
+### Fits to survey indices of abundance {.tabset}
 ```{r, results = 'asis'}
 for (surv in unique(survey_obspred$survey)) {
   cat("#### Survey #", surv, " \n")
@@ -265,7 +265,44 @@ for (surv in unique(survey_obspred$survey)) {
   cat(" \n\n")
   }
 ```
+### {-}
+
+```{r}
+#catch_obs <- hydraDataList$observedCatch %>% 
+catch_obspred <- indexfits[2][[1]] %>% 
+  mutate(obs = catch + 1e-07,
+         pred = pred_catch + 1e-07,
+         log_obs = log(obs),
+         log_pred = log(pred),
+         log_lo = log_obs - 1.96*cv,
+         log_hi = log_obs + 1.96*cv,
+         obs_lo = exp(log_lo),
+         obs_hi = exp(log_hi),
+         species = hydraDataList$speciesList[species])
 ```
+
+### fits to Catch time series {.tabset} 
+
+```{r, results = 'asis'}
+for (fleet in unique(catch_obspred$fishery)) {
+  cat("#### Fleet #", fleet, " \n")
+p3 <- catch_obspred %>% 
+  filter(fishery == fleet,
+         catch > 0) %>% 
+  ggplot() +
+  aes(x= year, y = log_obs, group = species, col= factor(fishery)) +
+  geom_errorbar(aes(ymin = log_lo, ymax = log_hi)) +
+  geom_point() +
+  geom_line(aes(x=year, y=log_pred), col = "blue") +
+  facet_wrap(~species, scales = "free_y") +
+  theme_bw() +
+  guides(species = "None")
+  print(p3)
+  cat(" \n\n")
+}
+```
+
+### {-}
 
 
 Above does indices, below does comps
@@ -366,4 +403,5 @@ temp.diet = data[which(data$label == "diet"),]
 
 
 ```
+
 
