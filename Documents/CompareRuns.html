@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.0.36">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Hydra test comparisons</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="CompareRuns_files/libs/clipboard/clipboard.min.js"></script>
+<script src="CompareRuns_files/libs/quarto-html/quarto.js"></script>
+<script src="CompareRuns_files/libs/quarto-html/popper.min.js"></script>
+<script src="CompareRuns_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="CompareRuns_files/libs/quarto-html/anchor.min.js"></script>
+<link href="CompareRuns_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="CompareRuns_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="CompareRuns_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="CompareRuns_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="CompareRuns_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body class="fullcontent">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Hydra test comparisons</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    
+  </div>
+  
+
+</header>
+
+<section id="build-the-data" class="level2">
+<h2 class="anchored" data-anchor-id="build-the-data">Build the data</h2>
+<p>Use <code>hydradata</code> package to create the .dat and .pin files. We are working from the forked <code>hydradata</code> repository at https://github.com/thefaylab/hydradata for this project. All of the input .csv files originally created in <a href="https://github.com/ices-eg/wg_WGSAM/blob/master/SkillAssessment/SkillAssessProject.Rmd">this script</a> have been copied to the <code>data-raw</code> folder on thefaylab/hydradata repo. Note that some are still in use for variables ww are not changing.</p>
+<p>Now we are building inputs directly from the <a href="https://noaa-edab.github.io/ms-keyrun/"><code>mskeyrun</code> data package</a> with a new function has been incorporated into the <code>hydradata</code> package <a href="https://github.com/thefaylab/hydradata/blob/master/data-raw/create_RData_mskeyrun.R%60"><code>hydradata::create_RData_mskeyrun(dattype = c("sim", "real"), nlenbin = 5)</code></a>.</p>
+<p>The new function allows us to specify whether we are building with simulated or real data, and the number of length bins to use in the input files. Default is 5 length bins but we will change this to generate different .dat and .pin files.</p>
+<p>The <code>create_RData_mskeyrun.R</code> file was sourced, and <code>create_RData_mskeyrun("sim", nlenbin = 5)</code> was run to make a new <code>hydraDataList_msk.rda</code> file in the package. Then the package is built locally, R is restarted, and the following code block is run to produce input files.</p>
+<p>We probably want to streamline the building process and keep separate hydradatalist R objects that have the different bin definitions.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(here)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(hydradata)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>inputs <span class="ot">&lt;-</span> <span class="fu">setup_default_inputs</span>()</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>inputs<span class="sc">$</span>outDir <span class="ot">&lt;-</span> <span class="fu">here</span>()</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>inputs<span class="sc">$</span>outputFilename <span class="ot">&lt;-</span> <span class="st">"hydra_sim_NOBA_5bin"</span> </span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>hydraDataList_5bin <span class="ot">&lt;-</span> <span class="fu">create_datpin_files</span>(inputs,hydraDataList_msk)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co"># this saves the specific hydralist object, so we could saveRDS it to a diagnostics folder?</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co"># advantage of rds format is we can assign it when reading it in to diagnostics scripts</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="fu">saveRDS</span>(hydraDataList_5bin, <span class="fu">file.path</span>(<span class="fu">here</span>(<span class="st">"inputRdatalists/hydraDataList_5bin.rds"</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Run <code>create_RData_mskeyrun("sim", nlenbin = 10)</code> in <code>hydradata</code>, rebuild package, restart R, then…</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(here)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(hydradata)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>inputs <span class="ot">&lt;-</span> <span class="fu">setup_default_inputs</span>()</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>inputs<span class="sc">$</span>outDir <span class="ot">&lt;-</span> <span class="fu">here</span>()</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>inputs<span class="sc">$</span>outputFilename <span class="ot">&lt;-</span> <span class="st">"hydra_sim_NOBA_10bin"</span> </span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>hydraDataList_10bin <span class="ot">&lt;-</span> <span class="fu">create_datpin_files</span>(inputs,hydraDataList_msk)</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="co"># this saves the specific hydralist object, so we could saveRDS it to a diagnostics folder?</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="co"># advantage of rds format is we can assign it when reading it in to diagnostics scripts</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="fu">saveRDS</span>(hydraDataList_10bin, <span class="fu">file.path</span>(<span class="fu">here</span>(<span class="st">"inputRdatalists/hydraDataList_10bin.rds"</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Run <code>create_RData_mskeyrun("sim", nlenbin = 15)</code> in <code>hydradata</code>, rebuild package, restart R, then…</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(here)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(hydradata)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>inputs <span class="ot">&lt;-</span> <span class="fu">setup_default_inputs</span>()</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>inputs<span class="sc">$</span>outDir <span class="ot">&lt;-</span> <span class="fu">here</span>()</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>inputs<span class="sc">$</span>outputFilename <span class="ot">&lt;-</span> <span class="st">"hydra_sim_NOBA_15bin"</span> </span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>hydraDataList_15bin <span class="ot">&lt;-</span> <span class="fu">create_datpin_files</span>(inputs,hydraDataList_msk)</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="co"># this saves the specific hydralist object, so we could saveRDS it to a diagnostics folder?</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="co"># advantage of rds format is we can assign it when reading it in to diagnostics scripts</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="fu">saveRDS</span>(hydraDataList_15bin, <span class="fu">file.path</span>(<span class="fu">here</span>(<span class="st">"inputRdatalists/hydraDataList_15bin.rds"</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Run <code>create_RData_mskeyrun("sim", nlenbin = 20)</code> in <code>hydradata</code>, rebuild package, restart R, then…</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(here)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(hydradata)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>inputs <span class="ot">&lt;-</span> <span class="fu">setup_default_inputs</span>()</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>inputs<span class="sc">$</span>outDir <span class="ot">&lt;-</span> <span class="fu">here</span>()</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>inputs<span class="sc">$</span>outputFilename <span class="ot">&lt;-</span> <span class="st">"hydra_sim_NOBA_20bin"</span> </span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>hydraDataList_20bin <span class="ot">&lt;-</span> <span class="fu">create_datpin_files</span>(inputs,hydraDataList_msk)</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="co"># this saves the specific hydralist object, so we could saveRDS it to a diagnostics folder?</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="co"># advantage of rds format is we can assign it when reading it in to diagnostics scripts</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="fu">saveRDS</span>(hydraDataList_20bin, <span class="fu">file.path</span>(<span class="fu">here</span>(<span class="st">"inputRdatalists/hydraDataList_20bin.rds"</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Yes, slightly tedious, but doable.</p>
+<p>Next up, real data. But first lets compare some simulated outputs changing the number of bins.</p>
+</section>
+<section id="and-10-bins-work-15-and-20-dont" class="level2">
+<h2 class="anchored" data-anchor-id="and-10-bins-work-15-and-20-dont">5 and 10 bins work, 15 and 20 dont</h2>
+<p>Model errors out. Terminal output:</p>
+<pre><code>NECLNASARAHMAC:hydra_sim sarah.gaichas$ ./hydra_sim -ind hydra_sim_NOBA_15bin.dat -nohess -ainp hydra_sim_NOBA_15bin.pin
+q par map
+7
+ 1 7
+ 1 2 1
+ 1 3 1
+ 1 4 1
+ 1 6 1
+ 1 8 1
+ 1 10 1
+ 1 11 1
+1701
+completed predicted values for surveys
+starting commercial catch nll
+Error: Invalid index 25389 used for array range [1, 1] in "prevariable&amp; dvar4_array::operator() (int i, int j, int k)".
+hslice index out of bounds</code></pre>
+<p>I wonder if the sizes are just too thin. Capelin is down to 2 cm size bins. Lets try 12 and see?</p>
+<p>Run <code>create_RData_mskeyrun("sim", nlenbin = 12)</code> in <code>hydradata</code>, rebuild package, restart R, then…</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(here)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(hydradata)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>inputs <span class="ot">&lt;-</span> <span class="fu">setup_default_inputs</span>()</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>inputs<span class="sc">$</span>outDir <span class="ot">&lt;-</span> <span class="fu">here</span>()</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>inputs<span class="sc">$</span>outputFilename <span class="ot">&lt;-</span> <span class="st">"hydra_sim_NOBA_12bin"</span> </span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>hydraDataList_12bin <span class="ot">&lt;-</span> <span class="fu">create_datpin_files</span>(inputs,hydraDataList_msk)</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="co"># this saves the specific hydralist object, so we could saveRDS it to a diagnostics folder?</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="co"># advantage of rds format is we can assign it when reading it in to diagnostics scripts</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="fu">saveRDS</span>(hydraDataList_12bin, <span class="fu">file.path</span>(<span class="fu">here</span>(<span class="st">"inputRdatalists/hydraDataList_12bin.rds"</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Nope, same error. We will now use only 5 and 10 bins.</p>
+</section>
+<section id="can-we-use-hydradatas-plot-functions" class="level2">
+<h2 class="anchored" data-anchor-id="can-we-use-hydradatas-plot-functions">Can we use hydradata’s plot functions?</h2>
+<p>Some work and create output in the results directory, needs more tweaking for current shape of -ts.dat inputs.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>hydradata<span class="sc">::</span><span class="fu">create_documentation</span>(<span class="at">outFile =</span> <span class="st">"documentation-5bin.html"</span>, <span class="at">outDir =</span> here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"results/05bin"</span>), <span class="at">data =</span> <span class="fu">readRDS</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"inputRdatalists/hydraDataList_5bin.rds"</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="sarahs-first-run-5-length-bins-fully-from-mskeyrun-source" class="level2">
+<h2 class="anchored" data-anchor-id="sarahs-first-run-5-length-bins-fully-from-mskeyrun-source">Sarah’s first run, 5 length bins fully from mskeyrun source</h2>
+<p>Bring in code from <a href="https://github.com/thefaylab/hydra_diag">hydra_diag</a>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># bring in reptoRlist</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"https://raw.githubusercontent.com/thefaylab/hydra_diag/main/R/read.report.R"</span>)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co"># read the rep file</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>output <span class="ot">&lt;-</span> <span class="fu">reptoRlist</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"results/05bin/hydra_sim.rep"</span>))</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(output)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "EstNsize"         "EstBsize"         "EstRec"           "EstFsize"        
+ [5] "EstM2size"        "table"            "survey"           "catch"           
+ [9] "pred_catch_size"  "nll_catch_size"   "pred_survey_size" "nll_survey_size" 
+[13] "pred_dietprop"    "nll_dietprop"     "fishsel"          "survey_sel"      </code></pre>
+</div>
+</div>
+<p>Bring in inputs from the -ts.dat file (note that <code>hydradata</code> contains an R object with these inputs). The <code>hydra_diag/hydra-diagnostics.rmd</code> now takes advantages of this.</p>
+<p><strong>ENSURE THE VERSION OF HYDRADATA MATCHES THE INPUTS</strong> I saved the Rlist with the same name as dat and pin files so we can automate this</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>── Attaching packages ─────────────────────────────────────── tidyverse 1.3.2 ──
+✔ ggplot2 3.3.6     ✔ purrr   0.3.4
+✔ tibble  3.1.8     ✔ dplyr   1.0.9
+✔ tidyr   1.2.0     ✔ stringr 1.4.0
+✔ readr   2.1.2     ✔ forcats 0.5.1
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>hydraDataList <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"inputRdatalists/hydraDataList_5bin.rds"</span>))</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>repfile <span class="ot">&lt;-</span> here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"results/05bin/hydra_sim.rep"</span>)</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>obs_surveyB <span class="ot">&lt;-</span> hydraDataList<span class="sc">$</span>observedBiomass</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>obs_catchB <span class="ot">&lt;-</span> hydraDataList<span class="sc">$</span>observedCatch</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="co">#obs_diet &lt;- datlist$observedSurvDiet #done below</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Function reptoRlist cannot read the tables of fits to survey and catch indices correctly.</p>
+<p>Eventually fix in <code>hydra_sim</code> code report section, but for now read from already generated rep files:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>gettables <span class="ot">&lt;-</span> <span class="cf">function</span>(repfile, biorows, catchrows){</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># scan repfile to the line "table of fits to survey"</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># next line is "survey biomass data, predicted, residual, nll"</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># columns are the -ts file inputs with predicted B, residual, and nll appended</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># based on https://stackoverflow.com/questions/37663246/extract-data-between-a-pattern-from-a-text-file</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>  reptext <span class="ot">&lt;-</span> <span class="fu">readLines</span>(repfile)</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>  tablelist <span class="ot">&lt;-</span> <span class="fu">split</span>(reptext, <span class="fu">cumsum</span>(<span class="fu">grepl</span>(<span class="at">pattern =</span> <span class="st">'table of fits to'</span>, reptext)))</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>  survlist <span class="ot">&lt;-</span> <span class="fu">as.list</span>(tablelist<span class="sc">$</span><span class="st">`</span><span class="at">1</span><span class="st">`</span>[<span class="dv">1</span><span class="sc">:</span>biorows])</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>  sv <span class="ot">&lt;-</span> <span class="fu">lapply</span>(survlist[<span class="sc">-</span><span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>)], <span class="cf">function</span>(x) <span class="fu">read.table</span>(<span class="fu">textConnection</span>(x), <span class="at">header =</span> <span class="cn">FALSE</span>))</span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>  survdf <span class="ot">&lt;-</span> <span class="fu">do.call</span>(rbind, sv)</span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">names</span>(survdf) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"survey"</span>,<span class="st">"year"</span>, <span class="st">"species"</span>, <span class="st">"biomass"</span>, <span class="st">"cv"</span>,</span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>                     <span class="st">"pred_bio"</span>, <span class="st">"residual"</span>, <span class="st">"nll"</span>)</span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>  catchlist <span class="ot">&lt;-</span> <span class="fu">as.list</span>(tablelist<span class="sc">$</span><span class="st">`</span><span class="at">2</span><span class="st">`</span>[<span class="dv">1</span><span class="sc">:</span>catchrows])</span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a>  ct <span class="ot">&lt;-</span> <span class="fu">lapply</span>(catchlist[<span class="sc">-</span><span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>)], <span class="cf">function</span>(x) <span class="fu">read.table</span>(<span class="fu">textConnection</span>(x), <span class="at">header =</span> <span class="cn">FALSE</span>))</span>
+<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a>  catchdf <span class="ot">&lt;-</span> <span class="fu">do.call</span>(rbind, ct)</span>
+<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">names</span>(catchdf) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"fishery"</span>, <span class="st">"area"</span> ,   <span class="st">"year"</span> ,   <span class="st">"species"</span>, <span class="st">"catch"</span>,  <span class="st">"cv"</span>,</span>
+<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a>                     <span class="st">"pred_catch"</span>, <span class="st">"residual"</span>, <span class="st">"nll"</span>)</span>
+<span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb13-25"><a href="#cb13-25" aria-hidden="true" tabindex="-1"></a>  tablist <span class="ot">&lt;-</span> <span class="fu">list</span>(survdf, catchdf)</span>
+<span id="cb13-26"><a href="#cb13-26" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb13-27"><a href="#cb13-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(tablist)</span>
+<span id="cb13-28"><a href="#cb13-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-29"><a href="#cb13-29" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb13-30"><a href="#cb13-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-31"><a href="#cb13-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-32"><a href="#cb13-32" aria-hidden="true" tabindex="-1"></a>biorows <span class="ot">&lt;-</span> <span class="fu">dim</span>(obs_surveyB)[<span class="dv">1</span>]</span>
+<span id="cb13-33"><a href="#cb13-33" aria-hidden="true" tabindex="-1"></a>catchrows <span class="ot">&lt;-</span> <span class="fu">dim</span>(obs_catchB)[<span class="dv">1</span>]</span>
+<span id="cb13-34"><a href="#cb13-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-35"><a href="#cb13-35" aria-hidden="true" tabindex="-1"></a>indexfits <span class="ot">&lt;-</span> <span class="fu">gettables</span>(repfile, biorows, catchrows)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="plot-indices" class="level2">
+<h2 class="anchored" data-anchor-id="plot-indices">Plot indices</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co">#survey_obs &lt;- hydraDataList$observedBiomass %&gt;% </span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>survey_obspred <span class="ot">&lt;-</span> indexfits[<span class="dv">1</span>][[<span class="dv">1</span>]] <span class="sc">%&gt;%</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">obs =</span> biomass <span class="sc">+</span> <span class="fl">1e-07</span>,</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>         <span class="at">pred =</span> pred_bio <span class="sc">+</span> <span class="fl">1e-07</span>,</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>         <span class="at">log_obs =</span> <span class="fu">log</span>(obs),</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>         <span class="at">log_pred =</span> <span class="fu">log</span>(pred),</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>         <span class="at">log_lo =</span> log_obs <span class="sc">-</span> <span class="fl">1.96</span><span class="sc">*</span>cv,</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>         <span class="at">log_hi =</span> log_obs <span class="sc">+</span> <span class="fl">1.96</span><span class="sc">*</span>cv,</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>         <span class="at">obs_lo =</span> <span class="fu">exp</span>(log_lo),</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>         <span class="at">obs_hi =</span> <span class="fu">exp</span>(log_hi),</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>         <span class="at">species =</span> hydraDataList<span class="sc">$</span>speciesList[species])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="fits-to-survey-indices-of-abundance" class="level3 tabset">
+<h3 class="tabset anchored" data-anchor-id="fits-to-survey-indices-of-abundance">Fits to survey indices of abundance</h3>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (surv <span class="cf">in</span> <span class="fu">unique</span>(survey_obspred<span class="sc">$</span>survey)) {</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">"#### Survey #"</span>, surv, <span class="st">" </span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  p1 <span class="ot">&lt;-</span> survey_obspred <span class="sc">%&gt;%</span> </span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(survey <span class="sc">==</span> surv) <span class="sc">%&gt;%</span> </span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">aes</span>(<span class="at">x=</span> year, <span class="at">y =</span> log_obs, <span class="at">group =</span> species, <span class="at">col=</span><span class="fu">factor</span>(survey)) <span class="sc">+</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_errorbar</span>(<span class="fu">aes</span>(<span class="at">ymin =</span> log_lo, <span class="at">ymax =</span> log_hi)) <span class="sc">+</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x=</span>year, <span class="at">y=</span>log_pred), <span class="at">col =</span> <span class="st">"blue"</span>) <span class="sc">+</span></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>species, <span class="at">scales =</span> <span class="st">"free_y"</span>) <span class="sc">+</span></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">guides</span>(<span class="at">species =</span> <span class="st">"None"</span>)</span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(p1)</span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">" </span><span class="sc">\n\n</span><span class="st">"</span>)</span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>  }</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<section id="survey-1" class="level4">
+<h4 class="anchored" data-anchor-id="survey-1">Survey # 1</h4>
+<div class="cell-output-display">
+<p><img src="CompareRuns_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="672"></p>
+</div>
+</section>
+<section id="survey-2" class="level4">
+<h4 class="anchored" data-anchor-id="survey-2">Survey # 2</h4>
+<div class="cell-output-display">
+<p><img src="CompareRuns_files/figure-html/unnamed-chunk-4-2.png" class="img-fluid" width="672"></p>
+</div>
+</section>
+</section>
+<section id="section" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="section"></h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co">#catch_obs &lt;- hydraDataList$observedCatch %&gt;% </span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>catch_obspred <span class="ot">&lt;-</span> indexfits[<span class="dv">2</span>][[<span class="dv">1</span>]] <span class="sc">%&gt;%</span> </span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">obs =</span> catch <span class="sc">+</span> <span class="fl">1e-07</span>,</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>         <span class="at">pred =</span> pred_catch <span class="sc">+</span> <span class="fl">1e-07</span>,</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>         <span class="at">log_obs =</span> <span class="fu">log</span>(obs),</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>         <span class="at">log_pred =</span> <span class="fu">log</span>(pred),</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>         <span class="at">log_lo =</span> log_obs <span class="sc">-</span> <span class="fl">1.96</span><span class="sc">*</span>cv,</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>         <span class="at">log_hi =</span> log_obs <span class="sc">+</span> <span class="fl">1.96</span><span class="sc">*</span>cv,</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>         <span class="at">obs_lo =</span> <span class="fu">exp</span>(log_lo),</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>         <span class="at">obs_hi =</span> <span class="fu">exp</span>(log_hi),</span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>         <span class="at">species =</span> hydraDataList<span class="sc">$</span>speciesList[species])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="fits-to-catch-time-series" class="level3 tabset">
+<h3 class="tabset anchored" data-anchor-id="fits-to-catch-time-series">fits to Catch time series</h3>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (fleet <span class="cf">in</span> <span class="fu">unique</span>(catch_obspred<span class="sc">$</span>fishery)) {</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">"#### Fleet #"</span>, fleet, <span class="st">" </span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>p3 <span class="ot">&lt;-</span> catch_obspred <span class="sc">%&gt;%</span> </span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(fishery <span class="sc">==</span> fleet,</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>         catch <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">aes</span>(<span class="at">x=</span> year, <span class="at">y =</span> log_obs, <span class="at">group =</span> species, <span class="at">col=</span> <span class="fu">factor</span>(fishery)) <span class="sc">+</span></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_errorbar</span>(<span class="fu">aes</span>(<span class="at">ymin =</span> log_lo, <span class="at">ymax =</span> log_hi)) <span class="sc">+</span></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x=</span>year, <span class="at">y=</span>log_pred), <span class="at">col =</span> <span class="st">"blue"</span>) <span class="sc">+</span></span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>species, <span class="at">scales =</span> <span class="st">"free_y"</span>) <span class="sc">+</span></span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">guides</span>(<span class="at">species =</span> <span class="st">"None"</span>)</span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(p3)</span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">" </span><span class="sc">\n\n</span><span class="st">"</span>)</span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<section id="fleet-1" class="level4">
+<h4 class="anchored" data-anchor-id="fleet-1">Fleet # 1</h4>
+<div class="cell-output-display">
+<p><img src="CompareRuns_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="672"></p>
+</div>
+</section>
+<section id="fleet-2" class="level4">
+<h4 class="anchored" data-anchor-id="fleet-2">Fleet # 2</h4>
+<div class="cell-output-display">
+<p><img src="CompareRuns_files/figure-html/unnamed-chunk-6-2.png" class="img-fluid" width="672"></p>
+</div>
+</section>
+</section>
+<section id="section-1" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="section-1"></h3>
+<p>Above does indices, below does comps</p>
+<p>Make this a function in <code>hydra_diag/hydra-diagnostics.rmd</code> currently at lines 122-211</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>obs_survey <span class="ot">&lt;-</span> hydraDataList<span class="sc">$</span>observedSurvSize <span class="sc">%&gt;%</span> <span class="fu">tibble</span>()</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="co">#colnames(obs_survey) &lt;- c('number','year','species','type','InpN','1','2','3','4','5')  #todo - modify so number of bins is based on size of dataframe</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>obs_survey <span class="ot">&lt;-</span> obs_survey <span class="sc">%&gt;%</span> <span class="fu">pivot_longer</span>(<span class="at">cols=</span><span class="dv">6</span><span class="sc">:</span><span class="fu">ncol</span>(.), <span class="at">names_to =</span> <span class="st">"lenbin"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(value <span class="sc">!=</span> <span class="sc">-</span><span class="dv">999</span>)<span class="sc">%&gt;%</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">lenbin =</span> <span class="fu">as.integer</span>(<span class="fu">str_remove</span>(lenbin, <span class="st">"sizebin"</span>)),</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>         <span class="at">label =</span> <span class="fu">rep</span>(<span class="st">"survey"</span>,<span class="fu">nrow</span>(.)),</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>         <span class="at">species =</span> hydraDataList<span class="sc">$</span>speciesList[species])</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a><span class="co">#obs_survey$label&lt;-rep(("survey"),each=7189)</span></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a><span class="co">#dim(obs_survey) #7189</span></span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>pred_surv<span class="ot">&lt;-</span>output<span class="sc">$</span>pred_survey_size</span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>obs_survey<span class="sc">$</span>pred_surv<span class="ot">&lt;-</span>pred_surv</span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>nll_survey<span class="ot">&lt;-</span>output<span class="sc">$</span>nll_survey_size</span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>obs_survey<span class="sc">$</span>nll_surv<span class="ot">&lt;-</span>nll_survey</span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>obs_survey<span class="sc">$</span>pearson<span class="ot">&lt;-</span>((obs_survey<span class="sc">$</span>value<span class="sc">-</span>obs_survey<span class="sc">$</span>pred_surv)<span class="sc">/</span><span class="fu">sqrt</span>(obs_survey<span class="sc">$</span>pred_surv))</span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(obs_survey) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">'number'</span>,<span class="st">'year'</span>,<span class="st">'species'</span>,<span class="st">'type'</span>,<span class="st">'InpN'</span>,<span class="st">'lenbin'</span>,<span class="st">'obs_value'</span>,<span class="st">'label'</span>,</span>
+<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a>                          <span class="st">'pred_value'</span>,<span class="st">'nll'</span>,<span class="st">'pearson'</span>)</span>
+<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-20"><a href="#cb18-20" aria-hidden="true" tabindex="-1"></a><span class="co">#obs_catch&lt;-read.table(tsfile, skip=4109, nrows=608, header=F)</span></span>
+<span id="cb18-21"><a href="#cb18-21" aria-hidden="true" tabindex="-1"></a>obs_catch <span class="ot">&lt;-</span> hydraDataList<span class="sc">$</span>observedCatchSize <span class="sc">%&gt;%</span> <span class="fu">tibble</span>()</span>
+<span id="cb18-22"><a href="#cb18-22" aria-hidden="true" tabindex="-1"></a><span class="co">#colnames(obs_catch) &lt;- c('number','area','year','species','type','InpN','1','2','3','4','5')</span></span>
+<span id="cb18-23"><a href="#cb18-23" aria-hidden="true" tabindex="-1"></a>obs_catch<span class="ot">&lt;-</span>obs_catch <span class="sc">%&gt;%</span> <span class="fu">pivot_longer</span>(<span class="at">cols=</span><span class="dv">7</span><span class="sc">:</span><span class="fu">ncol</span>(.), <span class="at">names_to =</span> <span class="st">"lenbin"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb18-24"><a href="#cb18-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">lenbin =</span> <span class="fu">as.integer</span>(<span class="fu">str_remove</span>(lenbin, <span class="st">"sizebin"</span>)),</span>
+<span id="cb18-25"><a href="#cb18-25" aria-hidden="true" tabindex="-1"></a>         <span class="at">label =</span> <span class="fu">rep</span>(<span class="st">"catch"</span>,<span class="fu">nrow</span>(.)),</span>
+<span id="cb18-26"><a href="#cb18-26" aria-hidden="true" tabindex="-1"></a>         <span class="at">species =</span> hydraDataList<span class="sc">$</span>speciesList[species]) <span class="sc">%&gt;%</span></span>
+<span id="cb18-27"><a href="#cb18-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(value <span class="sc">!=</span> <span class="sc">-</span><span class="dv">999</span>)</span>
+<span id="cb18-28"><a href="#cb18-28" aria-hidden="true" tabindex="-1"></a><span class="co">#obs_catch$label&lt;-rep(("catch"),each=1855)</span></span>
+<span id="cb18-29"><a href="#cb18-29" aria-hidden="true" tabindex="-1"></a><span class="co">#dim(obs_catch) #1855</span></span>
+<span id="cb18-30"><a href="#cb18-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-31"><a href="#cb18-31" aria-hidden="true" tabindex="-1"></a>pred_catch<span class="ot">&lt;-</span>output<span class="sc">$</span>pred_catch_size</span>
+<span id="cb18-32"><a href="#cb18-32" aria-hidden="true" tabindex="-1"></a>obs_catch<span class="sc">$</span>pred_catch<span class="ot">&lt;-</span>pred_catch</span>
+<span id="cb18-33"><a href="#cb18-33" aria-hidden="true" tabindex="-1"></a>nll_catch<span class="ot">&lt;-</span>output<span class="sc">$</span>nll_catch_size</span>
+<span id="cb18-34"><a href="#cb18-34" aria-hidden="true" tabindex="-1"></a>obs_catch<span class="sc">$</span>nll_catch<span class="ot">&lt;-</span>nll_catch</span>
+<span id="cb18-35"><a href="#cb18-35" aria-hidden="true" tabindex="-1"></a>obs_catch<span class="sc">$</span>pearson<span class="ot">&lt;-</span>((obs_catch<span class="sc">$</span>value<span class="sc">-</span>obs_catch<span class="sc">$</span>pred_catch)<span class="sc">/</span><span class="fu">sqrt</span>(obs_catch<span class="sc">$</span>pred_catch))</span>
+<span id="cb18-36"><a href="#cb18-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-37"><a href="#cb18-37" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(obs_catch) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">'number'</span>,<span class="st">'area'</span>,<span class="st">'year'</span>,<span class="st">'species'</span>,<span class="st">'type'</span>,<span class="st">'InpN'</span>,<span class="st">'lenbin'</span>,<span class="st">'obs_value'</span>,<span class="st">'label'</span>,</span>
+<span id="cb18-38"><a href="#cb18-38" aria-hidden="true" tabindex="-1"></a>                         <span class="st">'pred_value'</span>,<span class="st">'nll'</span>,<span class="st">'pearson'</span>)</span>
+<span id="cb18-39"><a href="#cb18-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-40"><a href="#cb18-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-41"><a href="#cb18-41" aria-hidden="true" tabindex="-1"></a><span class="co">#diet_catch&lt;-full_join(obs_catch, obs_survey, by = NULL,copy = FALSE)</span></span>
+<span id="cb18-42"><a href="#cb18-42" aria-hidden="true" tabindex="-1"></a>diet_catch <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(obs_catch, obs_survey)</span>
+<span id="cb18-43"><a href="#cb18-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-44"><a href="#cb18-44" aria-hidden="true" tabindex="-1"></a><span class="do">#### READ OBSERVED (.dat) AND PREDICTED (.rep) DIET PROPORTION VALUES ####</span></span>
+<span id="cb18-45"><a href="#cb18-45" aria-hidden="true" tabindex="-1"></a><span class="co"># todo as above, make the data file an argument and have the dimensions be determined from the file rather than hard-coded</span></span>
+<span id="cb18-46"><a href="#cb18-46" aria-hidden="true" tabindex="-1"></a><span class="co">#obs_diet&lt;-read.table(tsfile, skip=4724, nrows=4721, header=F)</span></span>
+<span id="cb18-47"><a href="#cb18-47" aria-hidden="true" tabindex="-1"></a>obs_diet <span class="ot">&lt;-</span> hydraDataList<span class="sc">$</span>observedSurvDiet <span class="sc">%&gt;%</span> <span class="fu">tibble</span>()</span>
+<span id="cb18-48"><a href="#cb18-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-49"><a href="#cb18-49" aria-hidden="true" tabindex="-1"></a><span class="co">#obs_diet$label&lt;-rep(("diet"),each=4721)</span></span>
+<span id="cb18-50"><a href="#cb18-50" aria-hidden="true" tabindex="-1"></a>obs_diet<span class="ot">&lt;-</span>obs_diet <span class="sc">%&gt;%</span> <span class="fu">pivot_longer</span>(<span class="at">cols=</span><span class="dv">6</span><span class="sc">:</span><span class="fu">ncol</span>(.), <span class="at">names_to =</span> <span class="st">"prey"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb18-51"><a href="#cb18-51" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="co">#lenbin = as.integer(str_remove(lenbin, "V")),</span></span>
+<span id="cb18-52"><a href="#cb18-52" aria-hidden="true" tabindex="-1"></a>         <span class="at">species =</span> hydraDataList<span class="sc">$</span>speciesList[species],</span>
+<span id="cb18-53"><a href="#cb18-53" aria-hidden="true" tabindex="-1"></a>         <span class="at">label =</span> <span class="fu">rep</span>(<span class="st">"diet"</span>,<span class="fu">nrow</span>(.))) <span class="sc">%&gt;%</span></span>
+<span id="cb18-54"><a href="#cb18-54" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(value <span class="sc">&gt;</span><span class="dv">0</span> )</span>
+<span id="cb18-55"><a href="#cb18-55" aria-hidden="true" tabindex="-1"></a><span class="co">#obs_diet$label&lt;-rep(("diet"),each=22810)</span></span>
+<span id="cb18-56"><a href="#cb18-56" aria-hidden="true" tabindex="-1"></a><span class="co">#dim(obs_diet) #22810</span></span>
+<span id="cb18-57"><a href="#cb18-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-58"><a href="#cb18-58" aria-hidden="true" tabindex="-1"></a>pred_diet<span class="ot">&lt;-</span>output<span class="sc">$</span>pred_dietprop</span>
+<span id="cb18-59"><a href="#cb18-59" aria-hidden="true" tabindex="-1"></a>obs_diet<span class="sc">$</span>pred_diet<span class="ot">&lt;-</span>pred_diet</span>
+<span id="cb18-60"><a href="#cb18-60" aria-hidden="true" tabindex="-1"></a>nll_diet<span class="ot">&lt;-</span>output<span class="sc">$</span>nll_dietprop</span>
+<span id="cb18-61"><a href="#cb18-61" aria-hidden="true" tabindex="-1"></a>obs_diet<span class="sc">$</span>nll_diet<span class="ot">&lt;-</span>nll_diet</span>
+<span id="cb18-62"><a href="#cb18-62" aria-hidden="true" tabindex="-1"></a>obs_diet<span class="sc">$</span>pearson<span class="ot">&lt;-</span>((obs_diet<span class="sc">$</span>value<span class="sc">-</span>obs_diet<span class="sc">$</span>pred_diet)<span class="sc">/</span><span class="fu">sqrt</span>(obs_diet<span class="sc">$</span>pred_diet))</span>
+<span id="cb18-63"><a href="#cb18-63" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(obs_diet) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">'number'</span>,<span class="st">'year'</span>,<span class="st">'species'</span>,<span class="st">'lenbin'</span>,<span class="st">'InpN'</span>,<span class="st">'prey'</span>,<span class="st">'obs_value'</span>,<span class="st">'label'</span>, <span class="st">'pred_value'</span>,<span class="st">'nll'</span>,<span class="st">'pearson'</span>)</span>
+<span id="cb18-64"><a href="#cb18-64" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-65"><a href="#cb18-65" aria-hidden="true" tabindex="-1"></a><span class="co">#mydata&lt;-full_join(diet_catch, obs_diet, by = NULL,copy = FALSE)</span></span>
+<span id="cb18-66"><a href="#cb18-66" aria-hidden="true" tabindex="-1"></a><span class="co">#mydata &lt;- bind_rows(diet_catch, obs_diet)</span></span>
+<span id="cb18-67"><a href="#cb18-67" aria-hidden="true" tabindex="-1"></a>mydata <span class="ot">&lt;-</span> diet_catch <span class="sc">%&gt;%</span></span>
+<span id="cb18-68"><a href="#cb18-68" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="co">#prey = replace_na(prey, -99),</span></span>
+<span id="cb18-69"><a href="#cb18-69" aria-hidden="true" tabindex="-1"></a>         <span class="at">area =</span> <span class="fu">replace_na</span>(area, <span class="dv">1</span>),</span>
+<span id="cb18-70"><a href="#cb18-70" aria-hidden="true" tabindex="-1"></a>         <span class="at">type =</span> <span class="fu">replace_na</span>(type, <span class="dv">0</span>))</span>
+<span id="cb18-71"><a href="#cb18-71" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> mydata</span>
+<span id="cb18-72"><a href="#cb18-72" aria-hidden="true" tabindex="-1"></a>data<span class="sc">$</span>residual<span class="ot">&lt;-</span><span class="fu">ifelse</span>(data<span class="sc">$</span>pearson<span class="sc">&lt;</span><span class="dv">0</span>,<span class="st">"negative"</span>,<span class="st">"positive"</span>)</span>
+<span id="cb18-73"><a href="#cb18-73" aria-hidden="true" tabindex="-1"></a>data<span class="sc">$</span>res_abs<span class="ot">&lt;-</span><span class="fu">abs</span>(data<span class="sc">$</span>pearson)</span>
+<span id="cb18-74"><a href="#cb18-74" aria-hidden="true" tabindex="-1"></a>data<span class="ot">&lt;-</span><span class="fu">as.data.frame</span>(data)</span>
+<span id="cb18-75"><a href="#cb18-75" aria-hidden="true" tabindex="-1"></a><span class="co">#head(data)</span></span>
+<span id="cb18-76"><a href="#cb18-76" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-77"><a href="#cb18-77" aria-hidden="true" tabindex="-1"></a><span class="co">#names(data)</span></span>
+<span id="cb18-78"><a href="#cb18-78" aria-hidden="true" tabindex="-1"></a><span class="co">#str(data)</span></span>
+<span id="cb18-79"><a href="#cb18-79" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-80"><a href="#cb18-80" aria-hidden="true" tabindex="-1"></a><span class="co">#select type of data "label= catch, survey or diet"</span></span>
+<span id="cb18-81"><a href="#cb18-81" aria-hidden="true" tabindex="-1"></a>temp.catch <span class="ot">=</span> data[<span class="fu">which</span>(data<span class="sc">$</span>label <span class="sc">==</span> <span class="st">"catch"</span>),]</span>
+<span id="cb18-82"><a href="#cb18-82" aria-hidden="true" tabindex="-1"></a>temp.surv <span class="ot">=</span> data[<span class="fu">which</span>(data<span class="sc">$</span>label <span class="sc">==</span> <span class="st">"survey"</span>),]</span>
+<span id="cb18-83"><a href="#cb18-83" aria-hidden="true" tabindex="-1"></a><span class="co">#temp.diet = data[which(data$label == "diet"),]</span></span>
+<span id="cb18-84"><a href="#cb18-84" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-85"><a href="#cb18-85" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> obs_diet <span class="co">#data &lt;- read.csv("outputs/survdiet.csv", header = T)</span></span>
+<span id="cb18-86"><a href="#cb18-86" aria-hidden="true" tabindex="-1"></a><span class="co">#data&lt;- select(data, -X)</span></span>
+<span id="cb18-87"><a href="#cb18-87" aria-hidden="true" tabindex="-1"></a>data<span class="sc">$</span>residual<span class="ot">&lt;-</span><span class="fu">ifelse</span>(data<span class="sc">$</span>pearson<span class="sc">&lt;</span><span class="dv">0</span>,<span class="st">"negative"</span>,<span class="st">"positive"</span>)</span>
+<span id="cb18-88"><a href="#cb18-88" aria-hidden="true" tabindex="-1"></a>data<span class="sc">$</span>res_abs<span class="ot">&lt;-</span><span class="fu">abs</span>(data<span class="sc">$</span>pearson)</span>
+<span id="cb18-89"><a href="#cb18-89" aria-hidden="true" tabindex="-1"></a>temp.diet <span class="ot">=</span> data[<span class="fu">which</span>(data<span class="sc">$</span>label <span class="sc">==</span> <span class="st">"diet"</span>),]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      let href = ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
