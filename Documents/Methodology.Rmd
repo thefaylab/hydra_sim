@@ -136,11 +136,11 @@ where $W_{i,j,k}$  is the mean weight of an individual of species $i$ and length
 
 ### Objective Function
 
-The model can be fitted to multiple data streams
+The model can be fitted to multiple data streams. Currently the objective function comprises the following components, catch (by species for each fleet), size composition of the catch (by species for each fleet), survey abundance index (by species for each survey), survery size composition (by species for each survey), survey diet composition (stomach weight by predator size bin for each predator species and survey), and recruitment (annual deviations from mean recruitment by species).  
 
 #### Catch 
 
-Expected catch is summed over time steps to the fishing/calendar year y.
+Expected catch for species $i$ in fleet $q$ is summed over time steps to the fishing/calendar year $y$.
 
 $$ \hat{C}_{y,i,q} = \sum_{t \in y} \sum_{j} \frac{s_{i,j,q}F_{i,j,q,t}}{M1_{i,j,t}+M2_{i,j,t}+s_{i,j,q}F_{i,j,q,t}} \left[ 1 - e^{-(M1_{i,j,t}+M2_{i,j,t}+s_{i,j,q}F_{i,j,q,t})} \right] N_{i,j,t} W_{i,j,t}$$
 
@@ -153,8 +153,7 @@ $$ \hat{p}_{q,i,y,j} = p^{*}_{q,i,y,j} / \sum_{j'}{p^{*}_{q,i,y,j'}} $$
 
 $$ p^{*}_{q,i,y,j} = \sum_{t \in y} \frac{s_{i,j,q}F_{i,j,q,t}}{M1_{i,j,t}+M2_{i,j,t}+s_{i,j,q}F_{i,j,q,t}} \left[ 1 - e^{-(M1_{i,j,t}+M2_{i,j,t}+s_{i,j,q}F_{i,j,q,t})} \right] N_{i,j,t}$$
 
-Proportions at length (in numbers) in catch for each gear type - either multinomial, dirichlet, etc.
-Additional input sample size if multinomial, estimated param if Dirichlet
+Proportions at length (in numbers) in catch for each species in each fleet are modeled as multinomial,  given an input annual sample size for each composition.  
 
 #### Survey abundance indices
 
@@ -173,28 +172,27 @@ $$ \hat{p}_{g,i,t,j} = p^{*}_{g,i,t,j} / \sum_{j'}{p^{*}_{g,i,t,j'}} $$
 
 $$ p^{*}_{g,i,t,j} = s_{i,j,g, t} N_{i,j,t} $$
 
-Proportions at length (in numbers) in the survey - either multinomial, dirichlet, etc.
-Additional input sample size if multinomial, estimated param if Dirichlet
+Proportions at length (in numbers) in the survey for each species are modeled as multinomial, with an additional input sample size for each composition.  
 
 #### Prey proportions in survey diet
 
-proportions by weight in stomach of predator $i$ of size $j$ of prey $m$:
+Proportions by weight in stomach of predator $i$ of size $j$ of prey $m$:
 
 $$ \hat{\phi}_{g,t,i,j,m} = \phi^{*}_{g,t,i,j,m} / \left( \phi^{*}_{g,t,i,j,other} + \sum_{m}{\phi^{*}_{g,t,i,j,m}} \right) $$
 
 $$ \phi^{*}_{g,t,i,j,m} = \sum_{n}{\rho_{i,j,m,n} N_{m,n,t} W_{m,n,t}} $$
 
-Proportions by prey species (in weight) in the survey are modeled as dirichlet (could also be multinomial or delta-dirichlet, or....)
+Proportions by prey species (in weight) in the survey are modeled as multinomial with an input sample size for each composition (potentially these data could be modeled as Dirichlet or delta-dirichlet, or....)  
 
-$$ \mathrm{stom}_{g,t,i,j,1:n} \sim \mathrm{Dirichlet} \left( \hat{\phi}_{g,t,i,j,1:n}, \kappa_{i,j} \right) $$
+<!-- $$ \mathrm{stom}_{g,t,i,j,1:n} \sim \mathrm{Dirichlet} \left( \hat{\phi}_{g,t,i,j,1:n}, \kappa_{i,j} \right) $$ -->
 
-where $\kappa_{i,j}$ is a parameter for each predator size class. (or input effective sample size if multinomial)
+<!-- where $\kappa_{i,j}$ is a parameter for each predator size class. (or input effective sample size if multinomial) -->
 
 ### Penalties
 
 #### Recruitment deviations
 
-Penalty to the objective function is added for the annual deviations from the stock-recruitment relationship for each species, which are assumed to be log-normal around the expected recruitment (equation 8):
+A penalty to the objective function is added for the annual deviations from the stock-recruitment relationship for each species, which are assumed to be log-normal around the expected recruitment (equation 8):
 
 $$ \Lambda_{i,t} \sim \mathcal{N}\left(0, \tau^{2}_{\Lambda_{i}}\right) $$
 
