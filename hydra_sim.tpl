@@ -3083,13 +3083,15 @@ FUNCTION evaluate_the_objective_function
   pred_catch_size.initialize();
   nll_catch_size.initialize();
   for (int i=1;i<=Ncatch_size_obs;i++) {
+    
+     //cout << "obs row " << i << endl;
   
-     int fleet = obs_catch_size(i,1);
-     int area = obs_catch_size(i,2);
-     int year = obs_catch_size(i,3);
-     int spp = obs_catch_size(i,4);
-     int type = obs_catch_size(i,5);  //not yet used
-     int effN = obs_catch_size(i,6);
+     int fleet = obs_catch_size(i,1); //cout << "fleet" << fleet << endl;
+     int area = obs_catch_size(i,2);  //cout << "area" << area << endl;
+     int year = obs_catch_size(i,3);  //cout << "year" << year << endl;
+     int spp = obs_catch_size(i,4);  //cout << "spp" << spp << endl;
+     int type = obs_catch_size(i,5);  //cout << "type" << type << endl;//not yet used
+     int effN = obs_catch_size(i,6);   //cout << "effN" << effN << endl;
      dvar_vector Lobs(1,Nsizebins);
      Lobs.initialize();
      for (int ilen=1;ilen<=Nsizebins;ilen++) Lobs(ilen) = obs_catch_size(i,6+ilen);
@@ -3098,6 +3100,8 @@ FUNCTION evaluate_the_objective_function
      for (int ilen=1;ilen<=Nsizebins;ilen++)
       Lpred(ilen) = Cfl_tot(area,spp,fleet,year,ilen); // predicted catch at length for this observation
      Lpred = (eps+Lpred)/sum(eps + Lpred);
+     
+     //cout << "Lpred" << Lpred << endl;
      
      for (int ilen=1;ilen<=Nsizebins;ilen++) {
       if (Lobs(ilen) > 0)
