@@ -6,15 +6,15 @@ editor: visual
 
 ## Build the data
 
-Use `hydradata` package to create the .dat and .pin files. We are working from the forked `hydradata` repository at https://github.com/thefaylab/hydradata for this project. All of the input .csv files originally created in [this script](https://github.com/ices-eg/wg_WGSAM/blob/master/SkillAssessment/SkillAssessProject.Rmd) have been copied to the `data-raw` folder on thefaylab/hydradata repo. Note that some are still in use for variables ww are not changing. 
+Use `hydradata` package to create the .dat and .pin files. We are working from the forked `hydradata` repository at https://github.com/thefaylab/hydradata for this project. All of the input .csv files originally created in [this script](https://github.com/ices-eg/wg_WGSAM/blob/master/SkillAssessment/SkillAssessProject.Rmd) have been copied to the `data-raw` folder on thefaylab/hydradata repo. Note that some are still in use for variables ww are not changing.
 
-Now we are building inputs directly from the [`mskeyrun` data package](https://noaa-edab.github.io/ms-keyrun/) with a new function has been incorporated into the `hydradata` package [`hydradata::create_RData_mskeyrun(dattype = c("sim", "real"), nlenbin = 5)`](https://github.com/thefaylab/hydradata/blob/master/data-raw/create_RData_mskeyrun.R`).   
+Now we are building inputs directly from the [`mskeyrun` data package](https://noaa-edab.github.io/ms-keyrun/) with a new function has been incorporated into the `hydradata` package [`hydradata::create_RData_mskeyrun(dattype = c("sim", "real"), nlenbin = 5)`](https://github.com/thefaylab/hydradata/blob/master/data-raw/create_RData_mskeyrun.R%60).
 
-The new function allows us to specify whether we are building with simulated or real data, and the number of length bins to use in the input files. Default is 5 length bins but we will change this to generate different .dat and .pin files. 
+The new function allows us to specify whether we are building with simulated or real data, and the number of length bins to use in the input files. Default is 5 length bins but we will change this to generate different .dat and .pin files.
 
-The `create_RData_mskeyrun.R` file was sourced, and `create_RData_mskeyrun("sim", nlenbin = 5)` was run to make a new `hydraDataList_msk.rda` file in the package. Then the package is built locally, R is restarted, and the following code block is run to produce input files. 
+The `create_RData_mskeyrun.R` file was sourced, and `create_RData_mskeyrun("sim", nlenbin = 5)` was run to make a new `hydraDataList_msk.rda` file in the package. Then the package is built locally, R is restarted, and the following code block is run to produce input files.
 
-We probably want to streamline the building process and keep separate hydradatalist R objects that have the different bin definitions. 
+We probably want to streamline the building process and keep separate hydradatalist R objects that have the different bin definitions.
 
 ```{r, writedatfile5, eval=FALSE}
 
@@ -97,24 +97,23 @@ Next up, real data. But first lets compare some simulated outputs changing the n
 ## 5 and 10 bins work, 15 and 20 dont
 
 Model errors out. Terminal output:
-```
-NECLNASARAHMAC:hydra_sim sarah.gaichas$ ./hydra_sim -ind hydra_sim_NOBA_15bin.dat -nohess -ainp hydra_sim_NOBA_15bin.pin
-q par map
-7
- 1 7
- 1 2 1
- 1 3 1
- 1 4 1
- 1 6 1
- 1 8 1
- 1 10 1
- 1 11 1
-1701
-completed predicted values for surveys
-starting commercial catch nll
-Error: Invalid index 25389 used for array range [1, 1] in "prevariable& dvar4_array::operator() (int i, int j, int k)".
-hslice index out of bounds
-```
+
+    NECLNASARAHMAC:hydra_sim sarah.gaichas$ ./hydra_sim -ind hydra_sim_NOBA_15bin.dat -nohess -ainp hydra_sim_NOBA_15bin.pin
+    q par map
+    7
+     1 7
+     1 2 1
+     1 3 1
+     1 4 1
+     1 6 1
+     1 8 1
+     1 10 1
+     1 11 1
+    1701
+    completed predicted values for surveys
+    starting commercial catch nll
+    Error: Invalid index 25389 used for array range [1, 1] in "prevariable& dvar4_array::operator() (int i, int j, int k)".
+    hslice index out of bounds
 
 I wonder if the sizes are just too thin. Capelin is down to 2 cm size bins. Lets try 12 and see?
 
@@ -139,6 +138,29 @@ saveRDS(hydraDataList_12bin, file.path(here("inputRdatalists/hydraDataList_12bin
 
 Nope, same error. We will now use only 5 and 10 bins.
 
+## Make real data take 1
+
+Only 5 bins work at this time because we are using some of the original parameterization. 
+
+Run `create_RData_mskeyrun("real", nlenbin = 5)` in `hydradata`, rebuild package, restart R, then...
+
+```{r, writedatfilereal5, eval=FALSE}
+
+library(here)
+library(hydradata)
+inputs <- setup_default_inputs()
+inputs$outDir <- here()
+
+inputs$outputFilename <- "hydra_sim_GB_5bin" 
+
+hydraDataList_GB5bin <- create_datpin_files(inputs,hydraDataList_msk)
+
+# this saves the specific hydralist object, so we could saveRDS it to a diagnostics folder?
+# advantage of rds format is we can assign it when reading it in to diagnostics scripts
+saveRDS(hydraDataList_GB5bin, file.path(here("inputRdatalists/hydraDataList_GB5bin.rds")))
+
+```
+
 ## Can we use hydradata's plot functions?
 
 Some work and create output in the results directory, needs more tweaking for current shape of -ts.dat inputs.
@@ -149,7 +171,6 @@ hydradata::create_documentation(outFile = "documentation-5bin.html", outDir = he
 
 
 ```
-
 
 ## Sarah's first run, 5 length bins fully from mskeyrun source
 
@@ -167,8 +188,7 @@ output <- reptoRlist(here::here("results/05bin/hydra_sim.rep"))
 names(output)
 ```
 
-
-Bring in inputs from the -ts.dat file (note that `hydradata` contains an R object with these inputs). The `hydra_diag/hydra-diagnostics.rmd` now takes advantages of this. 
+Bring in inputs from the -ts.dat file (note that `hydradata` contains an R object with these inputs). The `hydra_diag/hydra-diagnostics.rmd` now takes advantages of this.
 
 **ENSURE THE VERSION OF HYDRADATA MATCHES THE INPUTS** I saved the Rlist with the same name as dat and pin files so we can automate this
 
@@ -189,7 +209,7 @@ obs_catchB <- hydraDataList$observedCatch
 
 Function reptoRlist cannot read the tables of fits to survey and catch indices correctly.
 
-Eventually fix in `hydra_sim` code report section, but for now read from already generated rep files: 
+Eventually fix in `hydra_sim` code report section, but for now read from already generated rep files:
 
 ```{r}
 
@@ -248,6 +268,7 @@ survey_obspred <- indexfits[1][[1]] %>%
 ```
 
 ### Fits to survey indices of abundance {.tabset}
+
 ```{r, results = 'asis'}
 for (surv in unique(survey_obspred$survey)) {
   cat("#### Survey #", surv, " \n")
@@ -265,7 +286,8 @@ for (surv in unique(survey_obspred$survey)) {
   cat(" \n\n")
   }
 ```
-### {-}
+
+###  {.unnumbered}
 
 ```{r}
 #catch_obs <- hydraDataList$observedCatch %>% 
@@ -281,7 +303,7 @@ catch_obspred <- indexfits[2][[1]] %>%
          species = hydraDataList$speciesList[species])
 ```
 
-### fits to Catch time series {.tabset} 
+### fits to Catch time series {.tabset}
 
 ```{r, results = 'asis'}
 for (fleet in unique(catch_obspred$fishery)) {
@@ -302,8 +324,7 @@ p3 <- catch_obspred %>%
 }
 ```
 
-### {-}
-
+###  {.unnumbered}
 
 Above does indices, below does comps
 
@@ -405,5 +426,3 @@ temp.diet = data[which(data$label == "diet"),]
 
 
 ```
-
-

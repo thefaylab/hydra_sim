@@ -1,0 +1,67 @@
+# This file was created using create_datpin_files.R function write_estPinFile
+      #and used inputs from create_Rdata_mskeyrun and csv files found in folder:
+      #hydradata/data-raw
+#
+# List of Species in Model
+# Atlantic_cod
+# Atlantic_herring
+# Atlantic_mackerel
+# Goosefish
+# Haddock
+# Silver_hake
+# Spiny_dogfish
+# Winter_flounder
+# Winter_skate
+# Yellowtail_flounder
+#
+#//Initial N year 1
+#  init_3darray yr1N(1,Nareas,1,Nspecies,1,Nsizebins)       //initial year N at size, ln_millions
+     3.523553    4.424157    4.313205    9.489701   11.404373
+   543.614060 1228.771767 1466.862117 1614.849500 5906.057333
+   172.049467  207.176050  186.784483  178.352050  136.841783
+     2.072590    1.954318    1.570558    1.710501    4.217852
+     0.000000    3.231998   14.439731   16.605535   35.821863
+    13.181085   21.561887   23.982613   31.632980   24.796492
+    59.461705   57.637088   48.415852   41.093123   46.106283
+     2.412409    3.780128    4.103159    4.794790   19.454305
+     6.413408    8.804419    9.763765   10.723922   31.037085
+     2.252481    4.575886    6.003629    9.361482   26.751532
+# recruitment_alpha, 1:Nspecies:
+  0 0 0 0 0 0 0 0 0 0
+# recruitment_shape, 1:Nspecies:
+  0 0 0 0 0 0 0 0 0 0
+# recruitment_beta, 1:Nspecies:
+  0 0 0 0 0 0 0 0 0 0
+# ln_avg_recruitment, 1:Nspecies:
+  5 10 7.5 4.5 8 6.5 5 6 6 7
+# recruitment_devs, rows 1:Nspecies, columns 1:Nyrs:
+  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+# ln_recsigma, 1:Nspecies:
+  1 1 1 1 1 1 1 1 1 1
+# avg_F, 1:fleets:
+  5.46652339188271 8.17671925801521
+# F_devs, rows 1:fleets, columns 1:Nyrs:
+  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+# fishsel_pars, row 1 c, row 2 d, columns 1:Nfleets:
+  1 1
+  1 1
+# ln_fishery_q, ln_fishery_q(1,Nqpars) (= number of fished species - Nfleet*Narea):
+  0 0 0 0 0 0 0 0
+# ln_survey_q, rows 1:Nsurveys, columns 1:Nspecies:
+ 
+ 
+ 
+ 
+# survey_selpars, row 1 c, row 2 d, columns 1:Nsurveys:
+  1 1 1 1
+  1 1 1 1
