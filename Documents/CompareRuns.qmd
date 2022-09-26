@@ -140,7 +140,7 @@ Nope, same error. We will now use only 5 and 10 bins.
 
 ## Make real data take 1
 
-Only 5 bins work at this time because we are using some of the original parameterization. 
+Only 5 bins work at this time because we are using some of the original parameterization.
 
 Run `create_RData_mskeyrun("real", nlenbin = 5)` in `hydradata`, rebuild package, restart R, then...
 
