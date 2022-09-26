@@ -48,7 +48,7 @@
 # ln_recsigma, 1:Nspecies:
   1 1 1 1 1 1 1 1 1 1
 # avg_F, 1:fleets:
-  5.46652339188271 8.17671925801521
+  -1.68923204219492 1.2244941367477
 # F_devs, rows 1:fleets, columns 1:Nyrs:
   0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
   0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
@@ -58,10 +58,8 @@
 # ln_fishery_q, ln_fishery_q(1,Nqpars) (= number of fished species - Nfleet*Narea):
   0 0 0 0 0 0 0 0
 # ln_survey_q, rows 1:Nsurveys, columns 1:Nspecies:
- 
- 
- 
- 
+  0 0 0 0 0 0 0 0 0 0
+  0 0 0 0 0 0 0 0 0 0
 # survey_selpars, row 1 c, row 2 d, columns 1:Nsurveys:
-  1 1 1 1
-  1 1 1 1
+  1 1
+  1 1

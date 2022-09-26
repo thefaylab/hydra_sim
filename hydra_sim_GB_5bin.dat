@@ -14,7 +14,7 @@
 # init_int Nfleets
   2
 # init_int Nsurveys (e.g. NEFSC spring, NEFSC fall, NEAMAP, etc)
-  4
+  2
 # init_number wtconv
   1
 ## Time series data file
@@ -782,7 +782,7 @@
 # Following content added after ICES publication by Gaichas et al. 2014
 # Made by Andy Beet from Dec 2016 onward
 # Equilibrium Biomass. B0(1,Nspecies). Tthese values are obtained by running hydra_sim without any error and zero fishing effort
-  10.8052258064516 0.0678641251221896 0.71747311827957 2.16945259042033 14.8830943304008 1.89513685239492 5.73428641251222 2.63998093841642 7.2022834799609 6.54473509286413 2.05693059628544
+  15491.7775685658 97.2988394791849 1028.66281176427 3110.4094979925 21338.340450126 2717.11476513191 8221.41908076064 3785.02015744839 10326.1306756487 9383.38375522889
 #number of Guilds numGuilds.
   10
 #Guild Membership guildMembership. 
