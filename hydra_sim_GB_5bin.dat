@@ -745,7 +745,7 @@
   0.197508768 0.45225377 0.205956533 0.34 0.376 0.403649534 0.1 0.291557309 0.14405 0.477577158
 #  init_vector growthtype                           //switch for alternate growth types,
 #1 power, 2 power/covariates, 3 vonB, 4 vonB covariates
-  4 4 4 2 2 4 4 4 4 4
+  3 3 3 1 1 3 3 3 3 3
 #  init_number phimax
   1
 #  init_matrix intake_alpha(1,Nareas,1,Nspecies)

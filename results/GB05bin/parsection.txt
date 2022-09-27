@@ -1,0 +1,23 @@
+q par map
+8
+ 2 1
+ 1 3 1
+ 1 4 2
+ 1 5 2
+ 1 6 2
+ 1 7 2
+ 1 8 2
+ 1 9 2
+ 1 10 2
+1031
+rectype
+ 9 9 9 9 9 9 9 9 9 9
+recruitment_alpha
+ 0 0 0 0 0 0 0 0 0 0
+recruitment_shape
+ 0 0 0 0 0 0 0 0 0 0
+recruitment_beta
+ 0 0 0 0 0 0 0 0 0 0
+
+Manually exiting at the end of the parameter section...
+
