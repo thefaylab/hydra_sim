@@ -166,7 +166,7 @@ saveRDS(hydraDataList_GB5bin_1978, file.path(here("inputRdatalists/hydraDataList
 
 Make a new lower catch datafile for testing:
 
-```{r}
+```{r, eval=FALSE}
 
 library(here)
 library(hydradata)
@@ -188,7 +188,7 @@ saveRDS(hydraDataList_GB5bin_lowcatch, file.path(here("inputRdatalists/hydraData
 
 OK. No catch and no predation
 
-```{r}
+```{r, eval=FALSE}
 library(here)
 library(hydradata)
 inputs <- setup_default_inputs()
@@ -211,7 +211,7 @@ saveRDS(hydraDataList_GB5bin_nocatch_nopred, file.path(here("inputRdatalists/hyd
 
 No catch, no predation, set Linf to max bin?
 
-```{r}
+```{r, eval=FALSE}
 
 library(here)
 library(hydradata)
@@ -268,8 +268,9 @@ Bring in inputs from the -ts.dat file (note that `hydradata` contains an R objec
 
 library(tidyverse)
 
-hydraDataList <- readRDS(here::here("inputRdatalists/hydraDataList_GB5bin.rds"))
-repfile <- here::here("results/GB05bin/hydra_sim.rep")
+#hydraDataList <- readRDS(here::here("inputRdatalists/hydraDataList_GB5bin.rds"))
+hydraDataList <- readRDS(here::here("inputRdatalists/hydraDataList_GB5bin_1978.rds"))
+#repfile <- here::here("results/GB05bin/hydra_sim.rep")
 
 obs_surveyB <- hydraDataList$observedBiomass %>%
   mutate(species = hydraDataList$speciesList[species],
