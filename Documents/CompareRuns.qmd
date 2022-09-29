@@ -144,6 +144,8 @@ Only 5 bins work at this time because we are using some of the original paramete
 
 Run `create_RData_mskeyrun("real", nlenbin = 5)` in `hydradata`, rebuild package, restart R, then...
 
+This now starts the time series in 1978 and replaces -999 with 0 in comps
+
 ```{r, writedatfilereal5, eval=FALSE}
 
 library(here)
@@ -151,13 +153,13 @@ library(hydradata)
 inputs <- setup_default_inputs()
 inputs$outDir <- here()
 
-inputs$outputFilename <- "hydra_sim_GB_5bin" 
+inputs$outputFilename <- "hydra_sim_GB_5bin_1978" 
 
-hydraDataList_GB5bin <- create_datpin_files(inputs,hydraDataList_msk)
+hydraDataList_GB5bin_1978 <- create_datpin_files(inputs,hydraDataList_msk)
 
 # this saves the specific hydralist object, so we could saveRDS it to a diagnostics folder?
 # advantage of rds format is we can assign it when reading it in to diagnostics scripts
-saveRDS(hydraDataList_GB5bin, file.path(here("inputRdatalists/hydraDataList_GB5bin.rds")))
+saveRDS(hydraDataList_GB5bin_1978, file.path(here("inputRdatalists/hydraDataList_GB5bin_1978.rds")))
 
 ```
 
