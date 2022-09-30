@@ -23,13 +23,18 @@ library(hydradata)
 inputs <- setup_default_inputs()
 inputs$outDir <- here()
 
-inputs$outputFilename <- "hydra_sim_NOBA_5bin" 
+inputs$outputFilename <- "hydra_sim_NOBA_5bin_0comp" 
 
-hydraDataList_5bin <- create_datpin_files(inputs,hydraDataList_msk)
+# tpl code removes 0 so replace in data
+nbins <- hydraDataList_msk$Nsizebins
+hydraDataList_msk$observedCatchSize[,7:(6+nbins)][hydraDataList_msk$observedCatchSize[,7:(6+nbins)]==0] <- 1e-4
+hydraDataList_msk$observedSurvSize[,6:(5+nbins)][hydraDataList_msk$observedSurvSize[,6:(5+nbins)]==0] <- 1e-4
+
+hydraDataList_5bin_0comp <- create_datpin_files(inputs,hydraDataList_msk)
 
 # this saves the specific hydralist object, so we could saveRDS it to a diagnostics folder?
 # advantage of rds format is we can assign it when reading it in to diagnostics scripts
-saveRDS(hydraDataList_5bin, file.path(here("inputRdatalists/hydraDataList_5bin.rds")))
+saveRDS(hydraDataList_5bin_0comp, file.path(here("inputRdatalists/hydraDataList_5bin_0comp.rds")))
 
 ```
 
@@ -42,13 +47,19 @@ library(hydradata)
 inputs <- setup_default_inputs()
 inputs$outDir <- here()
 
-inputs$outputFilename <- "hydra_sim_NOBA_10bin" 
+inputs$outputFilename <- "hydra_sim_NOBA_10bin_0comp" 
 
-hydraDataList_10bin <- create_datpin_files(inputs,hydraDataList_msk)
+# tpl code removes 0 so replace in data
+nbins <- hydraDataList_msk$Nsizebins
+hydraDataList_msk$observedCatchSize[,7:(6+nbins)][hydraDataList_msk$observedCatchSize[,7:(6+nbins)]==0] <- 1e-4
+hydraDataList_msk$observedSurvSize[,6:(5+nbins)][hydraDataList_msk$observedSurvSize[,6:(5+nbins)]==0] <- 1e-4
+
+
+hydraDataList_10bin_0comp <- create_datpin_files(inputs,hydraDataList_msk)
 
 # this saves the specific hydralist object, so we could saveRDS it to a diagnostics folder?
 # advantage of rds format is we can assign it when reading it in to diagnostics scripts
-saveRDS(hydraDataList_10bin, file.path(here("inputRdatalists/hydraDataList_10bin.rds")))
+saveRDS(hydraDataList_10bin_0comp, file.path(here("inputRdatalists/hydraDataList_10bin_0comp.rds")))
 
 ```
 
