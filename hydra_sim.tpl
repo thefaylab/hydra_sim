@@ -500,7 +500,14 @@ DATA_SECTION
   !!  }
 
 //natural mortality parameters from .dat file and calculate weight ratio, size preference, suitability
-  init_3darray M1(1,Nareas,1,Nspecies,1,Nsizebins)
+  init_3darray M1ann(1,Nareas,1,Nspecies,1,Nsizebins)
+  3darray M1(1,Nareas,1,Nspecies,1,Nsizebins) 
+  !!  for (area=1; area<=Nareas; area++){
+  !!	  for(spp=1; spp<=Nspecies; spp++){
+  !!          M1(area, spp)  = 1.0 - pow((1.0 - M1ann(area, spp)), (1.0 / Nstepsyr)) ; //scale for steps per year to equal annual input from dat  
+  !!    }
+  !!  }
+    
   init_3darray isprey(1,Nareas,1,Nspecies,1,Nspecies)    //preds in columns, prey in rows
   init_matrix preferred_wtratio(1,Nareas,1,Nspecies)     //pred specific, not size
 
@@ -753,6 +760,7 @@ DATA_SECTION
     cout<<"intake_alpha\n"<<intake_alpha<<endl;
     cout<<"intake_beta\n"<<intake_beta<<endl;
     cout<<"intake\n"<<intake<<endl;
+    cout<<"M1ann\n"<<M1ann<<endl;
     cout<<"M1\n"<<M1<<endl;
     cout<<"isprey\n"<<isprey<<endl;
     cout<<"preferred_wtratio\n"<<preferred_wtratio<<endl;
@@ -3312,6 +3320,8 @@ TOP_OF_MAIN_SECTION
 REPORT_SECTION
 //=======================================================================================
 
+  report << "Nstepsyr model timesteps per year " << endl;  
+  report << Nstepsyr << endl;
   report << "EstNsize Estimated total numbers of fish " << endl;
   report << N << endl;
   report << "EstBsize Estimated total biomass of fish " << endl;
