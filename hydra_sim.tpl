@@ -504,7 +504,8 @@ DATA_SECTION
   3darray M1(1,Nareas,1,Nspecies,1,Nsizebins) 
   !!  for (area=1; area<=Nareas; area++){
   !!	  for(spp=1; spp<=Nspecies; spp++){
-  !!          M1(area, spp)  = 1.0 - pow((1.0 - M1ann(area, spp)), (1.0 / Nstepsyr)) ; //scale for steps per year to equal annual input from dat  
+  //!!          M1(area, spp)  = 1.0 - pow((1.0 - M1ann(area, spp)), (1.0 / Nstepsyr)) ; //scale for steps per year to equal annual input from dat  
+  !!            M1(area, spp) = M1ann(area, spp)/Nstepsyr;
   !!    }
   !!  }
     
@@ -815,9 +816,9 @@ PARAMETER_SECTION
   //recruitment: average annual, annual devs, actual (avg+dev)
   init_matrix ln_avg_recruitment(1,Nareas,1,Nspecies,avg_rec_phase)  //average annual recruitment by area, species
   matrix avg_recruitment(1,Nareas,1,Nspecies)  //average annual recruitment by area, species
-  init_3darray recruitment_devs(1,Nareas,1,Nspecies,1,Nyrs,dev_rec_phase)  //recruitment deviations by area, species
+  init_3darray recruitment_devs(1,Nareas,1,Nspecies,2,Nyrs,dev_rec_phase)  //recruitment deviations by area, species
 
-  3darray recruitment(1,Nareas,1,Nspecies,1,Nyrs)  //by definition into first size bin for each species, millions
+  3darray recruitment(1,Nareas,1,Nspecies,2,Nyrs)  //by definition into first size bin for each species, millions
 
   //recruitment simulation
   init_matrix ln_recsigma(1,Nareas,1,Nspecies,recsigmaphase)    //sigma for stochastic recruitment from SR curve
@@ -915,7 +916,7 @@ PARAMETER_SECTION
 
 
   //Survey qs 
-  init_bounded_matrix ln_survey_q(1,Nsurveys,1,Nspecies,-15,2,sqphase)
+  init_bounded_matrix ln_survey_q(1,Nsurveys,1,Nspecies,-30,2,sqphase)
   matrix survey_q(1,Nsurveys,1,Nspecies)
 
   //Survey selectivity (will want to be derived based on estimated parameters)
@@ -987,7 +988,7 @@ PARAMETER_SECTION
   !! int Nsize_obs = 0;
   !! for (int i=1;i<=Ncatch_size_obs;i++) {
   !!    for (int ilen=1;ilen<=Nsizebins;ilen++) 
-  !!      if (obs_catch_size(i,6+ilen)>0) Nsize_obs += 1;
+  !!      if (obs_catch_size(i,6+ilen)>=0) Nsize_obs += 1;
   !! }
   vector pred_catch_size(1,Nsize_obs);
   vector nll_catch_size(1,Nsize_obs);
@@ -999,7 +1000,7 @@ PARAMETER_SECTION
   !! Nsize_obs = 0;
   !! for (int i=1;i<=Nsurvey_size_obs;i++) {
   !!    for (int ilen=1;ilen<=Nsizebins;ilen++) 
-  !!      if (obs_survey_size(i,5+ilen)>0) Nsize_obs += 1;
+  !!      if (obs_survey_size(i,5+ilen)>=0) Nsize_obs += 1;
   !! }
   vector pred_survey_size(1,Nsize_obs);
   vector nll_survey_size(1,Nsize_obs);
@@ -1010,8 +1011,8 @@ PARAMETER_SECTION
   !! Nsize_obs = 0;
   !! for (int i=1;i<=Ndietprop_obs;i++) {
   !!    for (int ilen=1;ilen<=Nspecies;ilen++) 
-  !!      if (obs_dietprop(i,5+ilen)>0) Nsize_obs += 1;
-  !!    if (obs_dietprop(i,6+Nspecies)>0) Nsize_obs += 1;
+  !!      if (obs_dietprop(i,5+ilen)>=0) Nsize_obs += 1;
+  !!    if (obs_dietprop(i,6+Nspecies)>=0) Nsize_obs += 1;
   !! }
   vector pred_dietprop(1,Nsize_obs);
   vector nll_dietprop(1,Nsize_obs);
@@ -1124,16 +1125,16 @@ PROCEDURE_SECTION
   yrct=1;
 
 
-  for (t=2; t<=Tottimesteps; t++)
+  for (t=1; t<=Tottimesteps; t++)
      {
 
 		//if (debug == 3) {cout<<yrct<<" "<<t<<endl;}
-                if (t % Nstepsyr == 1) {yrct++;} // first time step in new year = > increment year
+                if (t>1 && (Nstepsyr == 1 || t % Nstepsyr == 1)) {yrct++;} // first time step in new year = > increment year
 
-                calc_update_N(); // N(t) = N(t-1)
+                if (t>1) calc_update_N(); // N(t) = N(t-1)
 
                   // add recruits at start of year.  update N to add recruits to bin 1
-                calc_recruitment(); if (debug == 4) {cout<<"completed Recruitment"<<endl;}
+                if (t>1) calc_recruitment(); if (debug == 4) {cout<<"completed Recruitment"<<endl;}
                 //if (t % Nstepsyr == 1) recout << yrct << " " << recruitment(1,2,yrct) << endl;
                 calc_available_N();
 
@@ -1279,8 +1280,8 @@ FUNCTION transform_parameters
   //fishery selectivity
   for (int species=1;species<=Nspecies;species++) {
    for (int ifleet=1;ifleet<=Nfleets;ifleet++) {
-     fishsel_c(species,ifleet) = fishsel_pars(1,ifleet);
-     fishsel_d(species,ifleet) = fishsel_pars(2,ifleet);
+     fishsel_c(species,ifleet) = mfexp(fishsel_pars(1,ifleet));
+     fishsel_d(species,ifleet) = mfexp(fishsel_pars(2,ifleet));
    }
   }
   //cout << "fishery selectivit pars" << endl;
@@ -1289,12 +1290,13 @@ FUNCTION transform_parameters
   //exit(-1);
 
   for (int i=1;i<=Nsurveys;i++)
-   for (int k=1;k<=Nspecies;k++)
-   for (int j=1;j<=Nsizebins;j++)
+   for (int k=1;k<=Nspecies;k++) {
+   for (int j=1;j<=Nsizebins;j++) {
   // need to add survey selectivity at length, but for now set at 1 for all.
-  survey_sel(i,k,j) = 1/(1 + mfexp(-(survey_selpars(1,i) +
-                                     (survey_selpars(2,i)*lbinmidpt(k,j)))));
-      //survey_sel(i,k,j) = 1.;
+  survey_sel(i,k,j) = 1/(1 + mfexp(-1.*mfexp(survey_selpars(1,i))*(lbinmidpt(k,j)-mfexp(survey_selpars(2,i)))));
+                                     }
+    survey_sel(i,k) /= max(survey_sel(i,k));
+    }
 
    survey_q = mfexp(ln_survey_q);
   // surv_sigma = mfexp(ln_surv_sigma);
@@ -1560,7 +1562,7 @@ FUNCTION calc_recruitment
   //              sumover_?(recruitment_covwt * recruitment_cov(t)))
 
 
-  if ((t % Nstepsyr == 1) && (yrct <= Nyrs)) {  // recruits enter at start of year
+  if ((Nstepsyr == 1 || t % Nstepsyr == 1) && (yrct <= Nyrs)) {  // recruits enter at start of year
     // simulate a vector of size Nspecies from uniform distribution between 0, 1 - probabilities
     // if prob < threshold then extreme event occurs and we sample from alternative distribution otherwise from ricker, beverton etc
 //    for (spp =1; spp<=Nspecies;spp+) {
@@ -1569,7 +1571,6 @@ FUNCTION calc_recruitment
 
     for (area=1; area<=Nareas; area++){
   	for(spp=1; spp<=Nspecies; spp++){
-
 
 		// switch (rectype(spp)){
   //         case 1:	  				//egg production based recruitment, 3 par gamma (Ricker-ish)
@@ -1658,8 +1659,7 @@ FUNCTION calc_recruitment
   //          case 9:                   //Average recruitment plus devs--giving up on functional form
                        //recruitment(area,spp)(yrct) = mfexp(avg_recruitment(area,spp)+recruitment_devs(area,spp,yrct));
                        recruitment(area,spp)(yrct) = avg_recruitment(area,spp)*mfexp(recruitment_devs(area,spp,yrct));  //GF 2022/03/04, avg_recruitment is already in real space. This equation does not include lognormal bias correction (yet)
-      //cout << spp << " " << yrct << " " << recruitment(area,spp)(yrct) << " " <<
-      //avg_recruitment(area,spp) << " " << recruitment_devs(area,spp,yrct) << endl;
+      //cout << spp << " " << yrct << " " << recruitment(area,spp)(yrct) << " " << avg_recruitment(area,spp) << " " << recruitment_devs(area,spp,yrct) << endl;
       //exit(-1);
 
 		//   break;
@@ -1731,7 +1731,7 @@ FUNCTION calc_available_N
 FUNCTION calc_pred_mortality
 //----------------------------------------------------------------------------------------
   
-  M2.initialize();
+  //M2.initialize();
   //totalconsumedbypred = allmodeledprey(pred,predsize) + otherprey
 
   for (area=1; area<=Nareas; area++){
@@ -1810,10 +1810,13 @@ FUNCTION calc_fishing_mortality
 
                for(int isizebin=1; isizebin<=Nsizebins; isizebin++) { //abeet added this loop to avoid compilation warnings.
                // could be created in calc_initial_sattes since it is not time dependent
-            	  fishsel(area,spp,fleet,isizebin) = 1/(1 + mfexp(-(fishsel_c(spp,fleet) +
-                                     (fishsel_d(spp,fleet)*lbinmidpt(spp,isizebin)))));
-
-
+            	  //fishsel(area,spp,fleet,isizebin) = 1/(1 + mfexp(-(fishsel_c(spp,fleet) +
+                  //                   (fishsel_d(spp,fleet)*lbinmidpt(spp,isizebin)))));
+                fishsel(area,spp,fleet,isizebin) = 1/(1 + mfexp(-1.*fishsel_c(spp,fleet)*
+                                     (lbinmidpt(spp,isizebin)-fishsel_d(spp,fleet))));
+                                     }
+                                     fishsel(area,spp,fleet) /= max(fishsel(area,spp,fleet));
+                for(int isizebin=1; isizebin<=Nsizebins; isizebin++) { 
                  // Ffl(area,spp,fleet,t,isizebin) = fishsel(area,spp,fleet,isizebin)*(Fyr(area,spp,fleet,yrct))/Nstepsyr; //Andy Beet
                   // "catch mortality by fleet"  multiply by 1-p(discard) .i.e all landable catch:  p(no discard)
                   Ffl(area,spp,fleet,t,isizebin) = (1-discard_Coef(area,spp,fleet,isizebin))*fishsel(area,spp,fleet,isizebin)*(Fyr(area,spp,fleet,yrct))/Nstepsyr; //Andy Beet
@@ -3102,7 +3105,8 @@ FUNCTION evaluate_the_objective_function
      int effN = obs_catch_size(i,6);   //cout << "effN" << effN << endl;
      dvar_vector Lobs(1,Nsizebins);
      Lobs.initialize();
-     for (int ilen=1;ilen<=Nsizebins;ilen++) Lobs(ilen) = obs_catch_size(i,6+ilen);
+     for (int ilen=1;ilen<=Nsizebins;ilen++) Lobs(ilen) = obs_catch_size(i,6+ilen) + 0.0001;
+     Lobs = Lobs/sum(Lobs);
      dvar_vector Lpred(1,Nsizebins);
      Lpred.initialize();
      for (int ilen=1;ilen<=Nsizebins;ilen++)
@@ -3168,8 +3172,8 @@ FUNCTION evaluate_the_objective_function
       int effN = obs_survey_size(i,5);
       dvar_vector Lobs(1,Nsizebins);
       Lobs.initialize();
-      for (int ilen=1;ilen<=Nsizebins;ilen++) Lobs(ilen) = obs_survey_size(i,5+ilen);
-
+      for (int ilen=1;ilen<=Nsizebins;ilen++) Lobs(ilen) = obs_survey_size(i,5+ilen) + 0.0001;
+      Lobs = Lobs/sum(Lobs);
       dvar_vector Lpred(1,Nsizebins);
       Lpred.initialize();
       for (int area=1;area<=Nareas;area++)
@@ -3203,8 +3207,8 @@ FUNCTION evaluate_the_objective_function
       int effN = obs_dietprop(i,5);
       dvar_vector Pobs(1,Nprey);
       Pobs.initialize();
-      for (int ilen=1;ilen<=Nprey;ilen++) Pobs(ilen) = obs_dietprop(i,5+ilen);
-
+      for (int ilen=1;ilen<=Nprey;ilen++) Pobs(ilen) = obs_dietprop(i,5+ilen) + 0.0001;
+      Pobs = Pobs/sum(Pobs);
       dvar_vector Ppred(1,Nprey);
       Ppred.initialize();
       for (int ilen=1;ilen<=Nprey;ilen++)
@@ -3230,14 +3234,14 @@ FUNCTION evaluate_the_objective_function
 // Recruitment penalty
 
    j = 0;
-   dvar_vector resid(1,Nareas*Nspecies*Nyrs);
-   dvar_vector sdrec(1,Nareas*Nspecies*Nyrs);
+   dvar_vector resid(1,Nareas*Nspecies*(Nyrs-1));
+   dvar_vector sdrec(1,Nareas*Nspecies*(Nyrs-1));
    resid.initialize();
    sdrec.initialize();
    nll_recruit.initialize();
    for (int area=1;area <=Nareas;area++) {
     for (int spp=1;spp <=Nspecies;spp++) {
-    for (int year=1;year <=Nyrs;year++) {
+    for (int year=2;year <=Nyrs;year++) {
       j +=1;
       recdev(j) = recruitment_devs(area,spp,year);
       resid(j) = recdev(j)+0.5*square(recsigma(area,spp));
@@ -3372,4 +3376,8 @@ REPORT_SECTION
      report << i << " " << j << " " << survey_sel(j,i) << endl;
     }
    }
-
+  report << "Fyr" << endl;
+  for (int i=1;i<=Nspecies;i++) {
+   for (int j=1;j<=Nfleets;j++) {
+     report << i << " " << j << " " << Fyr(1,i,j) << endl;
+  }}
