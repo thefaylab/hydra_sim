@@ -18,7 +18,7 @@
 # init_number wtconv
   1
 ## Time series data file
-  hydra_sim_NOBA_5bin_0comp-ts.dat
+  NOBA-input/hydra_sim_NOBA_5bin_0comp-ts.dat
 #
 # List of Species in Model
 # Blue_whiting
