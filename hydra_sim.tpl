@@ -499,13 +499,13 @@ DATA_SECTION
   !!    }
   !!  }
 
-//natural mortality parameters from .dat file and calculate weight ratio, size preference, suitability
+////natural mortality parameters from .dat file and calculate weight ratio, size preference, suitability
   init_3darray M1ann(1,Nareas,1,Nspecies,1,Nsizebins)
   3darray M1(1,Nareas,1,Nspecies,1,Nsizebins) 
   !!  for (area=1; area<=Nareas; area++){
   !!	  for(spp=1; spp<=Nspecies; spp++){
   !!          M1(area, spp)  = 1.0 - pow((1.0 - M1ann(area, spp)), (1.0 / Nstepsyr)) ; //scale for steps per year to equal annual input from dat  
-  //!!            M1(area, spp) = M1ann(area, spp)/Nstepsyr;
+//  !!!!            M1(area, spp) = M1ann(area, spp)/Nstepsyr;
   !!    }
   !!  }
     
@@ -1019,7 +1019,7 @@ PARAMETER_SECTION
 
   !! Nsize_obs = Nspecies*Nareas*Nyrs;
   vector recdev(1,Nsize_obs);
-  vector nll_recruit(1,Nsize_obs);
+  number nll_recruit;
 
 
 // calc_health_indices variables AndyBeet
@@ -1080,6 +1080,8 @@ PARAMETER_SECTION
       }
 	END_CALCS
 
+  //init_matrix ln_M1ann(1,Nareas,1,Nspecies,ssig_phase)
+  //3darray M1(1,Nareas,1,Nspecies,1,Nsizebins) 
 
 //=======================================================================================
 PRELIMINARY_CALCS_SECTION
@@ -1114,6 +1116,17 @@ PROCEDURE_SECTION
 //=======================================================================================
 
   transform_parameters(); if (debug == 4) {cout<<"completed parameter transform"<<endl;}
+
+  
+//  for (area=1; area<=Nareas; area++){
+//   for(spp=1; spp<=Nspecies; spp++){
+//    //      M1(area, spp)  = 1.0 - pow((1.0 - M1ann(area, spp)), (1.0 / Nstepsyr)) ; //scale for steps per year to equal annual input from dat  
+//          M1(area, spp)  = 1.0 - pow((1.0 - mfexp(ln_M1ann(area, spp))), (1.0 / Nstepsyr)) ; //scale for steps per year to equal annual input from dat  
+//    //        M1(area, spp) = mfexp(ln_M1ann(area, spp))/Nstepsyr;
+//    }
+//   }
+
+
 
   //ofstream popout("popstructure.out");
   //ofstream recout("recstructure.out");
@@ -1658,7 +1671,7 @@ FUNCTION calc_recruitment
 
   //          case 9:                   //Average recruitment plus devs--giving up on functional form
                        //recruitment(area,spp)(yrct) = mfexp(avg_recruitment(area,spp)+recruitment_devs(area,spp,yrct));
-                       recruitment(area,spp)(yrct) = avg_recruitment(area,spp)*mfexp(recruitment_devs(area,spp,yrct));  //GF 2022/03/04, avg_recruitment is already in real space. This equation does not include lognormal bias correction (yet)
+                       recruitment(area,spp)(yrct) = avg_recruitment(area,spp)*mfexp(recruitment_devs(area,spp,yrct)-0.5*recsigma(area, spp)*recsigma(area, spp));  //GF 2022/03/04, avg_recruitment is already in real space. This equation does not include lognormal bias correction (yet)
       //cout << spp << " " << yrct << " " << recruitment(area,spp)(yrct) << " " << avg_recruitment(area,spp) << " " << recruitment_devs(area,spp,yrct) << endl;
       //exit(-1);
 
@@ -3244,7 +3257,7 @@ FUNCTION evaluate_the_objective_function
     for (int year=2;year <=Nyrs;year++) {
       j +=1;
       recdev(j) = recruitment_devs(area,spp,year);
-      resid(j) = recdev(j)+0.5*square(recsigma(area,spp));
+      resid(j) = recdev(j); //+0.5*square(recsigma(area,spp));
       sdrec(j) = recsigma(area,spp);
 //      nll_recruit(j) = dnorm(recdev(j)+0.5*square(recsigma(area,spp)),recsigma(area,spp),true);
     }}}
@@ -3262,14 +3275,14 @@ FUNCTION evaluate_the_objective_function
    objfun += sum(nll_catch);
    objfun += sum(nll_catch_size);
    objfun += sum(nll_dietprop);
-   objfun += sum(nll_recruit);  
+   objfun += nll_recruit;  
    
    cout << "nll_survey: " << sum(nll_survey) << endl;
    cout << "nll_survey_size: " << sum(nll_survey_size) << endl;
    cout << "nll_catch: " << sum(nll_catch) << endl;
    cout << "nll_catch_size: " << sum(nll_catch_size) << endl;
    cout << "nll_dietprop: " << sum(nll_dietprop) << endl;
-   cout << "nll_recruit: " << sum(nll_recruit) << endl;
+   cout << "nll_recruit: " << nll_recruit << endl;
    cout << "nll_total: " << objfun << endl;
 
 
