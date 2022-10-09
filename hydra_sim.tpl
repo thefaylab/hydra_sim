@@ -504,8 +504,8 @@ DATA_SECTION
   3darray M1(1,Nareas,1,Nspecies,1,Nsizebins) 
   !!  for (area=1; area<=Nareas; area++){
   !!	  for(spp=1; spp<=Nspecies; spp++){
-  //!!          M1(area, spp)  = 1.0 - pow((1.0 - M1ann(area, spp)), (1.0 / Nstepsyr)) ; //scale for steps per year to equal annual input from dat  
-  !!            M1(area, spp) = M1ann(area, spp)/Nstepsyr;
+  !!          M1(area, spp)  = 1.0 - pow((1.0 - M1ann(area, spp)), (1.0 / Nstepsyr)) ; //scale for steps per year to equal annual input from dat  
+  //!!            M1(area, spp) = M1ann(area, spp)/Nstepsyr;
   !!    }
   !!  }
     
