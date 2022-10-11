@@ -2512,7 +2512,7 @@
 #  
 # Survey diet proportion observations 
 # Number of observations, init_int Ndietprop_obs 
-  685
+685
 # init_matrix obs_dietprop(1,Ndietprop_obs,1,ncol) 
 # Survey  Year  Predator  Predator_size InpN  wt_prey_1 wt_prey_2 wt_prey_3 wt_prey_4 wt_prey_5 wt_prey_6 wt_prey_7 wt_prey_8 wt_prey_9 wt_prey_10 wt_prey_11 other 
   1 7 1 3 100 0 0 0 0 0 0.261865703982447 0 0 0 0 0.738134296017553
