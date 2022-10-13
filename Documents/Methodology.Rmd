@@ -1,28 +1,72 @@
 ---
 title: "Hydra Methology"
 output: pdf_document
+bibliography: references.bib
+link-citations: yes
+urlcolor: blue
 ---
 
-# Drafting notes
+<!--# Drafting notes
 Using organization of MS_SCAA methodology as a template
 
 Also compare with Vanessa’s multiple species state space model: 
 https://github.com/vtrijoulet/Multisp_model_JAE (link to paper)
-https://github.com/vtrijoulet/MS_SSM (link to up to date model)
+https://github.com/vtrijoulet/MS_SSM (link to up to date model) -->
 
-<!-- ## Introduction -->
+## Introduction 
 
-<!-- Hyrda is a multiple species fisheries model used to evaluated stock status given species interactions on Georges Bank. The model specifications are documented here. -->
+The original purpose of the Hydra simulation model was to create simulated data for testing simpler multispecies assessment models [@gaichas_combining_2017]. Further model development repurposed Hydra as an MSE tool to test proposed multispecies and ecosystem level management procedures to support EBFM analyses for the New England Fishery Management Council, and were reviewed in 2018 as part of an [Ecosystem Based Management Strategy Review for Georges Bank](https://www.fisheries.noaa.gov/resource/peer-reviewed-research/ecosystem-based-fisheries-management-strategy-review-georges-bank). . 
+ 
+The current Hydra estimation model can still be used for the above purposes (no simulation code was removed), but with the potential added benefit of estimating operating model parameters by fitting to data from the ecosystem, rather than iterative hand calibration. 
 
-<!-- ## Methodology -->
-<!-- The operating model (Hydra; Supplementary data) is implemented in ADMB (Fournier et al., 2012) and simulates 10 species with length-structured population dynamics and predation (structured as in Hall et al., 2006; Rochet et al., 2011). The 10 species included in the model are key commercial species in the Georges Bank fish community, historically a heavily exploited ecosystem (Fogarty and Murawski, 1998). They can be organized into functional groups in many ways (see, e.g. Gaichas et al., 2012), but here we categorize by a combination of taxonomy and foraging mode to include two piscivorous Elasmobranchs (spiny dogfish and winter skate), two pelagic Planktivores (Atlantic herring and Atlantic mackerel), three demersal Piscivores (Atlantic cod, silver hake, and monkfish), and three demersal invertebrate feeders or Benthivores (haddock, yellowtail flounder, winter flounder). Scientific names and a summary of aggregate group membership are listed in Table 1.   -->
+Multispecies models “of intermediate complexity” between single population and full ecosystem models potentially combine the best aspects of current single species assessment models (including demographic structure and statistical parameter estimation) with key ecological linkages between species (Plagányi et al. 2012, Collie et al. 2014). The Northeast Fisheries Science Center (NEFSC) is currently applying multispecies production and delay-difference models to a simulated system coarsely modeled after the Georges Bank fish community. The focus of this work is to evaluate the performance of a length-based multispecies approach for providing management advice. While we do not yet have a fitted model ready to provide catch advice, this review should identify next steps for further developing model code, inputs, and diagnostics towards this goal.
 
-<!-- ### Data requirements -->
-<!-- Parameterizations for growth, recruitment, and fishery size selection were based on Georges Bank survey and fishery data to the extent possible, although fishery size selectivity, species catchability, and fishing effort should be considered illustrative for the analysis rather than representative of actual fishing fleets operating at present. Similarly, simulated population levels and yields for the included species should be considered illustrative rather than representative of current status and dynamics because the simulation model has not been formally fit to biomass or catch data from this system. More details on model equations and parameterization are included in Supplementary data, Tables S1–S4, and key functions are illustrated for each species and fishing fleet in Supplementary data, Figures S1–S4. -->
+To evaluate Hydra’s performance as an estimation model, we converted it from a simulation model by incorporating likelihood functions to fit the model to time series of aggregate fishery catch, survey biomass, size compositions from the fishery and survey, and length-specific predator diets. Assessment model performance evaluation is in progress by comparing “true” biomass, abundance, and fishing mortality rates to model-estimated quantities using skill assessment metrics (e.g., correlation, RMSE, Modeling efficiency; Stow et al. 2009). Finally, the length-based multispecies model is being fit to actual observations from Georges Bank to evaluate operational potential within a particular region. 
+
+
+## Methodology 
+
+The reviewed model is based on the simulation model Hydra [@gaichas_combining_2017], implemented in ADMB [@fournier_ad_2012]. Hydra's structure  is derived from the length-based multispecies simulation model, LeMANS [@hall_length-based_2006; @rochet_does_2011], with additional options for growth, and recruitment functional forms and more detailed fishing fleets.
+
+A key feature of Hydra that differentiates it from LeMANS and other length-based models is its treatment of length information. Attempting to balance model complexity and run time with available data and adequately modeling length-based processes, Hydra applies an equal number of length bins to all modeled species. The modeler specifies the overall number of bins (5 in the original simulation model), and the size in cm spanned by each bin for each species. The original Hydra simulation model used narrower length bins for smaller fish sizes and a length bin spanning a wider range of sizes for larger fish to efficiently represent changes size selectivity of predators and fisheries. The estimation model uses equal width bins equally dividing each species' maximum observed length into the overall number of bins. 
+
+Modeler decisions on length bin number and width combined with individual species growth parameters both contribute to the model temporal scale, which internally calculated and set equal to the time required for the fastest-growing species to grow out of its smallest length bin (if that is less than one year). Therefore, model timesteps will never exceed one year, but can be subannual.
+
+For this review, the simulation model code was forked and an objective function added, with modifications to the data section to accommodate new data inputs and to the parameter section to estimate fishery and survey selectivity and catchability. As an estimation model, Hydra can be fitted to multiple data streams. Currently the objective function comprises the following components, catch (by species for each fleet), size composition of the catch (by species for each fleet), survey abundance index (by species for each survey), survey size composition (by species for each survey), survey diet composition (stomach weight by predator size bin for each predator species and survey), and recruitment (annual deviations from mean recruitment by species). A detailed description of the objective function equations is available [here](https://drive.google.com/drive/folders/1Cx4J1hToM2WgfUQjH_9rC7Hg81tTuIxU). 
+
+Hydra input files were developed directly from `mskeyrun` datasets by modifying functions in Andy Beet's `hydradata` R package. The function `create_Rdata_mskeyrun.R` ([code](https://github.com/thefaylab/hydradata/blob/master/data-raw/create_RData_mskeyrun.R)) allows the user to specify whether datasets should be constructed from Atlantis-simulated or real Georges Bank data, and the number of length bins to use for composition data, then creates an R data object. This data object is then used to create data and parameter input files using the function `hydradata::create_datpin_files()`. 
+
+Hydra output visualizations were developed to evaluate model fits with different settings and input datasets. The current diagnostics include model fits to each survey index, model fits to catch by fleet, comparisons of estimated and observed length compositions by year and in aggregate across years for each modeled species, residuals of fits to length compositions, and comparisons of estimated and observed diet composition. In addition, model outputs of estimated recruitment, total biomass, fishery and survey selectivity, fishing mortality, and predation mortality are produced. Initial model skill assessment compares model output total biomass with known total biomass for the simulated datasets.  
+
+All model code, data processing, and visualization is available online: 
+
+*  Hydra model estimation version code  https://github.com/thefaylab/hydra_sim  
+*  Hydra estimation model data file generation https://github.com/thefaylab/hydradata  
+*  Hydra model diagnostics https://github.com/thefaylab/hydra_diag  
+
+### Data requirements
+
+A common dataset for 10 Georges Bank species has been developed, as well as a simulated dataset for model performance testing. This `mskeyrun` data package holds both datasets. All modeling teams used these datasets. Group decisions on data are also documented below.
+
+**Years:** 1968-2019
+
+**Area:** Georges Bank (see map above)
+
+**Species:**  Atlantic cod (*Gadus morhua*), Atlantic herring (*Clupea harengus*), Atlantic mackerel (*Scomber scombrus*), Goosefish (*Lophius americanus*), Haddock (*Melanogrammus aeglefinus*), Silver hake (*Merluccius bilinearis*), Spiny dogfish (*Squalus acanthias*), Winter flounder (*Pseudopleuronectes americanus*), Winter skate (*Leucoraja ocellata*), and Yellowtail flounder (*Limanda ferruginea*) 
+
 
 ### Model description
 
-
+Much of the material below is edited from from @gaichas_combining_2017, supplementary material]:
+ 
+>Hydra is a length-based multispecies, multifleet model designed to provide simulated data for performance testing of simpler (non-size structured) multispecies assessment models and management procedures for the Northeast U.S. Continental Shelf. 
+ 
+>We focus on body size rather than age because:
+ 
+>*  Predation is a length-based process
+>*  Harvesting is a length-based process
+>*  Routine age determinations are not available for all ecologically and economically important species
+ 
 #### Population dynamics
 
 For an individual species $i$, the number of individuals $N$ in size class $j$ at time $t+1$ represent the survivors from that cohort from the previous time step ($t$) that have not grown into a larger size class, plus the number of individuals growing into size class $j$ from smaller size classes during the time interval. We only consider transitions among immediately adjacent size classes. For size classes larger than the recruit (smallest) size class, the model for each species $i$ can be written:
@@ -32,33 +76,33 @@ $$ N_{i,j,t+1} = \sum_{j'}{\phi_{i,j' \to j,t}S_{i,j',t}N_{i,j',t}} $$
 The proportion surviving from size class $j-1$ to size class $j$ for a species at time $t$ is denoted $S_{j',t}$,.  $\phi_{j’ \to j}$ is the probability of moving from size class $j-1$ to size class $j$.
 
 
-[Lots more here but GF wanted to make progress on the objective function, see Gaichas et al. 2017 supplementary for rest of Hydra specs]
-<!-- ##### Growth and Time-in-Stage -->
+##### Growth and Time-in-Stage 
 
-<!-- The values for $\phi_{j’ \to j,t}$, the time required for an individual to grow between length bins are determined from the growth function. Growth can be assumed to follow a von Bertalanffy (see Hall et al., 2006) or power function, either of which can be applied to any species. As in (Hall et al., 2006), the model timestep is set up to equal the amount of time it takes for the fastest growing species/length bin combination to grow into the next length bin.  -->
+The values for $\phi_{j’ \to j,t}$, the time required for an individual to grow between length bins are determined from the growth function. Growth can be assumed to follow a von Bertalanffy (see @hall_length-based_2006) or power function, either of which can be applied to any species. As in @hall_length-based_2006, the model timestep is set up to equal the amount of time it takes for the fastest growing species/length bin combination to grow into the next length bin. 
 
-<!-- One of the simplest possible models for indeterminate growth with environmental effects is: -->
+One of the simplest possible models for indeterminate growth with environmental effects is exponential: 
 
-<!--  	    (2), -->
-<!-- where li,a,t is the length of species i, age a and time t; ψi and κi are growth model parameters, δp is the effect of the pth covariate on growth, and Xp,t is the pth covariate at time t.  Because the effect of the covariates may be nonlinear, we can allow polynomial expressions for covariate terms (e.g. in cases where there is an optimum temperature for growth of species i, the covariate terms may involve quadratic or higher-order terms for temperature on growth.  While we show the full potential model here, no covariates on growth were included for the simulations presented in the paper.  -->
+$$l_{i,a,t}=\Psi_ia_i^{K_i}e^{\sum{\delta_pX_{p,t}}}$$
 
-<!-- The time required to grow through a specified length interval is: -->
+where $l_{i,a,t}$ is the length of species $i$, age $a$ and time $t$; $\Psi_i$ and $K_i$ are growth model parameters, $\delta_t$ is the effect of the pth covariate on growth, and $X_{p,t}$ is the pth covariate at time $t$. While we show the full potential model here, no covariates on growth were included in model fits.
 
-<!--      (3), -->
-<!-- and the expression for the probability of moving through the length interval is then: -->
+The time required to grow through a specified length interval $lb$ is: 
 
-<!--      (4). -->
-<!-- Von Bertalanffy growth is modeled identically as in Hall et al., (2006): -->
+$$\Delta t_i=\left[  \frac{\Delta lb_i } {\Psi_i e^{\sum{\delta_pX_{p,t}}} }  \right]^{1/K_i}$$
 
-<!--      (5), -->
-<!-- with the time required to grow through a specified length interval: -->
+and the expression for the probability $\phi$ of moving through the length interval is then: 
 
-<!--      (6), -->
-<!-- and an identical expression for the probability of moving through the length interval as in Equation 4 above.  -->
+$$\phi_i=\frac{1}{\Delta t_i}$$
 
-<!-- Environmental covariates modifying von Bertalanffy growth can be included in the model as follows (although we note again that no growth covariates are used in the present analysis): -->
+Von Bertalanffy growth is modeled identically as in @hall_length-based_2006: 
 
-<!--      (7). -->
+$$l_{i,t}=L_{\infty i}(1-e^{-vonBK_i, (t-t_{0,i})})$$
+
+with the time required to grow through a specified length interval: 
+
+$$\Delta t_i=\frac{1}{vonBK_i}log\left[  \frac{L_{\infty i}-lb_{lower,i}}{L_{\infty i}-lb_{upper,i}}   \right]$$
+
+and an identical expression for the probability of moving through the length interval as above. 
 
 ##### Recruitment
 
@@ -127,7 +171,8 @@ where $c_{i,j,q}$  and  $d_{i,j,q}$  are model parameters and $l$ is the midpoin
 
 <!-- SKG: Fishing may need rethinking, in particular fleet definitions --> 
 
-Fishing mortality $F$ is currently defined as fishing effort multiplied by catchability for each fleet, summed across the three fleets.
+<!-- add new F equation -->
+
 
 The yield from species $i$ at time $t$ is then:
 $$Y_{i,t} = \sum_j \sum_q \frac{s_{i,j,q}F_{i,j,q,t}}{M1_{i,j}+M2_{i,j,t}+s_{i,j,q}F_{i,j,q,t}} [1-e^{-(M1_{i,j}+M2_{i,j,t}+s_{i,j,q}F_{i,j,q,t})}] N_{i,j,t}W_{i,j}$$
