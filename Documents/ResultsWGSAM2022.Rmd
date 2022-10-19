@@ -39,3 +39,25 @@ However, it is clear that there is a challenge estimating scale for some stocks.
 To begin addressing where fitting issues are happening, a series of runs were made with Georges Bank data sequentially turning on different portions of the estimation. 
 
 
+
+In addition, fits to simulated data are in progress to determine the impacts of different modeler length bin decisions on model estiamtion performance. 
+
+Finally, sensitivity analysis has started looking at different levels of OtherFood using simulated datasets. 
+
+## Next steps
+
+Need more of a feel for how this model is behaving when confronted with data
+Initial skill assessment and initial fits to GB mskeyrun data suggest Hydra is responsive to data sets.
+Topics for discussion
+Mismatch between drivers of trends and spatial resolution (subsets of stock being included)
+Generic structure of length bin parameterization
+Fishing fleet specification
+Use data rather than start from results of single-species
+Predation mortality component estimation
+Data weighting
+Simulation testing (self-tests, fits to Atlantis) 
+Move to Rceattle?
+Application as a multispecies assessment model
+How precise do the growth functions need to be? (i.e. reliance on age/growth studies)
+How does Growth model choices (structure) affect performance
+
