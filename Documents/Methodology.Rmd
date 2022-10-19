@@ -15,7 +15,7 @@ https://github.com/vtrijoulet/MS_SSM (link to up to date model) -->
 
 ## Introduction 
 
-The original purpose of the Hydra simulation model was to create simulated data for testing simpler multispecies assessment models [@gaichas_combining_2017]. Further model development repurposed Hydra as an MSE tool to test proposed multispecies and ecosystem level management procedures to support EBFM analyses for the New England Fishery Management Council, and were reviewed in 2018 as part of an [Ecosystem Based Management Strategy Review for Georges Bank](https://www.fisheries.noaa.gov/resource/peer-reviewed-research/ecosystem-based-fisheries-management-strategy-review-georges-bank). . 
+The original purpose of the Hydra simulation model was to create simulated data for testing simpler multispecies assessment models [@gaichas_combining_2017]. Further model development repurposed Hydra as an MSE tool to test proposed multispecies and ecosystem level management procedures to support EBFM analyses for the New England Fishery Management Council, and were reviewed in 2018 as part of an [Ecosystem Based Management Strategy Review for Georges Bank](https://www.fisheries.noaa.gov/resource/peer-reviewed-research/ecosystem-based-fisheries-management-strategy-review-georges-bank).
  
 The current Hydra estimation model can still be used for the above purposes (no simulation code was removed), but with the potential added benefit of estimating operating model parameters by fitting to data from the ecosystem, rather than iterative hand calibration. 
 
@@ -34,7 +34,7 @@ Modeler decisions on length bin number and width combined with individual specie
 
 For this review, the simulation model code was forked and an objective function added, with modifications to the data section to accommodate new data inputs and to the parameter section to estimate fishery and survey selectivity and catchability. As an estimation model, Hydra can be fitted to multiple data streams. Currently the objective function comprises the following components, catch (by species for each fleet), size composition of the catch (by species for each fleet), survey abundance index (by species for each survey), survey size composition (by species for each survey), survey diet composition (stomach weight by predator size bin for each predator species and survey), and recruitment (annual deviations from mean recruitment by species). A detailed description of the objective function equations is available [here](https://drive.google.com/drive/folders/1Cx4J1hToM2WgfUQjH_9rC7Hg81tTuIxU). 
 
-Hydra input files were developed directly from `mskeyrun` datasets by modifying functions in Andy Beet's `hydradata` R package. The function `create_Rdata_mskeyrun.R` ([code](https://github.com/thefaylab/hydradata/blob/master/data-raw/create_RData_mskeyrun.R)) allows the user to specify whether datasets should be constructed from Atlantis-simulated or real Georges Bank data, and the number of length bins to use for composition data, then creates an R data object. This data object is then used to create data and parameter input files using the function `hydradata::create_datpin_files()`. 
+Hydra input files were developed directly from `mskeyrun` datasets by modifying functions in the `hydradata` R package. The function `create_Rdata_mskeyrun.R` ([code](https://github.com/thefaylab/hydradata/blob/master/data-raw/create_RData_mskeyrun.R)) allows the user to specify whether datasets should be constructed from Atlantis-simulated or real Georges Bank data, and the number of length bins to use for composition data, then creates an R data object. This data object is then used to create data and parameter input files using the function `hydradata::create_datpin_files()`. 
 
 Hydra output visualizations were developed to evaluate model fits with different settings and input datasets. The current diagnostics include model fits to each survey index, model fits to catch by fleet, comparisons of estimated and observed length compositions by year and in aggregate across years for each modeled species, residuals of fits to length compositions, and comparisons of estimated and observed diet composition. In addition, model outputs of estimated recruitment, total biomass, fishery and survey selectivity, fishing mortality, and predation mortality are produced. Initial model skill assessment compares model output total biomass with known total biomass for the simulated datasets.  
 
@@ -57,7 +57,7 @@ A common dataset for 10 Georges Bank species has been developed, as well as a si
 
 ### Model description
 
-Much of the material below is edited from from @gaichas_combining_2017, supplementary material]:
+Much of the material below is edited from from @gaichas_combining_2017, supplementary material:
  
 >Hydra is a length-based multispecies, multifleet model designed to provide simulated data for performance testing of simpler (non-size structured) multispecies assessment models and management procedures for the Northeast U.S. Continental Shelf. 
  
@@ -82,13 +82,15 @@ The values for $\phi_{j’ \to j,t}$, the time required for an individual to gro
 
 One of the simplest possible models for indeterminate growth with environmental effects is exponential: 
 
-$$l_{i,a,t}=\Psi_ia_i^{K_i}e^{\sum{\delta_pX_{p,t}}}$$
+<!--$$l_{i,a,t}=\Psi_ia_i^{K_i}e^{\sum{\delta_pX_{p,t}}}$$-->
 
-where $l_{i,a,t}$ is the length of species $i$, age $a$ and time $t$; $\Psi_i$ and $K_i$ are growth model parameters, $\delta_t$ is the effect of the pth covariate on growth, and $X_{p,t}$ is the pth covariate at time $t$. While we show the full potential model here, no covariates on growth were included in model fits.
+$$l_{i,a,t}=\Psi_ia_i^{K_i}$$
+
+where $l_{i,a,t}$ is the length of species $i$, age $a$ and time $t$; $\Psi_i$ and $K_i$ are growth model parameters<!--, $\delta_t$ is the effect of the $p^{th}$ covariate on growth , and $X_{p,t}$ is the pth covariate at time $t$-->. 
 
 The time required to grow through a specified length interval $lb$ is: 
 
-$$\Delta t_i=\left[  \frac{\Delta lb_i } {\Psi_i e^{\sum{\delta_pX_{p,t}}} }  \right]^{1/K_i}$$
+$$\Delta t_i=\left[  \frac{\Delta lb_i } {\Psi_i}   \right]^{1/K_i}$$
 
 and the expression for the probability $\phi$ of moving through the length interval is then: 
 
@@ -164,7 +166,24 @@ where $a$ and $b$ represent all prey species and sizes for predator $i$, $W$ is 
 
 <!-- SKG: Selectivity function may need rethinking --> 
 
-Fishing mortality is also size-specific.  The selectivity for a specified gear type $q$ is given by:
+Fishing in the hydra estimation model has been re-implemented differently from the original simulation model. Similar to the original simuilation model, multispecies fleets are implemented. However, rather than driving a simulation with fleet effort, we estimate fishing mortality rates ($F$) by fleet where there are one or more target species/stocks per fleet, with one "primary" stock identified for each fleet. 
+
+Annual fishing mortality rates ($F$) over time for the primary stock (modeled via average $Fbar$ and annual deviations $Fdev$) are specified as:
+
+$$F_{f,i,y} = Fbar_{f,i}e^{(Fdev_{f,y})}$$
+
+fleet-specific $F$ for target stocks other than the primary stock modeled as offset from the primary stock via catchability $q$:
+
+$$F_{f,j,y,} = q_{f,j} . F_{f,i,y}$$
+
+We note this implies same fishing pattern across stocks within a fleet, which is a simplification that may need later adjustment. This could be modified with a multivariate random walk. 
+
+Logistic selectivity at length for each fleet is applied to all species caught by the fleet:
+
+$$F_{f,i,t,l} = sel_{f,i,L(l)}$$
+
+The selectivity for a specified gear type $q$ is given by:
+
 $$s_{i,j,q}=[1+e^{-(c_{i,q}+d_{i,q}l)}]^{-1}$$ 
 
 where $c_{i,j,q}$  and  $d_{i,j,q}$  are model parameters and $l$ is the midpoint of the $j$th length interval.
@@ -243,4 +262,43 @@ $$ \Lambda_{i,t} \sim \mathcal{N}\left(0, \tau^{2}_{\Lambda_{i}}\right) $$
 
 where $\tau^{2}_{\Lambda_{i}}$ is the variance of the recruitment deviations for species $i$.
 
-<!-- ### Simulations -->
+### Estimated (or estimable) parameters
+
+Parameter types and numbers of parameters by type (Nsp = number of species, Nlen = number of length bins, Nyr = number of years, Nfleet = number of fleets, Nsurvey = number of surveys) include:
+
+1.  Initial year numbers at size for each stock  (Nsp * Nlen)  
+1.  Average annual recruits for each stock (Nsp)  
+1.  Recruitment deviations for each stock (Nsp * (Nyr-1) )  
+1.  Annual F for each fleet (Nfleet * Nyr)  
+1.  Fishery catchability for non-primary stocks (Nsp - Nfleet)  
+1.  Fishery logistic selectivity at length for each fleet (2 * Nfleet)  
+1.  Survey catchability for each stock for each survey (Nsurvey * Nsp)  
+1.  Survey logistic selectivity at length for each survey (2 * Nsurvey)  
+
+Not currently estimating (but could add):  
+
+1.  M1 by stock (constant over age) (Nstock)  
+1.  M2 related parameters (e.g. vulnerability)  
+
+### Diagnostics
+
+Functions to visualize both model inputs and outputs are in development in the [hydra_diag github repository](https://github.com/thefaylab/hydra_diag). At present, workflows for visualizing an individual model output and for comparing across model outputs are available, along with initial options to add model skill assessment (comparison with known simulated data). 
+
+Individual model diagnostics include plots of input survey biomass, catch, and length data (not aggregated by length bin). Model fits to aggregate survey indices and catch by fleet, fits to annual and aggregate (all years) survey and fishery length compositions (length bins), and diet composition for predator and length bin are visualized. In addition, effective sample size is compared with input sample size for length and diet compositions, and both Pearson and One Step Ahead (OSA, @trijoulet_model_2023) residuals are calculated for fits to all length compositions. Model derived quantities (estimated recruitment, biomass, fishing mortality, predation mortality, and survey and fishery selectivity) are also plotted. 
+
+### Modeling approach
+
+Given the current development level of Hydra as an estimation model, current objectives are to demonstrate that the model runs and generates the desired output. Priorities for further development should ideally be identified during the ECES WGSAM review. Hydra is being fit to both simulated and real Georges Bank datasets to develop and test estimation functions.
+
+For simulated data our initial species selection includes 11 single species groups from the Norwegian Barents Sea (NOBA) Atlantis model [@hansen_set-up_2016; @hansen_sensitivity_2019]. These groups are fully age structured. All but two of them are fished. The full process for generating the simulated dataset is described on the `mskeyrun` R package documentation [at this link](https://noaa-edab.github.io/ms-keyrun/articles/SimData.html). Hydra was fit to an 80 years of simulated survey and catch index, size, and diet composition data for these 11 simulated stocks using 2 fleets (cod and other), with both 5 and 10 length bins for each stock. The simulated datasets were used to test incrementally added estimation functionality, and will be used for model skill assessment. 
+
+For Georges Bank, the model was fit to 10 stocks using 2 fleets (groundfish and pelagic), with 5 length bins for each stock. Time series for fitting included 1978 - 2019. The model was fit to total catch (summed retained + discard), catch size compositions, annual Fall and Spring NEFSC bottom trawl survey abundance indices (pre-processed for vessel differences via calibration), survey size compositions, survey and stomach content diet composition (proportion by weight). M1 and M2-related mortality parameters are fixed inputs (for now). 
+
+Initial fits to real Georges Bank data have been for testing only, but several examples were presented during the review. Please see the "Hydra Results" document for an overview. 
+
+## References
+
+
+
+
+
