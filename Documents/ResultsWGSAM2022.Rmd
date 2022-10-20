@@ -1,6 +1,6 @@
 ---
 title: "Hydra Results, WGSAM Review"
-author: "Sarah Gaichas, Gavin Fay, Cristina Perez"
+author: "Gavin Fay, Sarah Gaichas, Cristina Perez"
 date: "October 2022"
 output: pdf_document
 bibliography: references.bib
@@ -32,32 +32,55 @@ Three sets of Georges Bank fits were presented, including:
 
 ## Results
 
-Overall, the results of initial fitting are encouraging, considering that Hydra has only recently been developed as an estimation model, and the datasets continue to be refined as well. We note that interannual variability has been picked up by the model for lots of stocks in both simulated and real datasets, suggesting that the model is able to respond to input data. 
+**These fits are shown to illustrate initial model performance. Neither the model code nor the data inputs are considered final.** 
 
-However, it is clear that there is a challenge estimating scale for some stocks. In particular, Georges Bank pelagics (Atlantic herring and Atlantic mackerel), scale is problematic, and estimated F is very low. This is also true for yellowtail flounder (notably, single stock assessment for this stock on Georges Bank is difficult as well). Fits to annual size composition in these initial attempts are poor, and turning off diet composition during fitting doesn’t affect general model behavior too much. 
+Overall, the results of initial fitting are encouraging, considering that Hydra has only recently been developed as an estimation model, and the datasets continue to be refined as well. We note that interannual variability has been picked up by the model for lots of stocks in both simulated and real datasets, suggesting that the model is able to respond to input data. The fits and other outputs shown here are from the model "estimate-all" presented 11 October 2022.
 
-To begin addressing where fitting issues are happening, a series of runs were made with Georges Bank data sequentially turning on different portions of the estimation. 
+![Survey 1index fit, Georges Bank estimate-everything Oct 11 2022](figures/WGSAMestimateall_surv1.png)
+
+![Survey 2 index fit, Georges Bank estimate-everything Oct 11 2022](figures/WGSAMestimateall_surv2.png)
+
+![Fleet 1 catch fit, Georges Bank estimate-everything Oct 11 2022](figures/WGSAMestimateall_fleet1.png)
+
+![Fleet 2 catch fit, Georges Bank estimate-everything Oct 11 2022](figures/WGSAMestimateall_fleet2.png)
+
+However, it is clear that there is a challenge estimating scale for some stocks. In particular, Georges Bank pelagics (Atlantic herring and Atlantic mackerel), scale is problematic, and estimated F is very low. This is also true for yellowtail flounder (notably, single stock assessment for this stock on Georges Bank is difficult as well).
+
+![Hydra estimated biomass, Georges Bank estimate-everything Oct 11 2022](figures/WGSAMestimateall_EstBio.png)
+
+![Hydra estimated F, Georges Bank estimate-everything Oct 11 2022](figures/WGSAMestimateall_EstF.png)
 
 
+Fits to annual size composition in these initial attempts are poor, and turning off diet composition during fitting doesn’t affect general model behavior too much. 
 
-In addition, fits to simulated data are in progress to determine the impacts of different modeler length bin decisions on model estiamtion performance. 
+![Atlantic cod fishery length comp fit, Georges Bank estimate-everything Oct 11 2022. This example shows fits to annual Atlantic cod fishery length compositions (in the 5 model length bins, each panel represents a year).](figures/WGSAMestimateall_codlencatch.png)
 
-Finally, sensitivity analysis has started looking at different levels of OtherFood using simulated datasets. 
+
+![Monkfish diet comp fit, Georges Bank estimate-everything Oct 11 2022. This example compares observed and estimated diet composition at length for Monkfish (Fall survey, each panel represents a year).](figures/WGSAMestimateall_monkfalldiet.png)
+
+Model estimated recruitment deviations show patterns that are unlikely given species life history (e.g. spiny dogfish).
+
+![Hydra estimated recruitment, Georges Bank estimate-everything Oct 11 2022](figures/WGSAMestimateall_EstlnRec.png)
+
+To begin addressing where fitting issues are happening, a series of runs are in progress with Georges Bank data sequentially turning on different portions of the estimation. In addition, fits to simulated data are in progress to determine the impacts of different length bin specification on model estimation performance. Finally, sensitivity analysis has started looking at different levels of OtherFood using simulated datasets. Results from all of these analyses in progress were available during the review. 
+
+\newpage
 
 ## Next steps
 
-Need more of a feel for how this model is behaving when confronted with data
-Initial skill assessment and initial fits to GB mskeyrun data suggest Hydra is responsive to data sets.
-Topics for discussion
-Mismatch between drivers of trends and spatial resolution (subsets of stock being included)
-Generic structure of length bin parameterization
-Fishing fleet specification
-Use data rather than start from results of single-species
-Predation mortality component estimation
-Data weighting
-Simulation testing (self-tests, fits to Atlantis) 
-Move to Rceattle?
-Application as a multispecies assessment model
-How precise do the growth functions need to be? (i.e. reliance on age/growth studies)
-How does Growth model choices (structure) affect performance
+Initial skill assessment and initial fits to GB mskeyrun data suggest Hydra is responsive to data sets. However, ongoing modeling work is designed to get more of a feel for how this model is behaving when confronted with data. 
+
+Potential topics for discussion with reviewers include:
+
+*   Mismatch between drivers of trends and spatial resolution (subsets of stock being included for pelagics)  
+*   Generic structure of length bin parameterization  
+*   Fishing fleet specification   
+*   Fits to all species together rather than starting from results of single-species  
+*   Predation mortality component estimation  
+*   Data weighting  
+*   Simulation testing (self-tests, fits to Atlantis)   
+*   Move to TMB (state space) framework (Rceattle?) 
+*   Application as a multispecies assessment model  
+*   How precise do the growth functions need to be? (i.e. reliance on age/growth studies)  
+*   How do growth model choices (structure) affect performance  
 
