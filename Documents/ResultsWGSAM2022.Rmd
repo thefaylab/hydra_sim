@@ -12,7 +12,7 @@ urlcolor: blue
 
 Hydra model equations, new objective function equations, and descriptions of initial modeling approaches and diagnostics are found in the Hydra Methodology document. An overview of results presented during the ICES WGSAM 2022 meeting under ToR b, keyrun reviews, is included in this document. 
 
-Hydra model diagnostics and progress fitting to three datasets were be presented: 
+Hydra model diagnostics and progress fitting to three datasets were presented: 
 
 *  Simulated data with 5 length bins  
 *  Simulated data with 10 length bins  
@@ -79,7 +79,7 @@ Potential topics for discussion with reviewers include:
 *   Predation mortality component estimation  
 *   Data weighting  
 *   Simulation testing (self-tests, fits to Atlantis)   
-*   Move to TMB (state space) framework (Rceattle?) 
+*   Move to TMB (state space) framework (Rceattle?)   
 *   Application as a multispecies assessment model  
 *   How precise do the growth functions need to be? (i.e. reliance on age/growth studies)  
 *   How do growth model choices (structure) affect performance  
