@@ -278,6 +278,9 @@ DATA_SECTION
   init_int ssphase              //survey selectivity estimation phase  
   init_int ssig_phase           //survey sigma (obs error) phase
   init_int csig_phase           //catch sigma (obs error) phase
+  init_int m1_phase            // M1 phase
+  init_int oF1_phase           // amount of other food included in the M2 term for the base (predator 1) phase
+  init_int oFdev_phase          //deviation from base other food for predators 2+ phase
 
 //read in lists of species names, area names, fleet names, actual years from .dat file
 
@@ -500,16 +503,22 @@ DATA_SECTION
   !!  }
 
 ////natural mortality parameters from .dat file and calculate weight ratio, size preference, suitability
-  init_3darray M1ann(1,Nareas,1,Nspecies,1,Nsizebins)
-  3darray M1(1,Nareas,1,Nspecies,1,Nsizebins) 
-  !!  for (area=1; area<=Nareas; area++){
-  !!	  for(spp=1; spp<=Nspecies; spp++){
-  !!          M1(area, spp)  = 1.0 - pow((1.0 - M1ann(area, spp)), (1.0 / Nstepsyr)) ; //scale for steps per year to equal annual input from dat  
-//  !!!!            M1(area, spp) = M1ann(area, spp)/Nstepsyr;
-  !!    }
-  !!  }
+//  init_3darray M1ann(1,Nareas,1,Nspecies,1,Nsizebins)
+//  3darray M1(1,Nareas,1,Nspecies,1,Nsizebins) 
+//  !!  for (area=1; area<=Nareas; area++){
+//  !!	  for(spp=1; spp<=Nspecies; spp++){
+//  !!          M1(area, spp)  = 1.0 - pow((1.0 - M1ann(area, spp)), (1.0 / Nstepsyr)) ; //scale for steps per year to equal annual input from dat  
+////  !!!!            M1(area, spp) = M1ann(area, spp)/Nstepsyr;
+//  !!    }
+//  !!  }
     
   init_3darray isprey(1,Nareas,1,Nspecies,1,Nspecies)    //preds in columns, prey in rows
+  int Npred 
+  !! Npred = 0;
+  !! for (spp=1;spp<=Nspecies;spp++) {
+  !!  if(sum(extract_column(isprey(1),spp))>0) Npred += 1;
+  !! }
+  
   init_matrix preferred_wtratio(1,Nareas,1,Nspecies)     //pred specific, not size
 
   init_vector sd_sizepref(1,Nspecies)              //pred specific, not size
@@ -599,7 +608,7 @@ DATA_SECTION
 
   init_int LFI_size // determins the size deemed a large fish. Used in LFI calc_health_indices module
   init_number scaleInitialN // scale the initial values of yr1N individuals
-  init_number otherFood // amount of other food included in the M2 term. previously hard coded
+  //init_number otherFood // amount of other food included in the M2 term. previously hard coded  //GF moving to parameter section
   init_matrix effortScaled(1,Nareas,1,Nspecies) // species specific scaling of effort due to S-R function data. eg. herring/mackerel use NE effort, others GB effort
   init_4darray discard_Coef(1,Nareas,1,Nspecies,1,Nfleets,1,Nsizebins) // proportion of fleet catch that are discarded
   init_4darray discardSurvival_Coef(1,Nareas,1,Nspecies,1,Nfleets,1,Nsizebins) // of the discards what proportion survives
@@ -761,9 +770,10 @@ DATA_SECTION
     cout<<"intake_alpha\n"<<intake_alpha<<endl;
     cout<<"intake_beta\n"<<intake_beta<<endl;
     cout<<"intake\n"<<intake<<endl;
-    cout<<"M1ann\n"<<M1ann<<endl;
-    cout<<"M1\n"<<M1<<endl;
+   // cout<<"M1ann\n"<<M1ann<<endl;
+   // cout<<"M1\n"<<M1<<endl;
     cout<<"isprey\n"<<isprey<<endl;
+    cout<<"Npred\n"<<Npred<<endl;
     cout<<"preferred_wtratio\n"<<preferred_wtratio<<endl;
     cout<<"sd_sizepref\n"<<sd_sizepref<<endl;
     cout<<"wtratio\n"<<wtratio<<endl;
@@ -1080,8 +1090,14 @@ PARAMETER_SECTION
       }
 	END_CALCS
 
-  //init_matrix ln_M1ann(1,Nareas,1,Nspecies,ssig_phase)
-  //3darray M1(1,Nareas,1,Nspecies,1,Nsizebins) 
+  init_matrix ln_M1ann(1,Nareas,1,Nspecies,m1_phase)
+  3darray M1(1,Nareas,1,Nspecies,1,Nsizebins) 
+
+  init_number ln_otherFood_base(oF1_phase) // amount of other food included in the M2 term for the base (predator 1)
+  init_vector otherFood_dev(1,Npred-1,oFdev_phase)  //deviation from base other food for predators 2+  (same other food for all size classes of each predator)
+  vector otherFood(1,Nspecies)   // vector of other food included in the M2 term
+
+
 
 //=======================================================================================
 PRELIMINARY_CALCS_SECTION
@@ -1118,15 +1134,29 @@ PROCEDURE_SECTION
   transform_parameters(); if (debug == 4) {cout<<"completed parameter transform"<<endl;}
 
   
-//  for (area=1; area<=Nareas; area++){
-//   for(spp=1; spp<=Nspecies; spp++){
+  for (area=1; area<=Nareas; area++){
+   for(spp=1; spp<=Nspecies; spp++){
 //    //      M1(area, spp)  = 1.0 - pow((1.0 - M1ann(area, spp)), (1.0 / Nstepsyr)) ; //scale for steps per year to equal annual input from dat  
-//          M1(area, spp)  = 1.0 - pow((1.0 - mfexp(ln_M1ann(area, spp))), (1.0 / Nstepsyr)) ; //scale for steps per year to equal annual input from dat  
+          M1(area, spp)  = 1.0 - pow((1.0 - mfexp(ln_M1ann(area, spp))), (1.0 / Nstepsyr)) ; //scale for steps per year to equal annual input from dat  
 //    //        M1(area, spp) = mfexp(ln_M1ann(area, spp))/Nstepsyr;
-//    }
-//   }
+    }
+   }
 
 
+  // Other Food - fill in the other food vector
+   otherFood = 0.;
+   int j=0;
+   for(spp=1; spp<=Nspecies; spp++){
+    if (sum(extract_column(isprey(1),spp))>0) {
+      if (j==0) otherFood(spp) = mfexp(ln_otherFood_base);
+      if (j>=1) otherFood(spp) = mfexp(ln_otherFood_base + otherFood_dev(j));
+      j = j+1;
+    }
+    else
+    {otherFood(spp) = mfexp(ln_otherFood_base);}   //GF 11/14/22 added trap to avoid 0 other food for non-predators, need to check full implications of why this is needed [nans in M2 calcs otherwise but want to check it's not using this info and this is just a product of looping over all species]
+   }
+  //cout << "other food" << endl;
+  //cout << otherFood << endl;
 
   //ofstream popout("popstructure.out");
   //ofstream recout("recstructure.out");
@@ -1301,12 +1331,14 @@ FUNCTION transform_parameters
   //cout << fishsel_c << endl;
   //cout << fishsel_d << endl;
   //exit(-1);
-
+  
+  dvariable neglog19 = -1.*log(19.);
   for (int i=1;i<=Nsurveys;i++)
    for (int k=1;k<=Nspecies;k++) {
    for (int j=1;j<=Nsizebins;j++) {
   // need to add survey selectivity at length, but for now set at 1 for all.
-  survey_sel(i,k,j) = 1/(1 + mfexp(-1.*mfexp(survey_selpars(1,i))*(lbinmidpt(k,j)-mfexp(survey_selpars(2,i)))));
+  //survey_sel(i,k,j) = 1/(1 + mfexp(-1.*mfexp(survey_selpars(1,i))*(lbinmidpt(k,j)-mfexp(survey_selpars(2,i)))));
+  survey_sel(i,k,j) = 1./(1.+mfexp(neglog19*(lbinmidpt(k,j)-mfexp(survey_selpars(1,i)))/mfexp(survey_selpars(2,i))));
                                      }
     survey_sel(i,k) /= max(survey_sel(i,k));
     }
@@ -1766,7 +1798,7 @@ FUNCTION calc_pred_mortality
           biomass_prey_avail_no_size(area,pred,yrct,ipredsize,prey) += sum(elem_prod(elem_prod(binavgwt(prey),Narea(area,prey,t)), column(suittemp,ipredsize)));
              }
         for (int ipredsize=1;ipredsize<=Nsizebins;ipredsize++)     
-          biomass_prey_avail_no_size(area,pred,yrct,ipredsize,Nprey) += otherFood; //suitability of other food needed?
+          biomass_prey_avail_no_size(area,pred,yrct,ipredsize,Nprey) += otherFood(pred); //suitability of other food needed?  //mod GF 11/14/22 to allow for predator-specific other food
         }
   } //ok
 
@@ -1792,7 +1824,7 @@ FUNCTION calc_pred_mortality
                   for (int ipreysize =1; ipreysize<=Nsizebins; ipreysize++) {
                    for (int ipredsize =1; ipredsize<=Nsizebins; ipredsize++) {                     
                      M2(area,prey,t,ipreysize) += (intake(area,pred,yrct,ipredsize)*Narea(area,pred,t,ipredsize) * suittemp2(ipreysize,ipredsize)) /
-                           (suitpreybio(area,pred,t,ipredsize) + otherFood);    //Hall et al 2006 other prey too high
+                           (suitpreybio(area,pred,t,ipredsize) + otherFood(pred));    //Hall et al 2006 other prey too high
                      //if (prey ==1) cout << "M2 " << pred << " " << ipreysize << " " << ipredsize << " " << M2(area,prey,t,ipreysize) << " " << intake(1,pred,yrct,ipredsize) << " " << suittemp2(ipreysize,ipredsize) << " " << suitpreybio(1,pred,t,ipredsize) << endl;
                     }
                   }
@@ -1815,6 +1847,7 @@ FUNCTION calc_fishing_mortality
   //NOTE: Ftots are by area, species, and should be separated by fleet
   //not currently set up that way, assuming each fleet has same Ftot and they sum to F
   //selectivities are not currently by area, assuming fleet selectivity same in each area
+  dvariable neglog19 = -1.*log(19.);
   for (area=1; area<=Nareas; area++){
       for(spp=1; spp<=Nspecies; spp++){
 
@@ -1823,10 +1856,9 @@ FUNCTION calc_fishing_mortality
 
                for(int isizebin=1; isizebin<=Nsizebins; isizebin++) { //abeet added this loop to avoid compilation warnings.
                // could be created in calc_initial_sattes since it is not time dependent
-            	  //fishsel(area,spp,fleet,isizebin) = 1/(1 + mfexp(-(fishsel_c(spp,fleet) +
-                  //                   (fishsel_d(spp,fleet)*lbinmidpt(spp,isizebin)))));
-                fishsel(area,spp,fleet,isizebin) = 1/(1 + mfexp(-1.*fishsel_c(spp,fleet)*
-                                     (lbinmidpt(spp,isizebin)-fishsel_d(spp,fleet))));
+                //fishsel(area,spp,fleet,isizebin) = 1/(1 + mfexp(-1.*fishsel_c(spp,fleet)*
+                 //                    (lbinmidpt(spp,isizebin)-fishsel_d(spp,fleet))));
+                fishsel(area,spp,fleet,isizebin) = 1./(1.+mfexp(neglog19*(lbinmidpt(spp,isizebin)-fishsel_c(1,fleet))/fishsel_d(2,fleet)));                                     
                                      }
                                      fishsel(area,spp,fleet) /= max(fishsel(area,spp,fleet));
                 for(int isizebin=1; isizebin<=Nsizebins; isizebin++) { 
@@ -3276,6 +3308,11 @@ FUNCTION evaluate_the_objective_function
    objfun += sum(nll_catch_size);
    objfun += sum(nll_dietprop);
    objfun += nll_recruit;  
+
+//F_devs(area,fleet,iyr)
+   for (int area=1;area <=Nareas;area++) {
+    for (int spp=1;spp <=Nfleets;spp++) {
+     objfun += dnorm(F_devs(area,spp),1.0); }}
    
    cout << "nll_survey: " << sum(nll_survey) << endl;
    cout << "nll_survey_size: " << sum(nll_survey_size) << endl;
