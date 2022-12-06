@@ -25,10 +25,10 @@ inputs$outDir <- here()
 
 inputs$outputFilename <- "hydra_sim_NOBA_5bin_0comp" 
 
-# tpl code removes 0 so replace in data
-nbins <- hydraDataList_msk$Nsizebins
-hydraDataList_msk$observedCatchSize[,7:(6+nbins)][hydraDataList_msk$observedCatchSize[,7:(6+nbins)]==0] <- 1e-4
-hydraDataList_msk$observedSurvSize[,6:(5+nbins)][hydraDataList_msk$observedSurvSize[,6:(5+nbins)]==0] <- 1e-4
+# tpl code removes 0 so replace in data--nope tpl now updated
+# nbins <- hydraDataList_msk$Nsizebins
+# hydraDataList_msk$observedCatchSize[,7:(6+nbins)][hydraDataList_msk$observedCatchSize[,7:(6+nbins)]==0] <- 1e-4
+# hydraDataList_msk$observedSurvSize[,6:(5+nbins)][hydraDataList_msk$observedSurvSize[,6:(5+nbins)]==0] <- 1e-4
 
 hydraDataList_5bin_0comp <- create_datpin_files(inputs,hydraDataList_msk)
 
@@ -49,10 +49,10 @@ inputs$outDir <- here()
 
 inputs$outputFilename <- "hydra_sim_NOBA_10bin_0comp" 
 
-# tpl code removes 0 so replace in data
-nbins <- hydraDataList_msk$Nsizebins
-hydraDataList_msk$observedCatchSize[,7:(6+nbins)][hydraDataList_msk$observedCatchSize[,7:(6+nbins)]==0] <- 1e-4
-hydraDataList_msk$observedSurvSize[,6:(5+nbins)][hydraDataList_msk$observedSurvSize[,6:(5+nbins)]==0] <- 1e-4
+# # tpl code removes 0 so replace in data
+# nbins <- hydraDataList_msk$Nsizebins
+# hydraDataList_msk$observedCatchSize[,7:(6+nbins)][hydraDataList_msk$observedCatchSize[,7:(6+nbins)]==0] <- 1e-4
+# hydraDataList_msk$observedSurvSize[,6:(5+nbins)][hydraDataList_msk$observedSurvSize[,6:(5+nbins)]==0] <- 1e-4
 
 
 hydraDataList_10bin_0comp <- create_datpin_files(inputs,hydraDataList_msk)
@@ -164,13 +164,13 @@ library(hydradata)
 inputs <- setup_default_inputs()
 inputs$outDir <- here()
 
-inputs$outputFilename <- "hydra_sim_GB_5bin_1978" 
+inputs$outputFilename <- "GB-input/hydra_sim_GB_5bin_1978_inpN" 
 
-hydraDataList_GB5bin_1978 <- create_datpin_files(inputs,hydraDataList_msk)
+hydraDataList_GB5bin_1978_inpN <- create_datpin_files(inputs,hydraDataList_msk)
 
 # this saves the specific hydralist object, so we could saveRDS it to a diagnostics folder?
 # advantage of rds format is we can assign it when reading it in to diagnostics scripts
-saveRDS(hydraDataList_GB5bin_1978, file.path(here("inputRdatalists/hydraDataList_GB5bin_1978.rds")))
+saveRDS(hydraDataList_GB5bin_1978_inpN, file.path(here("inputRdatalists/hydraDataList_GB5bin_1978_inpN.rds")))
 
 ```
 
@@ -241,6 +241,27 @@ hydraDataList_GB5bin_nocatch_nopred <- create_datpin_files(inputs,hydraDataList_
 # advantage of rds format is we can assign it when reading it in to diagnostics scripts
 saveRDS(hydraDataList_GB5bin_nocatch_nopred, file.path(here("inputRdatalists/hydraDataList_GB5bin_nocatch_nopred.rds")))
 
+
+```
+
+## New data inputs after WGSAM: 1 fleet per species
+
+Also this dataset does not include length borrowing for fisheries
+
+```{r, writedatfilereal5-Dec2022, eval=FALSE}
+
+library(here)
+library(hydradata)
+inputs <- setup_default_inputs()
+inputs$outDir <- here()
+
+inputs$outputFilename <- "GB-input/hydra_sim_GB_5bin_1978_10F" 
+
+hydraDataList_GB5bin_1978_inpN_10F <- create_datpin_files(inputs,hydraDataList_msk)
+
+# this saves the specific hydralist object, so we could saveRDS it to a diagnostics folder?
+# advantage of rds format is we can assign it when reading it in to diagnostics scripts
+saveRDS(hydraDataList_GB5bin_1978_inpN_10F, file.path(here("inputRdatalists/hydraDataList_GB5bin_1978_10F.rds")))
 
 ```
 
