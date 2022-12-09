@@ -534,6 +534,12 @@
   -1
 #  init_int csig_phase           //catch sigma (obs error) phase
   -1
+#  init_int m1_phase            // M1 phase
+  -1
+#  init_int oF1_phase           // amount of other food included in the M2 term for the base (predator 1) phase
+  -1
+#   init_int oFdev_phase          //deviation from base other food for predators 2+ phase
+  -1
 #  init_matrix recGamma_alpha(1,Nareas,1,Nspecies)			//eggprod gamma Ricker model alpha
   1 1 1 1 1 1 1 1 1 1
 #  init_matrix recGamma_shape(1,Nareas,1,Nspecies)			//eggprod gamma Ricker model shape parameter
@@ -660,18 +666,16 @@
   0.004 0.004 0.004 0.004 0.004 0.004 0.004 0.004 0.004 0.004
 #  init_matrix intake_beta(1,Nareas,1,Nspecies)
   0.11 0.11 0.11 0.11 0.11 0.11 0.11 0.11 0.11 0.11
- # M1 - natural mortality (not explained by model)
-#  init_3darray M1(1,Nareas,1,Nspecies,1,Nsizebins)
-  0.1 0.1 0.1 0.1 0.1
-  0.1 0.1 0.1 0.1 0.1
-  0.1 0.1 0.1 0.1 0.1
-  0.1 0.1 0.1 0.1 0.1
-  0.1 0.1 0.1 0.1 0.1
-  0.1 0.1 0.1 0.1 0.1
-  0.1 0.1 0.1 0.1 0.1
-  0.1 0.1 0.1 0.1 0.1
-  0.1 0.1 0.1 0.1 0.1
-  0.1 0.1 0.1 0.1 0.1
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
 #  init_3darray isprey(1,Nareas,1,Nspecies,1,Nspecies)     //preds in columns, prey in rows
   1 0 0 1 0 0 1 0 1 0
   1 1 1 1 1 1 1 0 1 1
