@@ -619,10 +619,14 @@ DATA_SECTION
  //  !!  baseline_threshold = 0.2;
   // GF March 2022 - modifying fishing for estimation
   init_3darray indicator_fishery_q(1,Nareas,1,Nfleets,1,Nspecies) // used to determin which species used to calculate updated effort under assessment
+  //!! cout << indicator_fishery_q << endl;
   int Nqpars
   !! Nqpars = sum(indicator_fishery_q)-(Nfleets*Nareas);
   imatrix f_map(1,Nareas,1,Nfleets)  //primary species for each fleet (i.e. which species the F refers to)
-  imatrix q_map(1,Nqpars,1,3)  //object that maps the catchability parameters to area, species, and fleet
+  int dim2
+  !! dim2 = Nqpars;
+  !! if (dim2 == 0) dim2 = 1;
+  imatrix q_map(1,dim2,1,3)  //object that maps the catchability parameters to area, species, and fleet
   int dum
   !! f_map = 0;
   !! q_map = 0;
@@ -630,11 +634,13 @@ DATA_SECTION
   !! for(int area=1;area<=Nareas;area++) {
   !!   for (int ifleet=1;ifleet<=Nfleets;ifleet++) {
   !!     for (int species=1;species<=Nspecies;species++) {
+  !!       if (Nqpars >0) {
   !!       if (f_map(area,ifleet)!=0 && indicator_fishery_q(area,ifleet,species) == 1) {
   !!        dum += 1;
   !!        q_map(dum,1) = area;
   !!        q_map(dum,2) = species;
   !!        q_map(dum,3) = ifleet;
+  !!       }
   !!       }
   !!       if (f_map(area,ifleet)==0 && indicator_fishery_q(area,ifleet,species) == 1) f_map(area,ifleet) = species;
   !!     }
@@ -1133,7 +1139,6 @@ PROCEDURE_SECTION
 
   transform_parameters(); if (debug == 4) {cout<<"completed parameter transform"<<endl;}
 
-  
   for (area=1; area<=Nareas; area++){
    for(spp=1; spp<=Nspecies; spp++){
 //    //      M1(area, spp)  = 1.0 - pow((1.0 - M1ann(area, spp)), (1.0 / Nstepsyr)) ; //scale for steps per year to equal annual input from dat  
@@ -1141,7 +1146,6 @@ PROCEDURE_SECTION
 //    //        M1(area, spp) = mfexp(ln_M1ann(area, spp))/Nstepsyr;
     }
    }
-
 
   // Other Food - fill in the other food vector
    otherFood = 0.;
@@ -1162,7 +1166,7 @@ PROCEDURE_SECTION
   //ofstream recout("recstructure.out");
 
 //  calc_fishery_qs(); if (debug == 4) {cout<<"completed fishery qs"<<endl;}  //gavinfay March 2022 - moved from PARAMETER_SECTION 
-
+  
   calc_initial_states();  if (debug == 4) {cout<<"completed Initial States"<<endl;}
 
   yrct=1;
@@ -1313,8 +1317,10 @@ FUNCTION transform_parameters
       fishery_q(area,f_map(area,ifleet),ifleet) = 1.;
     }
    }
+  if (Nqpars > 0) {
   for (int ipar=1;ipar<=Nqpars;ipar++) {
     fishery_q(q_map(ipar,1),q_map(ipar,2),q_map(ipar,3)) = mfexp(ln_fishery_q(ipar));
+  }
   }
   //cout << "fishery q" << endl;
   //cout << fishery_q << endl;
