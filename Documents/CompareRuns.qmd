@@ -246,7 +246,9 @@ saveRDS(hydraDataList_GB5bin_nocatch_nopred, file.path(here("inputRdatalists/hyd
 
 ## New data inputs after WGSAM: 1 fleet per species
 
-Also this dataset does not include length borrowing for fisheries
+Also this dataset does not include length borrowing for fisheries. 
+
+January 2023 now corrected to remove blank spaces in dat file
 
 ```{r, writedatfilereal5-Dec2022, eval=FALSE}
 
