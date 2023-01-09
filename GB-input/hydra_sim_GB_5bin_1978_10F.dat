@@ -666,16 +666,6 @@
   0.004 0.004 0.004 0.004 0.004 0.004 0.004 0.004 0.004 0.004
 #  init_matrix intake_beta(1,Nareas,1,Nspecies)
   0.11 0.11 0.11 0.11 0.11 0.11 0.11 0.11 0.11 0.11
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
 #  init_3darray isprey(1,Nareas,1,Nspecies,1,Nspecies)     //preds in columns, prey in rows
   1 0 0 1 0 0 1 0 1 0
   1 1 1 1 1 1 1 0 1 1
