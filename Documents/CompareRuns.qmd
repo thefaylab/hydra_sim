@@ -174,7 +174,6 @@ saveRDS(hydraDataList_GB5bin_1978_inpN, file.path(here("inputRdatalists/hydraDat
 
 ```
 
-
 Make a new lower catch datafile for testing:
 
 ```{r, eval=FALSE}
@@ -219,7 +218,6 @@ saveRDS(hydraDataList_GB5bin_nocatch_nopred, file.path(here("inputRdatalists/hyd
 
 ```
 
-
 No catch, no predation, set Linf to max bin?
 
 ```{r, eval=FALSE}
@@ -246,9 +244,11 @@ saveRDS(hydraDataList_GB5bin_nocatch_nopred, file.path(here("inputRdatalists/hyd
 
 ## New data inputs after WGSAM: 1 fleet per species
 
-Also this dataset does not include length borrowing for fisheries. 
+Also this dataset does not include length borrowing for fisheries.
 
 January 2023 now corrected to remove blank spaces in dat file
+
+And to implement changes in diet matrix and length bin widths (GBnew5bin)
 
 ```{r, writedatfilereal5-Dec2022, eval=FALSE}
 
@@ -257,13 +257,13 @@ library(hydradata)
 inputs <- setup_default_inputs()
 inputs$outDir <- here()
 
-inputs$outputFilename <- "GB-input/hydra_sim_GB_5bin_1978_10F" 
+inputs$outputFilename <- "GB-input/hydra_sim_GB_new5bin_1978_10F" 
 
-hydraDataList_GB5bin_1978_inpN_10F <- create_datpin_files(inputs,hydraDataList_msk)
+hydraDataList_GBnew5bin_1978_inpN_10F <- create_datpin_files(inputs,hydraDataList_msk)
 
 # this saves the specific hydralist object, so we could saveRDS it to a diagnostics folder?
 # advantage of rds format is we can assign it when reading it in to diagnostics scripts
-saveRDS(hydraDataList_GB5bin_1978_inpN_10F, file.path(here("inputRdatalists/hydraDataList_GB5bin_1978_10F.rds")))
+saveRDS(hydraDataList_GBnew5bin_1978_inpN_10F, file.path(here("inputRdatalists/hydraDataList_GBnew5bin_1978_10F.rds")))
 
 ```
 
@@ -465,4 +465,3 @@ Above does indices, below does comps
 Actually did these in the `hydra-diag` repo. Dont reproduce here.
 
 Make this a function in `hydra_diag/hydra-diagnostics.rmd` currently at lines 122-211
-
