@@ -720,8 +720,6 @@
   60
 # init_number scaleInitialN.  used to scale initial yr1N abundances found in .pin file
   1
-# other food term
-  1e+09
 #init_matrix effortScaled(1,Nareas,1,Nspecies)
   1 1 1 1 1 1 1 1 1 1
 # init_4darray discard_Coef(1,Nareas,1,Nspecies,1,Nfleets,1,Nsizebins)
