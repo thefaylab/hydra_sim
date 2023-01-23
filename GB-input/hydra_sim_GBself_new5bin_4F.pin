@@ -1,0 +1,55 @@
+# This file was created using create_datpin_files.R function write_estPinFile
+      #and used inputs from create_Rdata_mskeyrun and csv files found in folder:
+      #hydradata/data-raw
+#
+# List of Species in Model
+# Atlantic_cod
+# Atlantic_herring
+# Atlantic_mackerel
+# Spiny_dogfish
+#
+#//Initial N year 1
+#  init_3darray yr1N(1,Nareas,1,Nspecies,1,Nsizebins)       //initial year N at size, ln_millions
+  4.320719 4.170631 3.755749 3.921926 2.776405
+  7.114145 7.114145 7.176080 7.176080 7.909972
+  5.153246 5.395981 5.292695 5.180995 5.082370
+  3.785003 3.682979 3.383073 2.926285 2.103726
+# recruitment_alpha, 1:Nspecies:
+  0 0 0 0
+# recruitment_shape, 1:Nspecies:
+  0 0 0 0
+# recruitment_beta, 1:Nspecies:
+  0 0 0 0
+# ln_avg_recruitment, 1:Nspecies:
+  5 10 7.5 5
+# recruitment_devs, rows 1:Nspecies, columns 1:Nyrs:
+  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+# ln_recsigma, 1:Nspecies:
+  1 1 1 1
+# avg_F, 1:fleets:
+  -0.830692736096927 0.219561374787256 -1.2229212449541 -3.55943062054313
+# F_devs, rows 1:fleets, columns 1:Nyrs:
+  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+# fishsel_pars, row 1 c, row 2 d, columns 1:Nfleets:
+  1 1 1 1
+  1 1 1 1
+# ln_fishery_q, ln_fishery_q(1,Nqpars) (= number of fished species - Nfleet*Narea):
+ 
+# ln_survey_q, rows 1:Nsurveys, columns 1:Nspecies:
+  0 0 0 0
+  0 0 0 0
+# survey_selpars, row 1 c, row 2 d, columns 1:Nsurveys:
+  1 1
+  1 1
+# M1: ln_M1ann(1,Nareas,1,Nspecies)
+  -2.30258509299405 -2.30258509299405 -2.30258509299405 -2.30258509299405
+# ln_otherFood base
+  21
+# other food devs: otherFood_dev(1,Npred-1)
+  0

@@ -277,13 +277,13 @@ library(hydradata)
 inputs <- setup_default_inputs()
 inputs$outDir <- here()
 
-inputs$outputFilename <- "GB-input/hydra_sim_GB_new5bin_1978_4F" 
+inputs$outputFilename <- "GB-input/hydra_sim_GBself_new5bin_4F" 
 
-hydraDataList_GBnew5bin_1978_inpN_10F <- create_datpin_files(inputs,hydraDataList_st)
+hydraDataList_GBself_new5bin_4F <- create_datpin_files(inputs,hydraDataList_st)
 
 # this saves the specific hydralist object, so we could saveRDS it to a diagnostics folder?
 # advantage of rds format is we can assign it when reading it in to diagnostics scripts
-saveRDS(hydraDataList_GBnew5bin_1978_inpN_10F, file.path(here("inputRdatalists/hydraDataList_GBnew5bin_1978_10F.rds")))
+saveRDS(hydraDataList_GBself_new5bin_4F, file.path(here("inputRdatalists/hydraDataList_GBself_new5bin_4F.rds")))
 
 
 ```
