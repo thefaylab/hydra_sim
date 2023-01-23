@@ -267,6 +267,29 @@ saveRDS(hydraDataList_GBnew5bin_1978_inpN_10F, file.path(here("inputRdatalists/h
 
 ```
 
+
+Create data for self test using a subset of data
+
+```{r, writedatfile-selftest-real5-Jan2023, eval=FALSE}
+
+library(here)
+library(hydradata)
+inputs <- setup_default_inputs()
+inputs$outDir <- here()
+
+inputs$outputFilename <- "GB-input/hydra_sim_GB_new5bin_1978_4F" 
+
+hydraDataList_GBnew5bin_1978_inpN_10F <- create_datpin_files(inputs,hydraDataList_st)
+
+# this saves the specific hydralist object, so we could saveRDS it to a diagnostics folder?
+# advantage of rds format is we can assign it when reading it in to diagnostics scripts
+saveRDS(hydraDataList_GBnew5bin_1978_inpN_10F, file.path(here("inputRdatalists/hydraDataList_GBnew5bin_1978_10F.rds")))
+
+
+```
+
+
+
 ## Can we use hydradata's plot functions?
 
 Some work and create output in the results directory, needs more tweaking for current shape of -ts.dat inputs.
