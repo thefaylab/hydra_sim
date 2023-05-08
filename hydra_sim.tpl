@@ -62,6 +62,7 @@ GLOBALS_SECTION
 
   // ofstream test("test.csv"); // for debugging only
   ofstream gavjunk("gav.junk");
+  ofstream pmse_predvals("pmse_predvals.out");
 
 
 //=======================================================================================
@@ -3483,3 +3484,59 @@ REPORT_SECTION
    for (int j=1;j<=Nfleets;j++) {
      report << i << " " << j << " " << Fyr(1,i,j) << endl;
   }}
+
+
+//// write full time series of predicted data streams to pmse_prevals.out
+
+//////// full table of predicted survey index
+    pmse_predvals << "full time series of predicted survey index" << endl;
+    pmse_predvals << "survey year spp area pred_survey" << endl;
+      dvariable pred_survey_index2;
+      for (int survey=1; survey<=Nsurveys;survey++) {
+      for (int year=1;year<=Nyrs;year++) {
+      for (int spp=1;spp<=Nspecies;spp++) {
+      for (int area=1; area<=Nareas; area++){
+        pred_survey_index2 = 0.;
+        for (int ilen=1;ilen<=Nsizebins;ilen++) {
+            pred_survey_index2 +=  B_tot(area,spp,year,ilen)*survey_sel(survey,spp,ilen)*survey_q(survey,spp)/Nstepsyr; 
+        }
+        pmse_predvals << survey << " " << year << " " << spp << " " << area << " " << pred_survey_index2 << endl;
+      }}}}       
+
+//////// full table of predicted catch
+    pmse_predvals << "full time series of predicted catch" << endl;
+    pmse_predvals << "fleet year spp area pred_catch" << endl;
+      for (int fleet=1; fleet<=Nfleets;fleet++) {
+      for (int year=1;year<=Nyrs;year++) {
+      for (int spp=1;spp<=Nspecies;spp++) {
+      for (int area=1; area<=Nareas; area++){
+        pmse_predvals << fleet << " " << year << " " << spp << " " << area << " " << fleet_catch_biomass(area,spp,fleet,year) << endl;
+      }}}}       
+
+
+ //full table of survey length composition
+    pmse_predvals << "full time series of survey length comp" << endl;
+    pmse_predvals << "survey year spp area catch-at-size" << endl;
+     dvar_vector Lpred(1,Nsizebins);
+      for (int survey=1; survey<=Nsurveys;survey++) {
+      for (int year=1;year<=Nyrs;year++) {
+      for (int spp=1;spp<=Nspecies;spp++) {
+      Lpred.initialize();
+      for (int area=1;area<=Nareas;area++)
+       Lpred += N_tot(area,spp,year);
+      Lpred = survey_q(survey,spp)*elem_prod(survey_sel(survey,spp),Lpred)/Nstepsyr; //est_survey_size(survey, year, spp, ilen);// 
+        pmse_predvals << survey << " " << year << " " << spp << " " << area << " " << Lpred << endl;
+      }}}
+
+ //full table of survey length composition
+    pmse_predvals << "full time series of fishery length comp" << endl;
+    pmse_predvals << "fleet year spp area catch-at-size" << endl;
+      for (int fleet=1; fleet<=Nfleets;fleet++) {
+      for (int year=1;year<=Nyrs;year++) {
+      for (int spp=1;spp<=Nspecies;spp++) {
+      for (int area=1;area<=Nareas;area++) {
+      Lpred.initialize();
+      for (int ilen=1;ilen<=Nsizebins;ilen++)
+       Lpred(ilen) = Cfl_tot(area,spp,fleet,year,ilen);
+        pmse_predvals << fleet << " " << year << " " << spp << " " << area << " " << Lpred << endl;
+      }}}}
