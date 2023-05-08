@@ -281,6 +281,7 @@ DATA_SECTION
   init_int m1_phase            // M1 phase
   init_int oF1_phase           // amount of other food included in the M2 term for the base (predator 1) phase
   init_int oFdev_phase          //deviation from base other food for predators 2+ phase
+  init_int vuln_phase           // phase for vulnerability parameters
 
 //read in lists of species names, area names, fleet names, actual years from .dat file
 
@@ -514,7 +515,10 @@ DATA_SECTION
     
   init_3darray isprey(1,Nareas,1,Nspecies,1,Nspecies)    //preds in columns, prey in rows
   int Npred 
+  int Npreypar
+  !! Npreypar = 0;
   !! Npred = 0;
+  !! Npreypar = sum(isprey(1));
   !! for (spp=1;spp<=Nspecies;spp++) {
   !!  if(sum(extract_column(isprey(1),spp))>0) Npred += 1;
   !! }
@@ -549,19 +553,20 @@ DATA_SECTION
   !!		}
   !!	}
   !!  } //ok
-  4darray suitability(1,Nareas,1,Nspecies,1,Totsizebins,1,Nsizebins)
-  !!  //suitability = sizepref * isprey
-  !!  for (area=1; area<=Nareas; area++){
-  !!  	for (pred=1; pred<=Nspecies; pred++){
-  !!    	for(prey=1; prey<=Nspecies; prey++){
-  !!                    double sumOfSizePrefs = sum(sizepref(area,pred).sub(prey*Nsizebins-(Nsizebins-1), prey*Nsizebins));
-  !!			suitability(area, pred).sub(prey*Nsizebins-(Nsizebins-1), prey*Nsizebins) =
-  !!						sizepref(area, pred).sub(prey*Nsizebins-(Nsizebins-1), prey*Nsizebins)*
-  !!					//	(sizepref(area, pred).sub(prey*Nsizebins-(Nsizebins-1), prey*Nsizebins)/sumOfSizePrefs)* // normalize rates
-  !!						isprey(area, prey, pred);
-  !!             }
-  !!	}
-  !!  }
+// GF - moved to procedure section
+//  4darray suitability(1,Nareas,1,Nspecies,1,Totsizebins,1,Nsizebins)
+//  !!  //suitability = sizepref * isprey
+//  !!  for (area=1; area<=Nareas; area++){
+//  !!  	for (pred=1; pred<=Nspecies; pred++){
+//  !!    	for(prey=1; prey<=Nspecies; prey++){
+//  !!                    double sumOfSizePrefs = sum(sizepref(area,pred).sub(prey*Nsizebins-(Nsizebins-1), prey*Nsizebins));
+//  !!			suitability(area, pred).sub(prey*Nsizebins-(Nsizebins-1), prey*Nsizebins) =
+//  !!						sizepref(area, pred).sub(prey*Nsizebins-(Nsizebins-1), prey*Nsizebins)*
+//  !!					//	(sizepref(area, pred).sub(prey*Nsizebins-(Nsizebins-1), prey*Nsizebins)/sumOfSizePrefs)* // normalize rates
+//  !!						isprey(area, prey, pred);
+//  !!             }
+//  !!	}
+//  !!  }
 
 // GF - moved to parameter section
 //  //fishery selectivity pars from dat file, for now not area specific
@@ -784,7 +789,7 @@ DATA_SECTION
     cout<<"sd_sizepref\n"<<sd_sizepref<<endl;
     cout<<"wtratio\n"<<wtratio<<endl;
     cout<<"sizepref\n"<<sizepref<<endl;
-    cout<<"suitability\n"<<suitability<<endl;
+    //cout<<"suitability\n"<<suitability<<endl;
     cout<<"B0\n"<<B0<<endl;
     cout<<"Nguilds\n"<<Nguilds<<endl;
     cout<<"guildMembers\n"<<guildMembers<<endl;
@@ -860,6 +865,11 @@ PARAMETER_SECTION
 
   4darray suitpreybio(1,Nareas,1,Nspecies,1,Tottimesteps,1,Nsizebins);  //suitable prey for each predator size and year, see weight unit above for units
   
+  !!cout << "Nprey " << Nprey << endl;
+  init_vector logit_vuln(1,Npreypar,vuln_phase);
+  3darray vulnerability(1,Nareas,1,Nspecies,1,Nspecies);
+  4darray suitability(1,Nareas,1,Nspecies,1,Totsizebins,1,Nsizebins); //GF moved here 01/09/2023 because vulnerabilities shifted
+
   5darray biomass_prey_avail_no_size(1,Nareas,1,Nspecies,1,Nyrs,1,Nsizebins,1,Nprey);
 
   //N, B, F, Z, M2, C, need total prey consumed per pred, suitability, available prey, food habits?
@@ -1162,6 +1172,22 @@ PROCEDURE_SECTION
   //cout << "other food" << endl;
   //cout << otherFood << endl;
 
+
+  //suitability calcs - previously in data section
+    //suitability = sizepref * vulnerability
+    for (area=1; area<=Nareas; area++){
+      for (pred=1; pred<=Nspecies; pred++){
+        for(prey=1; prey<=Nspecies; prey++){
+                      double sumOfSizePrefs = sum(sizepref(area,pred).sub(prey*Nsizebins-(Nsizebins-1), prey*Nsizebins));
+        suitability(area, pred).sub(prey*Nsizebins-(Nsizebins-1), prey*Nsizebins) =
+              sizepref(area, pred).sub(prey*Nsizebins-(Nsizebins-1), prey*Nsizebins)*
+            //  (sizepref(area, pred).sub(prey*Nsizebins-(Nsizebins-1), prey*Nsizebins)/sumOfSizePrefs)* // normalize rates
+              vulnerability(area, prey, pred);
+               }
+    }
+    }
+
+
   //ofstream popout("popstructure.out");
   //ofstream recout("recstructure.out");
 
@@ -1352,6 +1378,26 @@ FUNCTION transform_parameters
    survey_q = mfexp(ln_survey_q);
   // surv_sigma = mfexp(ln_surv_sigma);
   // catch_sigma = mfexp(ln_catch_sigma);
+
+  //vulnerabilities
+  int iprey = 0;
+  vulnerability.initialize();
+  for (area=1; area<=Nareas; area++){
+    for (pred=1; pred<=Nspecies; pred++){
+      for(prey=1; prey<=Nspecies; prey++){
+        if (isprey(area,prey,pred)==1) {
+         iprey+=1;
+         vulnerability(area,prey,pred) = mfexp(logit_vuln(iprey))/(1.+mfexp(logit_vuln(iprey)));
+        }
+      }
+    }
+  }
+  //cout << "vulnerability" << endl;
+  //cout << logit_vuln << endl;
+  //cout << vulnerability << endl;
+  //exit(-1);
+
+
 
 //----------------------------------------------------------------------------------------
 FUNCTION calc_initial_states
@@ -1790,7 +1836,7 @@ FUNCTION calc_pred_mortality
 	    for(prey=1; prey<=Nspecies; prey++){
                // select the rows of suitability given predator (in blocks of Nsizebins )
                // suittemp is a Nsizebins x Nsizebins matrix.each value is suitability of pred size (col) on prey size(row)
-		  dmatrix suittemp = suitability(area,pred).sub(prey*Nsizebins-(Nsizebins-1), prey*Nsizebins);
+		  dvar_matrix suittemp = suitability(area,pred).sub(prey*Nsizebins-(Nsizebins-1), prey*Nsizebins);
                // when using .sub on a higher order array, even if a matrix is the result the .rowmin() value is not set to 1
                // it uses the value of the row it occupied in the large array. This .rowmin() value determins if matrices can be multiplied
                // so we need to use .rowshif to designate the matrix to have rows starting from .rowmin()=1
@@ -1824,7 +1870,7 @@ FUNCTION calc_pred_mortality
    for (area=1; area<=Nareas; area++){
   	for(prey=1; prey<=Nspecies; prey++){
                for(pred=1; pred<=Nspecies; pred++){
-		  dmatrix suittemp2 = suitability(area,pred).sub(prey*Nsizebins-(Nsizebins-1), prey*Nsizebins);
+		  dvar_matrix suittemp2 = suitability(area,pred).sub(prey*Nsizebins-(Nsizebins-1), prey*Nsizebins);
                   // see above description of why row shif is needed
 		  suittemp2.rowshift(1); //needed to match up array bounds
                   for (int ipreysize =1; ipreysize<=Nsizebins; ipreysize++) {
