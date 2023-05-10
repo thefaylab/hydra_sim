@@ -540,6 +540,8 @@
   -1
 #   init_int oFdev_phase          //deviation from base other food for predators 2+ phase
   -1
+#  init_int vuln_phase      // phase for vulnerability parameters
+  -1
 #  init_matrix recGamma_alpha(1,Nareas,1,Nspecies)			//eggprod gamma Ricker model alpha
   1 1 1 1 1 1 1 1 1 1
 #  init_matrix recGamma_shape(1,Nareas,1,Nspecies)			//eggprod gamma Ricker model shape parameter
@@ -672,7 +674,7 @@
   1 0 0 1 1 1 1 0 1 0
   0 0 0 1 0 0 0 0 0 0
   1 0 0 1 1 1 1 0 1 0
-  1 1 1 1 1 1 1 0 1 0
+  1 0 0 1 1 1 1 0 1 0
   0 0 0 1 0 0 1 0 0 0
   0 0 0 0 0 0 1 0 0 0
   0 0 0 0 0 0 0 0 0 0
