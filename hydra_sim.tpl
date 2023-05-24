@@ -1520,6 +1520,7 @@ FUNCTION calc_initial_states
 //            Fyr(area,spp,fleet) = fishery_q(area,spp,fleet)*obs_effort(area,fleet)*effortScaled(area,spp); //Andy Beet
 //                  Fyr(area,spp,fleet) = fishery_q(area,spp,fleet)*obs_effort(area,fleet); //Andy Beet
             Fyr(area,spp,fleet,iyr) = fishery_q(area,spp,fleet)*mfexp(avg_F(area,fleet)+F_devs(area,fleet,iyr));  //gavinfay March 2022 - modding for F
+            //Fyr(area,spp,fleet,iyr) = fishery_q(area,spp,fleet)*mfexp(F_devs(area,fleet,iyr));  //gavinfay March 2022 - modding for F
             //cout << iyr << " " << area << " " << spp << " " << fleet << " " << Fyr(area,spp,fleet,iyr) << endl;
       }
     }
@@ -3246,15 +3247,15 @@ FUNCTION evaluate_the_objective_function
     }
    
   cout << "done survey abundance nll" << endl;
-  if(isinf(value(sum(nll_survey)))) {
-    cout << " INFINITE OBJ FUN" << endl;
-    gavjunk << survey_q << endl;
-    gavjunk << ln_survey_q << endl;
-    gavjunk << "survey biomass data, predicted, residual, nll" << endl;
-  for (int i=1;i<=Nsurvey_obs;i++)
-    gavjunk << obs_survey_biomass(i) << " " << pred_survey_index(i) << " " << resid_survey(i) << " " << nll_survey(i) << endl;
-  exit(-1);
-  }
+//  if(isinf(value(sum(nll_survey)))) {
+//    cout << " INFINITE OBJ FUN" << endl;
+//    gavjunk << survey_q << endl;
+//    gavjunk << ln_survey_q << endl;
+//    gavjunk << "survey biomass data, predicted, residual, nll" << endl;
+//  for (int i=1;i<=Nsurvey_obs;i++)
+//    gavjunk << obs_survey_biomass(i) << " " << pred_survey_index(i) << " " << resid_survey(i) << " " << nll_survey(i) << endl;
+//  exit(-1);
+//  }
   //
 
  //Survey Catch-at-length
@@ -3439,7 +3440,7 @@ REPORT_SECTION
   report << F << endl;
   report << "EstM2size Estimated predation mortality " << endl;
   report << M2 << endl;
-  report << "table of fits to survey" << endl;
+  //report << "table of fits to survey" << endl;
   report << "survey biomass data, predicted, residual, nll" << endl;
   for (int i=1;i<=Nsurvey_obs;i++)
     report << obs_survey_biomass(i) << " " << pred_survey_index(i) << " " << resid_survey(i) << " " << nll_survey(i) << endl;
@@ -3447,7 +3448,7 @@ REPORT_SECTION
   // report << est_survey_biomass << endl;
   // report << "ObsSurvB Observed survey biomass of fish " << endl;
   // report << obs_survey_biomass << endl;
-  report << "table of fits to catch" << endl;
+  //report << "table of fits to catch" << endl;
   report << "catch data, predicted, residual, nll" << endl;
   for (int i=1;i<=Ncatch_obs;i++)
     report << obs_catch_biomass(i) << " " << pred_catch_biomass(i) << " " << resid_catch(i) << " " << nll_catch(i) << endl;
@@ -3498,7 +3499,8 @@ REPORT_SECTION
       for (int area=1; area<=Nareas; area++){
         pred_survey_index2 = 0.;
         for (int ilen=1;ilen<=Nsizebins;ilen++) {
-            pred_survey_index2 +=  B_tot(area,spp,year,ilen)*survey_sel(survey,spp,ilen)*survey_q(survey,spp)/Nstepsyr; 
+            //pred_survey_index2 +=  B_tot(area,spp,year,ilen)*survey_sel(survey,spp,ilen)*survey_q(survey,spp)/Nstepsyr; 
+            pred_survey_index2 +=  B_tot(area,spp,year,ilen)*survey_sel(survey,spp,ilen)/Nstepsyr; 
         }
         pmse_predvals << survey << " " << year << " " << spp << " " << area << " " << pred_survey_index2 << endl;
       }}}}       
@@ -3510,7 +3512,8 @@ REPORT_SECTION
       for (int year=1;year<=Nyrs;year++) {
       for (int spp=1;spp<=Nspecies;spp++) {
       for (int area=1; area<=Nareas; area++){
-        pmse_predvals << fleet << " " << year << " " << spp << " " << area << " " << fleet_catch_biomass(area,spp,fleet,year) << endl;
+        if (indicator_fishery_q(area,fleet,spp) == 1)
+         pmse_predvals << fleet << " " << year << " " << spp << " " << area << " " << fleet_catch_biomass(area,spp,fleet,year) << endl;
       }}}}       
 
 
@@ -3540,3 +3543,32 @@ REPORT_SECTION
        Lpred(ilen) = Cfl_tot(area,spp,fleet,year,ilen);
         pmse_predvals << fleet << " " << year << " " << spp << " " << area << " " << Lpred << endl;
       }}}}
+
+
+//////// full table of predicted survey index
+    
+    report << "survey_full year spp area pred_survey" << endl;
+      //dvariable pred_survey_index2;
+      for (int survey=1; survey<=Nsurveys;survey++) {
+      for (int year=1;year<=Nyrs;year++) {
+      for (int spp=1;spp<=Nspecies;spp++) {
+      for (int area=1; area<=Nareas; area++){
+        pred_survey_index2 = 0.;
+        for (int ilen=1;ilen<=Nsizebins;ilen++) {
+            //pred_survey_index2 +=  B_tot(area,spp,year,ilen)*survey_sel(survey,spp,ilen)*survey_q(survey,spp)/Nstepsyr; 
+            pred_survey_index2 +=  B_tot(area,spp,year,ilen)*survey_sel(survey,spp,ilen)/Nstepsyr; 
+        }
+        report << survey << " " << year << " " << spp << " " << area << " " << pred_survey_index2 << endl;
+      }}}}       
+
+//////// full table of predicted catch
+    
+    report << "fleet_full year spp area pred_catch" << endl;
+      for (int fleet=1; fleet<=Nfleets;fleet++) {
+      for (int year=1;year<=Nyrs;year++) {
+      for (int spp=1;spp<=Nspecies;spp++) {
+      for (int area=1; area<=Nareas; area++){
+        if (indicator_fishery_q(area,fleet,spp) == 1)
+         report << fleet << " " << year << " " << spp << " " << area << " " << fleet_catch_biomass(area,spp,fleet,year) << endl;
+      }}}}       
+
