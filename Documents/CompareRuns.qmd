@@ -288,6 +288,31 @@ saveRDS(hydraDataList_GBself_new5bin_4F, file.path(here("inputRdatalists/hydraDa
 
 ```
 
+## June 2023 New data inputs using 3 fleets based on gear type
+
+Updated `create_RData_mskeyrun.R` and `create_datpin_files.R` for new vulnerability structure and to specify 3 fleets based on gear types: demersal trawl (demersal), fixed gear (fixedGear) and pelagic trawl (pelagic). 
+
+New files include the new length bin structure and stricter definitions of predator (excludes herring, mackerel, and haddock). 
+
+The `create_RData_mskeyrun.R` file was sourced, and `create_RData_mskeyrun("real", nlenbin = 5)` was run to make a new `hydraDataList_msk.rda` file in the package. Then the package is built locally, R is restarted, and the following code block is run to produce input files.
+
+
+
+```{r}
+library(here)
+library(hydradata)
+inputs <- setup_default_inputs()
+inputs$outDir <- here()
+
+inputs$outputFilename <- "GB-input/hydra_sim_GB_new5bin_1978_3gearF" 
+
+hydraDataList_GB_new5bin_1978_3gearF <- create_datpin_files(inputs,hydraDataList_msk)
+
+# this saves the specific hydralist object, so we could saveRDS it to a diagnostics folder?
+# advantage of rds format is we can assign it when reading it in to diagnostics scripts
+saveRDS(hydraDataList_GB_new5bin_1978_3gearF, file.path(here("inputRdatalists/hydraDataList_GB_new5bin_1978_3gearF.rds")))
+
+```
 
 
 ## Can we use hydradata's plot functions?
