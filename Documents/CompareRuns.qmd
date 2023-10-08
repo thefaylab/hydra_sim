@@ -342,6 +342,51 @@ saveRDS(hydraDataList_GB_new5bin_1978_3gearF, file.path(here("inputRdatalists/hy
 
 ```
 
+## October 2023 new simulated inputs for WGSAM skill assessment
+
+Used the same `create_RData_mskeyrun.R` and `create_datpin_files.R` from June 2023 for new vulnerability structure. For simulated data, we will temporarily keep the same 2 fleet structure as used last year (cod, allothers). 
+
+New files include the new length bin structure and stricter definitions of predator applied to real data. For simulated data this results in the same predator prey list as before, no predators were excluded. 
+
+The `create_RData_mskeyrun.R` file was sourced, and `create_RData_mskeyrun("sim", nlenbin = 5)` was run to make a new `hydraDataList_msk.rda` file in the package. Then the package is built locally, R is restarted, and the following code block is run to produce input files.
+
+```{r, writedatfile5, eval=FALSE}
+
+library(here)
+library(hydradata)
+inputs <- setup_default_inputs()
+inputs$outDir <- here()
+
+inputs$outputFilename <- "NOBA-input/hydra_sim_NOBA_new5bin" 
+
+hydraDataList_NOBA_new5bin <- create_datpin_files(inputs,hydraDataList_msk)
+
+# this saves the specific hydralist object, so we could saveRDS it to a diagnostics folder?
+# advantage of rds format is we can assign it when reading it in to diagnostics scripts
+saveRDS(hydraDataList_NOBA_new5bin, file.path(here("inputRdatalists/hydraDataList_NOBA_new5bin.rds")))
+
+```
+
+Run `create_RData_mskeyrun("sim", nlenbin = 10)` in `hydradata`, rebuild package, restart R, then...
+
+```{r, writedatfile10, eval=FALSE}
+
+library(here)
+library(hydradata)
+inputs <- setup_default_inputs()
+inputs$outDir <- here()
+
+inputs$outputFilename <- "NOBA-input/hydra_sim_NOBA_new10bin" 
+
+hydraDataList_NOBA_new10bin <- create_datpin_files(inputs,hydraDataList_msk)
+
+# this saves the specific hydralist object, so we could saveRDS it to a diagnostics folder?
+# advantage of rds format is we can assign it when reading it in to diagnostics scripts
+saveRDS(hydraDataList_NOBA_new10bin, file.path(here("inputRdatalists/hydraDataList_NOBA_new10bin.rds")))
+
+```
+
+
 
 ## Can we use hydradata's plot functions?
 
