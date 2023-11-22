@@ -387,6 +387,33 @@ saveRDS(hydraDataList_NOBA_new10bin, file.path(here("inputRdatalists/hydraDataLi
 ```
 
 
+## Nov 2023 simplified 3 fleets
+
+Decided to use only major fleet categories for each species and aggregate the rest of the catch data into them.
+5 species are single fleet and 5 caught by 2 fleets. This is mostly done using rules but then herring is forced to all pelagic by hand.
+Recoded some of the q vectors that expected one fleet per species to accommodate this.
+We can go back to more complex structure by setting simplifyfleets = FALSE in `hydradata::create_RData_mskeyrun`
+
+The `create_RData_mskeyrun.R` file was sourced, and `create_RData_mskeyrun("real", nlenbin = 5)` was run to make a new `hydraDataList_msk.rda` file in the package. Then the package is built locally, R is restarted, and the following code block is run to produce input files.
+
+
+```{r}
+library(here)
+library(hydradata)
+inputs <- setup_default_inputs()
+inputs$outDir <- here()
+
+inputs$outputFilename <- "GB-input/hydra_sim_GB_new5bin_1978_3fleets" 
+
+hydra_sim_GB_new5bin_1978_3fleets <- create_datpin_files(inputs,hydraDataList_msk)
+
+# this saves the specific hydralist object, so we could saveRDS it to a diagnostics folder?
+# advantage of rds format is we can assign it when reading it in to diagnostics scripts
+saveRDS(hydra_sim_GB_new5bin_1978_3fleets, file.path(here("inputRdatalists/hydra_sim_GB_new5bin_1978_3fleets.rds")))
+
+```
+
+
 
 ## Can we use hydradata's plot functions?
 
