@@ -884,7 +884,7 @@ PARAMETER_SECTION
   4darray suitpreybio(1,Nareas,1,Nspecies,1,Tottimesteps,1,Nsizebins);  //suitable prey for each predator size and year, see weight unit above for units
   
   !!cout << "Nprey " << Nprey << endl;
-  init_vector logit_vuln(1,Npreypar,vuln_phase);
+  init_bounded_vector logit_vuln(1,Npreypar,-10,10,vuln_phase);
   3darray vulnerability(1,Nareas,1,Nspecies,1,Nspecies);
   4darray suitability(1,Nareas,1,Nspecies,1,Totsizebins,1,Nsizebins); //GF moved here 01/09/2023 because vulnerabilities shifted
 
@@ -1156,10 +1156,11 @@ PRELIMINARY_CALCS_SECTION
       for (yr=1; yr<=Nyrs; yr++) {
           for (int icov=1; icov<=Nmaturity_cov;icov++) {
               covariates_M(spp,yr) += maturity_covwt(spp,icov)*maturity_cov(icov,yr);
+              //cout << spp << " " << yr << " " << covariates_M(spp,yr) << endl;
           }
       }
   }
-
+  
 
 
 
@@ -1479,7 +1480,7 @@ FUNCTION calc_initial_states
 //  est_survey_guild_biomass_assessment.initialize();
   // est_survey_biomass_assessment.initialize();
   // est_fleet_catch_guild_assessment.initialize();
-  covariates_M.initialize();
+  //covariates_M.initialize();   // GAVIN FAY 2026-08-05 commenting out as covariate effects are calculated during prelim calcs
   index_predBio.initialize();
   index_preyBio.initialize();
   index_predToPreyRatio.initialize();
@@ -1541,15 +1542,16 @@ FUNCTION calc_initial_states
                     // make an exception for dogfish, (species 1). SR relationship used only females. therefore SSB should only use females.
                     // females considered to be only members of largest size class and only class that can reproduce
                     // this isn't smart coding. ideally we'd want a function that would create this and we'd just pass parameter values in dat file
-                     if ((spp == 1) && (isizebin < Nsizebins)) {
-                        propmature(area,spp,yr,isizebin) = 0;
-                     } else if ((spp == 1) && (isizebin == Nsizebins)) {
-                        propmature(area,spp,yr,isizebin) = 1;// eventually code for covariates on dogfish
-                     } else {
+//                     if ((spp == 1) && (isizebin < Nsizebins)) {
+//                        propmature(area,spp,yr,isizebin) = 0;
+//                     } else if ((spp == 1) && (isizebin == Nsizebins)) {
+//                        propmature(area,spp,yr,isizebin) = 1;// eventually code for covariates on dogfish
+//                     } else {
+                     // GAVIN FAY 2026-08-05, commenting out hardwire for species 1
 			propmature(area,spp,yr,isizebin) = 1/(1+mfexp(-1.*(maturity_nu(area, spp) +
                                           maturity_omega(area, spp)*lbinmidpt(spp,isizebin)) +
                                           covariates_M(spp,yr)));
-                    }
+                    //}
                    }
 		}
     }
@@ -3626,3 +3628,11 @@ REPORT_SECTION
          report << fleet << " " << year << " " << spp << " " << area << " " << fleet_catch_biomass(area,spp,fleet,year) << endl;
       }}}}       
 
+    report << "proportion mature" << endl;
+    for (int spp = 1; spp<=Nspecies; spp++) {
+    for (int year=1;year<=Nyrs;year++) {
+    for (int area=1; area<=Nareas; area++) {
+      report << year << " " << spp << " " << area << " " << propmature(area,spp,year) << endl;
+    }
+    }
+    }
