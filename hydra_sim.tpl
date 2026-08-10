@@ -1810,6 +1810,12 @@ FUNCTION calc_recruitment
   //          case 9:                   //Average recruitment plus devs--giving up on functional form
                        //recruitment(area,spp)(yrct) = mfexp(avg_recruitment(area,spp)+recruitment_devs(area,spp,yrct));
                        recruitment(area,spp)(yrct) = avg_recruitment(area,spp)*mfexp(recruitment_devs(area,spp,yrct)-0.5*recsigma(area, spp)*recsigma(area, spp));  //GF 2022/03/04, avg_recruitment is already in real space. This equation does not include lognormal bias correction (yet)
+
+  //                                    //"effective recruitment" with env covariates; see Quinn & Deriso 1999 p 92
+                                       recruitment(area,spp)(yrct) *= mfexp(recruitment_covwt(spp) * trans(recruitment_cov)(yrct-1));
+
+
+
       //cout << spp << " " << yrct << " " << recruitment(area,spp)(yrct) << " " << avg_recruitment(area,spp) << " " << recruitment_devs(area,spp,yrct) << endl;
       //exit(-1);
 
