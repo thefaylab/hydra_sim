@@ -1723,7 +1723,7 @@ FUNCTION calc_recruitment
     for (area=1; area<=Nareas; area++){
   	for(spp=1; spp<=Nspecies; spp++){
 
-	//	 switch (rectype(spp)){
+		 switch (rectype(spp)){
   //         case 1:	  				//egg production based recruitment, 3 par gamma (Ricker-ish)
 		// 	eggprod(area,spp)(yrct-1) /= Nstepsyr; //average egg production for a single "spawning" timestep
 		// 	//eggprod(area,spp)(yrct) = recruitment_shape(area,spp)/recruitment_beta(area,spp);
@@ -1750,20 +1750,23 @@ FUNCTION calc_recruitment
   //                                         mfexp(-recruitment_beta(area,spp) * SSB(area,spp)(yrct-1) +
   //                                              recruitment_covwt(spp) * trans(recruitment_cov)(yrct-1));
 		//   break;
-  //         case 4:	  				//SSB based recruitment, 2 par Ricker
-		// 	//SSB(area,spp)(yrct) /= Nstepsyr; //average SSB for a single "spawning" timestep, now SSB is at time t
-		// 	recruitment(area,spp)(yrct) = recruitment_alpha(area,spp) * SSB(area,spp)(yrct-1) *
-  //                                         mfexp(-recruitment_beta(area,spp) * SSB(area,spp)(yrct-1) +
-  //                                              recruitment_covwt(spp) * trans(recruitment_cov)(yrct-1));
-		//   break;
-  //         case 5:	  				//SSB based recruitment, 2 par Beverton Holt
-		// 	//SSB(area,spp)(yrct) /= Nstepsyr; //average SSB for a single "spawning" timestep, now SSB is at time t
-		// 	recruitment(area,spp)(yrct) = recruitment_alpha(area,spp) * SSB(area,spp)(yrct-1) /
-  //                                        (1 + (recruitment_beta(area,spp) * SSB(area,spp)(yrct-1)));
-  //                                    //"effective recruitment" with env covariates; see Quinn & Deriso 1999 p 92
-  //             /////////////////////////////////////////////// WHY -ve recruitment_covwt /////////////////////////////////////////////////////
-  //                                     recruitment(area,spp)(yrct) *= mfexp(-recruitment_covwt(spp) * trans(recruitment_cov)(yrct-1));
-		//   break;
+           case 4:	  				//SSB based recruitment, 2 par Ricker
+		 	//SSB(area,spp)(yrct) /= Nstepsyr; //average SSB for a single "spawning" timestep, now SSB is at time t
+		 	recruitment(area,spp)(yrct) = recruitment_alpha(area,spp) * SSB(area,spp)(yrct-1) *
+                                           mfexp(-recruitment_beta(area,spp) * SSB(area,spp)(yrct-1) +
+                                                recruitment_covwt(spp) * trans(recruitment_cov)(yrct-1));
+      recruitment(area,spp)(yrct) *= mfexp(recruitment_devs(area,spp,yrct)-0.5*recsigma(area, spp)*recsigma(area, spp));
+      
+		   break;
+           case 5:	  				//SSB based recruitment, 2 par Beverton Holt
+		 	//SSB(area,spp)(yrct) /= Nstepsyr; //average SSB for a single "spawning" timestep, now SSB is at time t
+		 	recruitment(area,spp)(yrct) = recruitment_alpha(area,spp) * SSB(area,spp)(yrct-1) /
+                                          (1 + (recruitment_beta(area,spp) * SSB(area,spp)(yrct-1)));
+                                      //"effective recruitment" with env covariates; see Quinn & Deriso 1999 p 92
+               /////////////////////////////////////////////// WHY -ve recruitment_covwt /////////////////////////////////////////////////////
+                                       recruitment(area,spp)(yrct) *= mfexp(-recruitment_covwt(spp) * trans(recruitment_cov)(yrct-1));
+                                       recruitment(area,spp)(yrct) *= mfexp(recruitment_devs(area,spp,yrct)-0.5*recsigma(area, spp)*recsigma(area, spp));
+		   break;
 
 
   //          case 6:
@@ -1807,7 +1810,7 @@ FUNCTION calc_recruitment
   //                break;
 
 
-  //          case 9:                   //Average recruitment plus devs--giving up on functional form
+            case 9:                   //Average recruitment plus devs--giving up on functional form
                        //recruitment(area,spp)(yrct) = mfexp(avg_recruitment(area,spp)+recruitment_devs(area,spp,yrct));
                        recruitment(area,spp)(yrct) = avg_recruitment(area,spp)*mfexp(recruitment_devs(area,spp,yrct)-0.5*recsigma(area, spp)*recsigma(area, spp));  //GF 2022/03/04, avg_recruitment is already in real space. This equation does not include lognormal bias correction (yet)
 
@@ -1819,15 +1822,15 @@ FUNCTION calc_recruitment
       //cout << spp << " " << yrct << " " << recruitment(area,spp)(yrct) << " " << avg_recruitment(area,spp) << " " << recruitment_devs(area,spp,yrct) << endl;
       //exit(-1);
 
-		//   break;
+		   break;
 
-  //          default:
-  //           exit(1);
-		// } //end switch
+            default:
+             exit(1);
+		 } //end switch
 
 
         // if(stochrec(spp)){                //simulate devs around recruitment curve
-        //  // we allow the option of a "large" recruitment event (larger than under log normal) every so often as recommended by
+          //  // we allow the option of a "large" recruitment event (larger than under log normal) every so often as recommended by
         //  // CIE review team (Daniel Howell). We sample a random number from uniform distribution and based on frequency of large event
         //  // (from literature) determine if event should occur for species. We then sample from a distribution of event magnitudes.
         //  // NOT YET IMPLEMENTED
