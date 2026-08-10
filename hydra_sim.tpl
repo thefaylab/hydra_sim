@@ -1756,7 +1756,7 @@ FUNCTION calc_recruitment
                                            mfexp(-recruitment_beta(area,spp) * SSB(area,spp)(yrct-1) +
                                                 recruitment_covwt(spp) * trans(recruitment_cov)(yrct-1));
       recruitment(area,spp)(yrct) *= mfexp(recruitment_devs(area,spp,yrct)-0.5*recsigma(area, spp)*recsigma(area, spp));
-      
+
 		   break;
            case 5:	  				//SSB based recruitment, 2 par Beverton Holt
 		 	//SSB(area,spp)(yrct) /= Nstepsyr; //average SSB for a single "spawning" timestep, now SSB is at time t
@@ -3645,3 +3645,14 @@ REPORT_SECTION
     }
     }
     }
+
+    report << "SSB" << endl;
+    for (area=1; area<=Nareas; area++){
+    for(spp=1; spp<=Nspecies; spp++){
+    for (int year=1;year<=Nyrs;year++) {
+    report << year << " " << spp << " " << area << " " << SSB(area,spp,year) << endl;
+    }
+    }
+    }
+
+
