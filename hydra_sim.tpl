@@ -2041,6 +2041,7 @@ FUNCTION calc_catch_etc
       // note: Z = total mortality
 
       //these are numbers at size dying each timestep from fishing, predation, and M1 (other)
+      //cout << spp << " " << t << " " << F(area, spp, t) << " " << Z(area, spp, t) << " " << M1(area, spp, t) <<" " << M2(area, spp, t) << " " << D(area, spp, t) << endl;
       C(area,spp,t) = elem_prod(Fprop, Ndeadtmp); //fishing catch on GB
       eatN(area,spp,t) = elem_prod(M2prop, Ndeadtmp); // predation, M2
       discardN(area,spp,t) = elem_prod(Dprop,Ndeadtmp); // discards on vessel either not target species or not allowed to land
@@ -2078,6 +2079,7 @@ FUNCTION calc_catch_etc
 
       //do fleet specific catch in numbers, biomass, sum for total catch
       for(fleet=1; fleet<=Nfleets; fleet++){
+      //cout << spp << " " << fleet << " " << t << " " << Ffl(area,spp,fleet,t) << " " << C(area,spp,t) << endl;
 	  dvar_vector Fflprop = elem_div(Ffl(area,spp,fleet,t),F(area,spp,t));// proportion dead due to fleet in each size class. vec length= num classes
           Cfl(area,spp,fleet,t) = elem_prod(Fflprop, C(area,spp,t)); // numbers dying from fleet by sizeclass
           fleet_catch_biomass(area,spp,fleet,yrct) += sum(wtconv*elem_prod(Cfl(area,spp,fleet,t),binavgwt(spp)));
