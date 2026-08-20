@@ -475,11 +475,13 @@ DATA_SECTION
   !! ////////// 2026-08-10 GAVIN FAY, added this trap because as growth varies over time bin mins/maxs may not align with adjusted Linfinitys. This may not be the best way to do it.
   !!          growth_numerator = (vonB_Linf(area, spp)*mfexp(growth_covwt(spp)*trans(growth_cov)(yr))-lbinmin(spp));
   !!          growth_denominator = (vonB_Linf(area, spp)*mfexp(growth_covwt(spp)*trans(growth_cov)(yr))-lbinmax(spp));
-  !!      for (size=1;size<Nsizebins;size++) { 
-  !!         if(growth_denominator(size)<0.) growth_denominator(size) = 0.001;
-  !!      } 
+  //!!          cout << spp << " " << yr << " " << growth_numerator << " " << growth_denominator << endl;
   !!          growthprob_phi(area, spp, yr) = vonB_k(area, spp)/log(
   !!                                          elem_div(growth_numerator,growth_denominator));
+  !!      for (size=1;size<Nsizebins;size++) { 
+  !!         if(growth_denominator(size)<0. || growth_numerator(size)<0.) growthprob_phi(area,spp,yr)(size) = 0.;
+  !!      } 
+
 // commenting out 2026-08-10 for above replacement fix.  
 //  !!          growthprob_phi(area, spp, yr) = vonB_k(area, spp)/log(
 //  !!                                          elem_div((vonB_Linf(area, spp)*mfexp(growth_covwt(spp)*trans(growth_cov)(yr))-lbinmin(spp)),
@@ -492,7 +494,7 @@ DATA_SECTION
   !!      growthprob_phi(area, spp, yr)(Nsizebins) = 0.0; //set prob of outgrowing highest bin to 0
   !!      double tempmax =  max(growthprob_phi(area, spp, yr));
   !!      phimax = max(tempmax,phimax);
-    !! cout << "Growthprob " << spp << " " << growthprob_phi(area,spp,yr) << endl;
+    !! cout << "Growthprob " << spp << " " << yr << " " << growthprob_phi(area,spp,yr) << endl;
   !!	  }
   !!	}
   !!    growthprob_phi(area) /= phimax;  //rescale so no group has >1 prob growing out
